@@ -16,6 +16,7 @@ package de.ubleipzig.scb;
 
 import static de.ubleipzig.scb.JAI.getImageDimensions;
 
+import de.ubleipzig.scb.templates.TemplateMetadata;
 import java.awt.Dimension;
 import java.io.BufferedReader;
 import java.io.File;

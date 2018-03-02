@@ -82,4 +82,18 @@ public class SC extends BaseVocabulary {
     public static final IRI topHint = createIRI(URI + "topHint");
     public static final IRI topToBottomDirection = createIRI(URI + "topToBottomDirection");
 
+    /* Named Individuals */
+    public static final String _bottomToTopDirection = NAMESPACE + "bottomToTopDirection";
+    public static final String _continuousHint = NAMESPACE + "continuousHint";
+    public static final String _facingPagesHint = NAMESPACE + "facingPagesHint";
+    public static final String _individualsHint = NAMESPACE + "individualsHint";
+    public static final String _leftToRightDirection = NAMESPACE + "leftToRightDirection";
+    public static final String _multiPartHint = NAMESPACE + "multiPartHint";
+    public static final String _nonPagedHint = NAMESPACE + "nonPagedHint";
+    public static final String _pagedHint = NAMESPACE + "pagedHint";
+    public static final String _painting = NAMESPACE + "painting";
+    public static final String _rightToLeftDirection = NAMESPACE + "rightToLeftDirection";
+    public static final String _topHint = NAMESPACE + "topHint";
+    public static final String _topToBottomDirection = NAMESPACE + "topToBottomDirection";
+
 }

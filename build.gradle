@@ -227,6 +227,7 @@ dependencies {
 
     compile group: 'commons-io', name: 'commons-io', version: '2.6'
     compile group: 'cool.pandora', name: 'ldp-client', version: '0.1.0'
+    compile group: 'com.sun.activation', name: 'javax.activation', version: '1.2.0'
     compile group: 'org.apache.commons', name: 'commons-rdf-jena', version: commonsRdfVersion
     compile group: 'org.trellisldp', name: 'trellis-vocabulary', version: trellisVersion
     compile "com.github.jai-imageio:jai-imageio-core:${jaiImageIoVersion}"

@@ -25,6 +25,8 @@ public class IIIF extends BaseVocabulary {
 
     /* Namespace */
     public static final String URI = "http://iiif.io/api/image/2#";
+    public static final String IMAGE_CONTEXT = "http://iiif.io/api/image/2/context.json";
+    public static final String SERVICE_PROFILE = "http://iiif.io/api/image/2/level1.json";
 
     /* Classes */
     public static final IRI Feature = createIRI(URI + "Feature");

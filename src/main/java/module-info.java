@@ -22,4 +22,6 @@ module de.ubleipzig.scb {
     requires org.apache.commons.io;
     requires cool.pandora.ldpclient;
     requires jdk.incubator.httpclient;
+    //noinspection removal
+    requires java.activation;
 }

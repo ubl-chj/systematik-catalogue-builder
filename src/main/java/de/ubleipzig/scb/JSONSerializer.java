@@ -28,6 +28,8 @@ import java.util.Optional;
 import org.slf4j.Logger;
 
 /**
+ * JSONSerializer.
+ *
  * @author christopher-johnson
  */
 public class JSONSerializer {

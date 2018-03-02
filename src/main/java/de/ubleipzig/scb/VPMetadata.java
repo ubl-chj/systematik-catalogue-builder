@@ -16,10 +16,13 @@ package de.ubleipzig.scb;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
+import de.ubleipzig.scb.templates.TemplateMetadata;
 import java.util.ArrayList;
 import org.slf4j.Logger;
 
 /**
+ * VPMetadata.
+ *
  * @author christopher-johnson
  */
 public class VPMetadata {

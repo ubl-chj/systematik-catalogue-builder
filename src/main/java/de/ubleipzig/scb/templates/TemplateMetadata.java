@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package de.ubleipzig.scb;
+package de.ubleipzig.scb.templates;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;

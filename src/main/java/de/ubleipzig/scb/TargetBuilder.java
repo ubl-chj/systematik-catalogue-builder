@@ -14,10 +14,11 @@
 
 package de.ubleipzig.scb;
 
-import static de.ubleipzig.scb.JSONSerializer.serialize;
 import static de.ubleipzig.scb.UUIDType5.NAMESPACE_URL;
-import static org.junit.Assert.assertEquals;
+import static org.slf4j.LoggerFactory.getLogger;
 
+import de.ubleipzig.scb.templates.TemplateMetadata;
+import de.ubleipzig.scb.templates.TemplateTarget;
 import de.ubleipzig.vocabulary.ANNO;
 import de.ubleipzig.vocabulary.SC;
 import java.awt.Dimension;
@@ -31,58 +32,64 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
 
 /**
- * CanvasBuilderTest.
+ * TargetBuilder.
  *
  * @author christopher-johnson
  */
-public class CanvasBuilderTest {
+public class TargetBuilder {
 
-    private String baseUrl = "http://workspaces.ub.uni-leipzig.de:8080/repository/node/collection/vp/canvas/";
-    private String imageSourceDir = "/media/christopher/OVAUBIMG/UBiMG/images/ubleipzig_sk2";
-    private String metadataFile = "/sk2-semester-tabs.csv";
+    private static Logger log = getLogger(TargetBuilder.class);
+    private final Config config;
 
-    @Test
-    void buildCanvasTest() {
-        final VorlesungImpl vi = new VorlesungImpl(imageSourceDir);
+    TargetBuilder(final Config config) {
+        this.config = config;
+    }
+
+    /**
+     * @return {@link List} of {@link TemplateTarget}
+     */
+    public List<TemplateTarget> buildCanvases() {
+        final VorlesungImpl vi = new VorlesungImpl(config.getImageSourceDir());
         final List<VPMetadata> inputList = vi.processInputFile(
-                CanvasBuilderTest.class.getResourceAsStream(metadataFile));
+                TargetBuilder.class.getResourceAsStream(config.getMetadataFile()));
         final AtomicInteger atomicInteger = new AtomicInteger(0);
-        final List<TemplateCanvas> groupedCanvases = new ArrayList<>();
+        final List<TemplateTarget> groupedCanvases = new ArrayList<>();
         final List<int[]> result = inputList.stream().map(v -> new int[v.getGroupSize()]).collect(Collectors.toList());
         for (int[] r : result) {
             final Iterable<Integer> iterable = () -> Arrays.stream(r).iterator();
             atomicInteger.getAndIncrement();
             iterable.forEach(x -> {
-                final TemplateCanvas canvas = new TemplateCanvas();
+                final TemplateTarget canvas = new TemplateTarget();
                 canvas.setCanvasGroup(atomicInteger.get());
                 groupedCanvases.add(canvas);
             });
         }
 
         final List<String> contexts = new ArrayList<>();
+        final String targetContext = "vp/target/";
         contexts.add(ANNO.CONTEXT);
         contexts.add(SC.CONTEXT);
-
         final List<String> files = vi.getFileNames();
         final Iterator<String> i1 = Objects.requireNonNull(files).iterator();
-        final Iterator<TemplateCanvas> i2 = groupedCanvases.iterator();
+        final Iterator<TemplateTarget> i2 = groupedCanvases.iterator();
         while (i1.hasNext() && i2.hasNext()) {
             final String label = i1.next();
             final UUID canvasUUID = UUIDType5.nameUUIDFromNamespaceAndString(NAMESPACE_URL, label);
-            final String id = baseUrl + canvasUUID.toString();
-            final TemplateCanvas canvas = i2.next();
+            final String id = config.getBaseUrl() + targetContext + canvasUUID.toString();
+            final TemplateTarget canvas = i2.next();
             canvas.setCanvasId(id);
             canvas.setContext(contexts);
             canvas.setCanvasLabel(label);
+            log.debug("Creating Canvas for {}", label);
         }
 
-        final Iterator<TemplateCanvas> i6 = groupedCanvases.iterator();
+        final Iterator<TemplateTarget> i6 = groupedCanvases.iterator();
         final Map<Integer, VPMetadata> vpmap = vi.buildVPMap(inputList);
         while (i6.hasNext()) {
-            final TemplateCanvas c = i6.next();
+            final TemplateTarget c = i6.next();
             final int groupId = c.getCanvasGroup();
             final List<TemplateMetadata> mlist = new ArrayList<>();
             final VPMetadata vp = vpmap.get(groupId);
@@ -97,14 +104,15 @@ public class CanvasBuilderTest {
             final Optional<String> gt5 = Optional.ofNullable(vp.getGroupTag5()).filter(s -> !s.isEmpty());
             vi.setMetadata(gt5, mlist);
             c.setMetadata(mlist);
+            log.debug("Setting Metadata for {}", c.getCanvasLabel());
         }
 
         final List<Dimension> dims = vi.getDimensions();
         final Iterator<Dimension> i3 = Objects.requireNonNull(dims).iterator();
-        final Iterator<TemplateCanvas> i4 = groupedCanvases.iterator();
+        final Iterator<TemplateTarget> i4 = groupedCanvases.iterator();
         while (i3.hasNext() && i4.hasNext()) {
             final Dimension dim = i3.next();
-            final TemplateCanvas canvas = i4.next();
+            final TemplateTarget canvas = i4.next();
             if (dim != null) {
                 final double imgWidth = dim.getWidth();
                 final Integer width = (int) imgWidth;
@@ -113,13 +121,8 @@ public class CanvasBuilderTest {
                 canvas.setCanvasWidth(width);
                 canvas.setCanvasHeight(height);
             }
+            log.debug("Setting Dimensions for {}", canvas.getCanvasLabel());
         }
-
-        groupedCanvases.forEach(c -> {
-            final Optional<String> json = serialize(c);
-            System.out.println(json.orElse(null));
-        });
-
-        assertEquals(52218, groupedCanvases.size());
+        return groupedCanvases;
     }
 }

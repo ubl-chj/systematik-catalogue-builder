@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package de.ubleipzig.scb;
+package de.ubleipzig.scb.templates;
 
 import static de.ubleipzig.vocabulary.SC._Canvas;
 
@@ -22,15 +22,15 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import java.util.List;
 
 /**
- * TemplateCanvas.
+ * TemplateTarget.
  *
  * @author christopher-johnson
  */
 @JsonPropertyOrder({"@context", "@id", "@type", "metadata", "label", "height", "width"})
-public class TemplateCanvas {
+public class TemplateTarget {
 
     @JsonProperty("@context")
-    private List<String>  context;
+    private List<String> context;
 
     @JsonProperty("@id")
     private String id;
@@ -56,11 +56,10 @@ public class TemplateCanvas {
     /**
      *
      */
-    public TemplateCanvas() {
+    public TemplateTarget() {
     }
 
     /**
-     *
      * @param context a {@link List} of contexts
      */
     public void setContext(final List<String> context) {
@@ -120,10 +119,26 @@ public class TemplateCanvas {
     }
 
     /**
+     * @return height
+     */
+    @JsonIgnore
+    public Integer getCanvasHeight() {
+        return this.height;
+    }
+
+    /**
      * @param height height as {@link Integer}
      */
     public void setCanvasHeight(final Integer height) {
         this.height = height;
+    }
+
+    /**
+     * @return width
+     */
+    @JsonIgnore
+    public Integer getCanvasWidth() {
+        return this.width;
     }
 
     /**

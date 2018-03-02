@@ -21,6 +21,8 @@ import java.util.Objects;
 import java.util.UUID;
 
 /**
+ * UUIDType5.
+ *
  * @author christopher-johnson
  */
 public class UUIDType5 {
