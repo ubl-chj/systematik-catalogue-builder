@@ -11,17 +11,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-module org.ubl.scb {
-    requires jackson.annotations;
-    requires org.apache.commons.rdf.api;
-    requires slf4j.api;
-    requires java.desktop;
-    requires jai.imageio.core;
-    requires com.fasterxml.jackson.databind;
-    requires com.fasterxml.jackson.core;
-    requires org.apache.commons.io;
-    requires cool.pandora.ldpclient;
-    requires jdk.incubator.httpclient;
-    //noinspection removal
-    requires java.activation;
+
+package org.ubl.scb.vocabulary;
+
+import org.apache.commons.rdf.api.IRI;
+
+/**
+ * EXIF.
+ *
+ * @author christopher-johnson
+ */
+public class EXIF extends BaseVocabulary {
+
+    /* Namespace */
+    public static final String URI = "http://www.w3.org/2003/12/exif/ns#";
+
+    public static final IRI base = createIRI(URI);
+
+    /* Classes */
+    public static final IRI width = createIRI(URI + "width");
+    public static final IRI height = createIRI(URI + "height");
 }

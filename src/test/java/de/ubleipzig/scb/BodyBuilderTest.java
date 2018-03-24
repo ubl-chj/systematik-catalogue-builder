@@ -11,14 +11,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package de.ubleipzig.scb;
 
-import de.ubleipzig.scb.templates.TemplateBody;
-import de.ubleipzig.scb.templates.TemplateTarget;
 import java.util.Iterator;
 import java.util.List;
+
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
+import org.ubl.scb.BodyBuilder;
+import org.ubl.scb.Config;
+import org.ubl.scb.TargetBuilder;
+import org.ubl.scb.templates.TemplateBody;
+import org.ubl.scb.templates.TemplateTarget;
 
 /**
  * BodyBuilderTest.

@@ -9,7 +9,7 @@ buildscript {
 }
 
 plugins {
-    id "com.zyxist.chainsaw" version "0.1.3"
+    id "com.zyxist.chainsaw" version "0.3.1"
     id 'com.github.hierynomus.license' version '0.14.0'
     id 'io.codearte.nexus-staging' version '0.9.0'
 }
@@ -21,7 +21,7 @@ apply plugin: 'checkstyle'
 apply plugin: 'com.bmuschko.nexus'
 apply plugin: 'osgi'
 
-group = 'de.ubleipzig'
+group = 'org.ubl'
 
 sourceCompatibility = 1.10
 targetCompatibility = 1.10
@@ -29,11 +29,14 @@ targetCompatibility = 1.10
 repositories {
     mavenLocal()
     mavenCentral()
+    flatDir {
+        dirs "$rootProject.projectDir/lib"
+    }
 }
 
 ext {
     name = 'Systematik Catalogue Builder'
-    moduleName = 'de.ubleipzig.scb'
+    moduleName = 'org.ubl.scb'
     description = 'An Web Annotation Creation Tool'
     url = 'https://github.com/ub-leipzig/systematik-catalogue-builder'
     inceptionYear = '2017'
@@ -52,9 +55,22 @@ ext {
     commonsRdfVersion = '0.5.0'
     jaxrsVersion = '2.1'
     trellisVersion = '0.5.2'
-    trellisAppVersion = '0.6.0-SNAPSHOT'
+    trellisAppVersion = '0.7.0-SNAPSHOT'
     projectOsgiVersion = project.version.replaceAll("-SNAPSHOT", ".SNAPSHOT")
     xerxesVersion = '2.11.0'
+
+    /* Transitive patched modules */
+    commonsLoggingVersion = '1.2'
+    geronimoAnnotationSpecVersion = '1_2'
+    hamcrestLibraryVersion = '1.3'
+    httpClientOsgiVersion = '4.5.3'
+    httpCoreOsgiVersion = '4.4.6'
+    jsr305Version = '3.0.2'
+    servicemixXercesVersion = '2.11.0_1'
+    xmlApisVersion = '1.4.01'
+
+    jacocoVersion = '0.8.0'
+    checkstyleVersion = '8.8'
 }
 
 gradle.projectsEvaluated {
@@ -63,32 +79,6 @@ gradle.projectsEvaluated {
         options.compilerArgs.add("-Xlint:deprecation")
         options.compilerArgs.addAll(["--add-modules", "jdk.incubator.httpclient"])
     }
-}
-
-checkstyle {
-    configFile = rootProject.file('build/checkstyle/checkstyle.xml')
-    configProperties.checkstyleConfigDir = rootProject.file('build/checkstyle/')
-    toolVersion = '8.8'
-}
-
-configurations {
-    buildToolsConfig
-}
-
-dependencies {
-    buildToolsConfig 'org.trellisldp:trellis-build-tools:0.2.0'
-}
-
-task processBuildTools(type: Copy) {
-    from {
-        configurations.buildToolsConfig.collect {
-            zipTree(it).matching {
-                include 'checkstyle/*.xml'
-                include 'license/*.txt'
-            }
-        }
-    }
-    into 'build'
 }
 
 publishing {
@@ -153,9 +143,15 @@ nexus {
     snapshotRepositoryUrl = 'https://oss.sonatype.org/content/repositories/snapshots/'
 }
 
+checkstyle {
+    configFile = rootProject.file('buildtools/src/main/resources/checkstyle/checkstyle.xml')
+    configProperties.checkstyleConfigDir = rootProject.file('buildtools/src/main/resources/checkstyle/')
+    toolVersion = checkstyleVersion
+}
+
 license {
     include "**/*.java"
-    header rootProject.file('build/license/HEADER.txt')
+    header rootProject.file('buildtools/src/main/resources/license/HEADER.txt')
     strictCheck true
     mapping {
         java = 'SLASHSTAR_STYLE'
@@ -196,26 +192,37 @@ javadoc {
     }
 }
 
-
-
-javaModule.name = 'de.ubleipzig.scb'
-javaModule.patchModules 'org.slf4j:log4j.over.slf4j': 'log4j:log4j'
-javaModule.patchModules 'org.apache.httpcomponents:httpclient-osgi': 'commons-codec:commons-codec'
-javaModule.patchModules 'javax.inject:javax.inject': 'org.apache.servicemix.bundles:org.apache.servicemix.bundles' +
-        '.javax-inject'
-javaModule.patchModules 'com.google.code.findbugs:jsr305': 'javax.annotation:jsr250-api'
-javaModule.patchModules 'xerces:xercesImpl': 'org.apache.servicemix.bundles:org.apache.servicemix.bundles.xerces'
-javaModule.patchModules 'org.apache.httpcomponents:httpcore': 'org.apache.httpcomponents:httpcore-osgi'
-javaModule.patchModules 'org.apache.jena:jena-shaded-guava': 'org.apache.jena:jena-osgi'
-javaModule.patchModules 'org.apache.jena:jena-core': 'org.apache.jena:jena-osgi'
-javaModule.patchModules 'org.apache.jena:jena-arq': 'org.apache.jena:jena-osgi'
-javaModule.patchModules 'org.apache.geronimo.specs:geronimo-jms_1.1_spec': 'javax.jms:javax.jms-api'
-javaModule.patchModules 'xml-apis:xml-apis': 'xerces:xercesImpl'
+javaModule.name = 'org.ubl.scb'
+javaModule {
+    name = 'org.ubl.scb'
+    extraTestModules = ['org.trellisldp.app']
+    hacks {
+        patches('org.slf4j:log4j.over.slf4j', 'log4j:log4j')
+        patches('org.apache.httpcomponents:httpclient-osgi', 'commons-codec:commons-codec')
+        patches('javax.inject:javax.inject', 'org.apache.servicemix.bundles:org.apache.servicemix.bundles' +
+                '.javax-inject')
+        patches('javax.annotation:javax.annotation-api', 'org.apache.geronimo.specs:geronimo-annotation_1.2_spec')
+        patches('com.google.code.findbugs:jsr305', 'javax.annotation:jsr250-api')
+        patches('xerces:xercesImpl', 'org.apache.servicemix.bundles:org.apache.servicemix.bundles.xerces')
+        patches('org.apache.httpcomponents:httpcore', 'org.apache.httpcomponents:httpcore-osgi')
+        patches('org.apache.jena:jena-shaded-guava', 'org.apache.jena:jena-osgi')
+        patches('org.apache.jena:jena-core', 'org.apache.jena:jena-osgi')
+        patches('org.apache.jena:jena-arq', 'org.apache.jena:jena-osgi')
+        patches('org.apache.geronimo.specs:geronimo-jms_1.1_spec', 'javax.jms:javax.jms-api')
+        patches('org.hamcrest:hamcrest-library', 'org.hamcrest:hamcrest-core')
+        patches('org.apache.httpcomponents:httpclient-osgi', 'org.apache.httpcomponents:httpclient')
+        patches('xml-apis:xml-apis', 'xerces:xercesImpl')
+        patches('org.slf4j:jcl.over.slf4j','commons-logging:commons-logging')
+    }
+}
 
 dependencies {
+    patch "org.hamcrest:hamcrest-library:$hamcrestLibraryVersion"
     patch 'log4j:log4j:1.2.17'
+    patch 'commons-logging:commons-logging:1.2'
     patch 'commons-codec:commons-codec:1.11'
-    patch 'org.apache.servicemix.bundles:org.apache.servicemix.bundles.javax-inject:1_2'
+    patch 'javax.annotation:javax.annotation-api:1.3.2'
+    patch "org.apache.httpcomponents:httpclient-osgi:$httpClientOsgiVersion"
     patch 'com.google.code.findbugs:jsr305:3.0.2'
     patch 'org.apache.servicemix.bundles:org.apache.servicemix.bundles.xerces:2.11.0_1'
     patch 'org.apache.httpcomponents:httpcore:4.4.6'

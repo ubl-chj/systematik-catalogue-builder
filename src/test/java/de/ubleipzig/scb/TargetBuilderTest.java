@@ -16,9 +16,12 @@ package de.ubleipzig.scb;
 
 import static org.junit.Assert.assertEquals;
 
-import de.ubleipzig.scb.templates.TemplateTarget;
 import java.util.List;
+
 import org.junit.jupiter.api.Test;
+import org.ubl.scb.Config;
+import org.ubl.scb.TargetBuilder;
+import org.ubl.scb.templates.TemplateTarget;
 
 /**
  * TargetBuilderTest.

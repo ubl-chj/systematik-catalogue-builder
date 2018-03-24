@@ -11,17 +11,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-module org.ubl.scb {
-    requires jackson.annotations;
-    requires org.apache.commons.rdf.api;
-    requires slf4j.api;
-    requires java.desktop;
-    requires jai.imageio.core;
-    requires com.fasterxml.jackson.databind;
-    requires com.fasterxml.jackson.core;
-    requires org.apache.commons.io;
-    requires cool.pandora.ldpclient;
-    requires jdk.incubator.httpclient;
-    //noinspection removal
-    requires java.activation;
+
+package org.ubl.scb.vocabulary;
+
+import java.util.ServiceLoader;
+
+import org.apache.commons.rdf.api.IRI;
+import org.apache.commons.rdf.api.RDF;
+
+/**
+ * BaseVocabulary.
+ *
+ * @author acoburn
+ */
+class BaseVocabulary {
+
+    private static RDF rdf = ServiceLoader.load(RDF.class)
+            .iterator()
+            .next();
+
+    protected BaseVocabulary() {
+        // prevent direct instantiation
+    }
+
+    protected static IRI createIRI(final String uri) {
+
+        return rdf.createIRI(uri);
+    }
 }

@@ -14,17 +14,13 @@
 
 package de.ubleipzig.scb;
 
-import static de.ubleipzig.scb.JSONSerializer.serialize;
 import static io.dropwizard.testing.ConfigOverride.config;
 import static io.dropwizard.testing.ResourceHelpers.resourceFilePath;
 import static org.apache.jena.riot.WebContent.contentTypeJSONLD;
+import static org.ubl.scb.JSONSerializer.serialize;
 
-import cool.pandora.ldpclient.LdpClient;
-import cool.pandora.ldpclient.LdpClientException;
-import cool.pandora.ldpclient.LdpClientImpl;
-import cool.pandora.ldpclient.SimpleSSLContext;
-import de.ubleipzig.scb.templates.TemplateTarget;
 import io.dropwizard.testing.DropwizardTestSupport;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -34,7 +30,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+
 import javax.net.ssl.SSLContext;
+
 import org.apache.commons.rdf.api.IRI;
 import org.apache.commons.rdf.jena.JenaRDF;
 import org.junit.jupiter.api.AfterAll;
@@ -44,6 +42,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.trellisldp.app.TrellisApplication;
 import org.trellisldp.app.config.TrellisConfiguration;
+import org.ubl.scb.Config;
+import org.ubl.scb.TargetBuilder;
+import org.ubl.scb.VorlesungImpl;
+import org.ubl.scb.templates.TemplateTarget;
+
+import cool.pandora.ldpclient.LdpClient;
+import cool.pandora.ldpclient.LdpClientException;
+import cool.pandora.ldpclient.LdpClientImpl;
+import cool.pandora.ldpclient.SimpleSSLContext;
 
 /**
  * ResourceCreatorTest.
@@ -52,13 +59,12 @@ import org.trellisldp.app.config.TrellisConfiguration;
  */
 public class ResourceCreatorTest {
 
-    private static final DropwizardTestSupport<TrellisConfiguration> APP = new DropwizardTestSupport<>(
-            TrellisApplication.class, resourceFilePath("trellis-config.yml"),
-            config("server.applicationConnectors[1].port", "8445"),
-            config("binaries", resourceFilePath("data") + "/binaries"),
-            config("mementos", resourceFilePath("data") + "/mementos"),
-            config("namespaces", resourceFilePath("data/namespaces.json")),
-            config("server.applicationConnectors[1].keyStorePath", resourceFilePath("keystore/trellis.jks")));
+    private static final DropwizardTestSupport<TrellisConfiguration> APP = new DropwizardTestSupport<>
+            (TrellisApplication.class, resourceFilePath("trellis-config.yml"), config("server" + "" + "" + "" + "" +
+                    ".applicationConnectors[1].port", "8445"), config("binaries", resourceFilePath("data") +
+                    "/binaries"), config("mementos", resourceFilePath("data") + "/mementos"), config("namespaces",
+                    resourceFilePath("data/namespaces.json")), config("server.applicationConnectors[1].keyStorePath",
+                    resourceFilePath("keystore/trellis.jks")));
     private static final JenaRDF rdf = new JenaRDF();
     private static String baseUrl;
     private static String pid;
@@ -68,7 +74,7 @@ public class ResourceCreatorTest {
 
     @BeforeAll
     static void initAll() {
-        //APP.before();
+        APP.before();
         baseUrl = "https://localhost:8445/collection/";
         try {
             final SimpleSSLContext sslct = new SimpleSSLContext();
@@ -81,12 +87,13 @@ public class ResourceCreatorTest {
 
     @AfterAll
     static void tearDownAll() {
-        //APP.after();
+        APP.after();
     }
 
     @BeforeEach
     void init() {
-        pid = "ldp-test-" + UUID.randomUUID().toString();
+        pid = "ldp-test-" + UUID.randomUUID()
+                .toString();
     }
 
     @AfterEach
@@ -116,7 +123,8 @@ public class ResourceCreatorTest {
             final IRI identifier = rdf.createIRI(canvas.getCanvasId());
             final Optional<String> json = serialize(canvas);
             final String output = json.orElse(null);
-            final InputStream is = new ByteArrayInputStream(Objects.requireNonNull(output).getBytes());
+            final InputStream is = new ByteArrayInputStream(Objects.requireNonNull(output)
+                    .getBytes());
             try {
                 h2client.put(identifier, is, contentTypeJSONLD);
             } catch (LdpClientException e) {
