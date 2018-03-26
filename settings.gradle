@@ -1,1 +1,3 @@
 rootProject.name = 'systematik-catalogue-builder'
+include 'image'
+include 'web-anno'

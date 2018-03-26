@@ -14,241 +14,259 @@ plugins {
     id 'io.codearte.nexus-staging' version '0.9.0'
 }
 
-apply plugin: 'java'
-apply plugin: 'java-library'
-apply plugin: 'maven-publish'
-apply plugin: 'checkstyle'
-apply plugin: 'com.bmuschko.nexus'
-apply plugin: 'osgi'
+configure(allprojects) { project ->
 
-group = 'org.ubl'
+    apply plugin: 'java'
+    apply plugin: 'java-library'
+    apply plugin: 'maven-publish'
+    apply plugin: 'checkstyle'
+    apply plugin: 'com.bmuschko.nexus'
 
-sourceCompatibility = 1.10
-targetCompatibility = 1.10
+    group = 'org.ubl'
 
-repositories {
-    mavenLocal()
-    mavenCentral()
-    flatDir {
-        dirs "$rootProject.projectDir/lib"
-    }
-}
+    sourceCompatibility = 1.10
+    targetCompatibility = 1.10
 
-ext {
-    name = 'Systematik Catalogue Builder'
-    moduleName = 'org.ubl.scb'
-    description = 'An Web Annotation Creation Tool'
-    url = 'https://github.com/ub-leipzig/systematik-catalogue-builder'
-    inceptionYear = '2017'
-    vendor = 'Pandora Ecosystem'
-    homepage = 'http://cool.pandora'
-    docURL = 'https://github.com/ub-leipzig/systematik-catalogue-builder/wiki'
-    license = 'Apache 2'
-
-    dropwizardVersion = '1.2.0'
-    jaiImageIoVersion = '1.3.0'
-    jacksonVersion = '2.9.1'
-    jettyAlpnVersion = '9.4.8.v20171121'
-    junitVersion = '5.1.0'
-    logbackVersion = '1.2.3'
-    slf4jVersion = "1.7.25"
-    commonsRdfVersion = '0.5.0'
-    jaxrsVersion = '2.1'
-    trellisVersion = '0.5.2'
-    trellisAppVersion = '0.7.0-SNAPSHOT'
-    projectOsgiVersion = project.version.replaceAll("-SNAPSHOT", ".SNAPSHOT")
-    xerxesVersion = '2.11.0'
-
-    /* Transitive patched modules */
-    commonsLoggingVersion = '1.2'
-    geronimoAnnotationSpecVersion = '1_2'
-    hamcrestLibraryVersion = '1.3'
-    httpClientOsgiVersion = '4.5.3'
-    httpCoreOsgiVersion = '4.4.6'
-    jsr305Version = '3.0.2'
-    servicemixXercesVersion = '2.11.0_1'
-    xmlApisVersion = '1.4.01'
-
-    jacocoVersion = '0.8.0'
-    checkstyleVersion = '8.8'
-}
-
-gradle.projectsEvaluated {
-    tasks.withType(JavaCompile) {
-        options.compilerArgs.add("-Xlint:unchecked")
-        options.compilerArgs.add("-Xlint:deprecation")
-        options.compilerArgs.addAll(["--add-modules", "jdk.incubator.httpclient"])
-    }
-}
-
-publishing {
-    publications {
-        maven(MavenPublication) {
-            from components.java
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        flatDir {
+            dirs "$rootProject.projectDir/lib"
         }
     }
+
+    ext {
+        name = 'Systematik Catalogue Builder'
+        moduleName = 'org.ubl.scb'
+        description = 'An Web Annotation Creation Tool'
+        url = 'https://github.com/ub-leipzig/systematik-catalogue-builder'
+        inceptionYear = '2017'
+        vendor = 'Pandora Ecosystem'
+        homepage = 'http://cool.pandora'
+        docURL = 'https://github.com/ub-leipzig/systematik-catalogue-builder/wiki'
+        license = 'Apache 2'
+
+        apiGuardianVersion = '1.0.0'
+        camelVersion = '2.20.0'
+        commonsCodecVersion = '1.11'
+        dropwizardVersion = '1.2.0'
+        metadataExtractorVersion = '2.11.0'
+        jaiImageIoVersion = '1.3.0'
+        jacksonVersion = '2.9.4'
+        jettyAlpnVersion = '9.4.8.v20171121'
+        junitVersion = '5.1.0'
+        logbackVersion = '1.2.3'
+        slf4jVersion = "1.7.25"
+        commonsRdfVersion = '0.5.0'
+        jaxrsVersion = '2.1'
+        trellisVersion = '0.5.2'
+        trellisAppVersion = '0.7.0-SNAPSHOT'
+        projectOsgiVersion = project.version.replaceAll("-SNAPSHOT", ".SNAPSHOT")
+        xerxesVersion = '2.11.0'
+
+        /* Transitive patched modules */
+        commonsLoggingVersion = '1.2'
+        geronimoAnnotationSpecVersion = '1_2'
+        hamcrestLibraryVersion = '1.3'
+        httpClientOsgiVersion = '4.5.3'
+        httpCoreOsgiVersion = '4.4.6'
+        jsr305Version = '3.0.2'
+        servicemixXercesVersion = '2.11.0_1'
+        xmlApisVersion = '1.4.01'
+
+        jacocoVersion = '0.8.0'
+        checkstyleVersion = '8.8'
+    }
 }
 
-modifyPom {
-    //noinspection GroovyAssignabilityCheck
-    project {
-        name name
-        description description
-        url url
-        inceptionYear inceptionYear
+subprojects {
 
-        organization {
-            name vendor
-            url homepage
+    gradle.projectsEvaluated {
+        tasks.withType(JavaCompile) {
+            options.compilerArgs.add("-Xlint:unchecked")
+            options.compilerArgs.add("-Xlint:deprecation")
+            options.compilerArgs.addAll(["--add-modules", "jdk.incubator.httpclient"])
         }
+    }
 
-        developers {
-            developer {
-                id 'christopher-johnson'
-                name 'Christopher Johnson'
-                email 'chjohnson @ (domain of organization url)'
-                organization 'Pan-dora Ecosystem'
-                organizationUrl 'https://pan-dora.github.io/'
-                roles {
-                    role 'developer'
+    publishing {
+        publications {
+            maven(MavenPublication) {
+                from components.java
+            }
+        }
+    }
+
+    modifyPom {
+        //noinspection GroovyAssignabilityCheck
+        project {
+            name name
+            description description
+            url url
+            inceptionYear inceptionYear
+
+            organization {
+                name vendor
+                url homepage
+            }
+
+            developers {
+                developer {
+                    id 'christopher-johnson'
+                    name 'Christopher Johnson'
+                    email 'chjohnson @ (domain of organization url)'
+                    organization 'Pan-dora Ecosystem'
+                    organizationUrl 'https://pan-dora.github.io/'
+                    roles {
+                        role 'developer'
+                    }
+                    timezone '+1'
                 }
-                timezone '+1'
+            }
+
+            scm {
+                connection 'scm:git:git://github.com/pan-dora/ldp-client.git'
+                developerConnection 'scm:git:git@github.com/pan-dora/ldp-client.git'
+                url 'https://github.com/pan-dora/ldp-client/'
+                tag 'HEAD'
+            }
+
+            licenses {
+                license {
+                    name 'Apache License, Version 2.0'
+                    url 'http://www.apache.org/licenses/LICENSE-2.0'
+                }
             }
         }
+    }
 
-        scm {
-            connection 'scm:git:git://github.com/pan-dora/ldp-client.git'
-            developerConnection 'scm:git:git@github.com/pan-dora/ldp-client.git'
-            url 'https://github.com/pan-dora/ldp-client/'
-            tag 'HEAD'
+    nexusStaging {
+        packageGroup = "cool.pandora"
+        stagingProfileId = "4d5f13c386f543"
+    }
+
+    nexus {
+        sign = true
+        repositoryUrl = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
+        snapshotRepositoryUrl = 'https://oss.sonatype.org/content/repositories/snapshots/'
+    }
+
+    checkstyle {
+        configFile = rootProject.file('buildtools/src/main/resources/checkstyle/checkstyle.xml')
+        configProperties.checkstyleConfigDir = rootProject.file('buildtools/src/main/resources/checkstyle/')
+        toolVersion = checkstyleVersion
+    }
+
+    license {
+        include "**/*.java"
+        header rootProject.file('buildtools/src/main/resources/license/HEADER.txt')
+        strictCheck true
+        mapping {
+            java = 'SLASHSTAR_STYLE'
         }
+    }
 
-        licenses {
-            license {
-                name 'Apache License, Version 2.0'
-                url 'http://www.apache.org/licenses/LICENSE-2.0'
-            }
+    javadoc {
+        inputs.property("moduleName", moduleName)
+        doFirst {
+            options.addStringOption('-module-path', classpath.asPath)
+            options.addBooleanOption('html5', true)
+        }
+        destinationDir = new File(projectDir, "docs/${version}")
+        options {
+            links "https://docs.oracle.com/javase/8/docs/api/"
+            links 'https://docs.oracle.com/javaee/7/api/'
+            links 'https://trellis-ldp.github.io/trellis/apidocs/'
+            links 'https://commons.apache.org/proper/commons-rdf/apidocs/'
         }
     }
+
 }
 
-nexusStaging {
-    packageGroup = "cool.pandora"
-    stagingProfileId = "4d5f13c386f543"
-}
+project('image') {
+    apply plugin: 'com.zyxist.chainsaw'
+    javaModule {
+        name = 'org.ubl.image.metadata'
+    }
 
-nexus {
-    sign = true
-    repositoryUrl = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
-    snapshotRepositoryUrl = 'https://oss.sonatype.org/content/repositories/snapshots/'
-}
-
-checkstyle {
-    configFile = rootProject.file('buildtools/src/main/resources/checkstyle/checkstyle.xml')
-    configProperties.checkstyleConfigDir = rootProject.file('buildtools/src/main/resources/checkstyle/')
-    toolVersion = checkstyleVersion
-}
-
-license {
-    include "**/*.java"
-    header rootProject.file('buildtools/src/main/resources/license/HEADER.txt')
-    strictCheck true
-    mapping {
-        java = 'SLASHSTAR_STYLE'
+    dependencies {
+        implementation group: 'commons-codec', name: 'commons-codec', version: commonsCodecVersion
+        implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: jacksonVersion
+        implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jacksonVersion
+        implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: jacksonVersion
+        compile "com.drewnoakes:metadata-extractor:${metadataExtractorVersion}"
+        compile group: 'org.slf4j', name: 'slf4j-api', version: slf4jVersion
+        testRuntimeClasspath group: 'ch.qos.logback', name: 'logback-classic', version: logbackVersion
+        testCompile group: 'org.apiguardian', name: 'apiguardian-api', version: apiGuardianVersion
+        testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junitVersion
     }
 }
 
-jar {
-    manifest {
-        description project.description
-        docURL project.docURL
-        vendor project.vendor
-        license project.license
+project('web-anno') {
+    apply plugin: 'com.zyxist.chainsaw'
 
-        instruction 'Automatic-Module-Name', moduleName
-        instruction 'Import-Package', '*'
-        instruction 'Export-Package', "${moduleName};version=${projectOsgiVersion}"
-        instruction 'Require-Capability', '''\
-            osgi.extender; filter:="(osgi.extender=osgi.serviceloader.processor)",
-            osgi.serviceloader;
-                filter:="(osgi.serviceloader=org.apache.commons.rdf.api.RDF)";
-                resolution:=mandatory; cardinality:=at_least_one
-            '''
+    javaModule.name = 'org.ubl.scb'
+    javaModule {
+        name = 'org.ubl.scb'
+        extraTestModules = ['org.trellisldp.app']
+        hacks {
+            patches('com.sun.xml.bind:jaxb-impl', 'com.sun.xml.bind:jaxb-core')
+            patches('org.slf4j:log4j.over.slf4j', 'log4j:log4j')
+            patches('org.apache.httpcomponents:httpclient-osgi', 'commons-codec:commons-codec')
+            patches('javax.annotation:javax.annotation-api', 'org.apache.geronimo.specs:geronimo-annotation_1.2_spec')
+            patches('com.google.code.findbugs:jsr305', 'javax.annotation:jsr250-api')
+            patches('xerces:xercesImpl', 'org.apache.servicemix.bundles:org.apache.servicemix.bundles.xerces')
+            patches('org.apache.httpcomponents:httpcore', 'org.apache.httpcomponents:httpcore-osgi')
+            patches('org.apache.jena:jena-shaded-guava', 'org.apache.jena:jena-osgi')
+            patches('org.apache.jena:jena-core', 'org.apache.jena:jena-osgi')
+            patches('org.apache.jena:jena-arq', 'org.apache.jena:jena-osgi')
+            patches('org.apache.geronimo.specs:geronimo-jms_1.1_spec', 'javax.jms:javax.jms-api')
+            patches('org.hamcrest:hamcrest-library', 'org.hamcrest:hamcrest-core')
+            patches('org.apache.httpcomponents:httpclient-osgi', 'org.apache.httpcomponents:httpclient')
+            patches('xml-apis:xml-apis', 'xerces:xercesImpl')
+            patches('org.slf4j:jcl.over.slf4j', 'commons-logging:commons-logging')
+        }
+    }
+
+    dependencies {
+
+        patch "com.sun.xml.bind:jaxb-core:2.2.11"
+        patch "org.hamcrest:hamcrest-library:$hamcrestLibraryVersion"
+        patch 'log4j:log4j:1.2.17'
+        patch 'commons-logging:commons-logging:1.2'
+        patch 'commons-codec:commons-codec:1.11'
+        patch 'javax.annotation:javax.annotation-api:1.3.2'
+        patch "org.apache.httpcomponents:httpclient-osgi:$httpClientOsgiVersion"
+        patch 'com.google.code.findbugs:jsr305:3.0.2'
+        patch 'org.apache.servicemix.bundles:org.apache.servicemix.bundles.xerces:2.11.0_1'
+        patch 'org.apache.httpcomponents:httpcore:4.4.6'
+        patch 'org.apache.jena:jena-shaded-guava:3.6.0'
+        patch 'org.apache.jena:jena-core:3.6.0'
+        patch 'org.apache.jena:jena-arq:3.6.0'
+        patch 'org.apache.geronimo.specs:geronimo-jms_1.1_spec:1.1.1'
+        patch 'xml-apis:xml-apis:1.4.01'
+
+        compile project(':image')
+        compile group: 'commons-io', name: 'commons-io', version: '2.6'
+        compile group: 'cool.pandora', name: 'ldp-client', version: '0.1.0'
+        compile group: 'com.sun.activation', name: 'javax.activation', version: '1.2.0'
+        implementation group: 'org.apache.camel', name: 'camel-core', version: camelVersion
+        compile group: 'org.apache.commons', name: 'commons-rdf-jena', version: commonsRdfVersion
+        compile group: 'org.trellisldp', name: 'trellis-vocabulary', version: trellisVersion
+        compile "com.github.jai-imageio:jai-imageio-core:${jaiImageIoVersion}"
+        compile "javax.ws.rs:javax.ws.rs-api:${jaxrsVersion}"
+        compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jacksonVersion
+        compile group: 'org.slf4j', name: 'slf4j-api', version: slf4jVersion
+        testCompile group: 'xerces', name: 'xercesImpl', version: xerxesVersion
+        testCompile("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
+        testRuntime("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
+        testCompile("cool.pandora:ldp-client:0.1.0")
+        testImplementation group: 'org.apache.camel', name: 'camel-jetty9', version: camelVersion
+        testImplementation group: 'org.apache.camel', name: 'camel-http4', version: camelVersion
+        testCompile group: 'io.dropwizard', name: 'dropwizard-testing', version: dropwizardVersion
+        testCompile group: 'org.eclipse.jetty', name: 'jetty-alpn-java-server', version: jettyAlpnVersion
+        testCompile group: 'org.trellisldp', name: 'trellis-app', version: trellisAppVersion
+        testCompile group: 'org.apache.commons', name: 'commons-rdf-jena', version: commonsRdfVersion
+        testRuntimeClasspath group: 'ch.qos.logback', name: 'logback-classic', version: logbackVersion
     }
 }
-
-javadoc {
-    inputs.property("moduleName", moduleName)
-    doFirst {
-        options.addStringOption('-module-path', classpath.asPath)
-        options.addBooleanOption('html5', true)
-    }
-    destinationDir = new File(projectDir, "docs/${version}")
-    options {
-        links "https://docs.oracle.com/javase/8/docs/api/"
-        links 'https://docs.oracle.com/javaee/7/api/'
-        links 'https://trellis-ldp.github.io/trellis/apidocs/'
-        links 'https://commons.apache.org/proper/commons-rdf/apidocs/'
-    }
-}
-
-javaModule.name = 'org.ubl.scb'
-javaModule {
-    name = 'org.ubl.scb'
-    extraTestModules = ['org.trellisldp.app']
-    hacks {
-        patches('org.slf4j:log4j.over.slf4j', 'log4j:log4j')
-        patches('org.apache.httpcomponents:httpclient-osgi', 'commons-codec:commons-codec')
-        patches('javax.inject:javax.inject', 'org.apache.servicemix.bundles:org.apache.servicemix.bundles' +
-                '.javax-inject')
-        patches('javax.annotation:javax.annotation-api', 'org.apache.geronimo.specs:geronimo-annotation_1.2_spec')
-        patches('com.google.code.findbugs:jsr305', 'javax.annotation:jsr250-api')
-        patches('xerces:xercesImpl', 'org.apache.servicemix.bundles:org.apache.servicemix.bundles.xerces')
-        patches('org.apache.httpcomponents:httpcore', 'org.apache.httpcomponents:httpcore-osgi')
-        patches('org.apache.jena:jena-shaded-guava', 'org.apache.jena:jena-osgi')
-        patches('org.apache.jena:jena-core', 'org.apache.jena:jena-osgi')
-        patches('org.apache.jena:jena-arq', 'org.apache.jena:jena-osgi')
-        patches('org.apache.geronimo.specs:geronimo-jms_1.1_spec', 'javax.jms:javax.jms-api')
-        patches('org.hamcrest:hamcrest-library', 'org.hamcrest:hamcrest-core')
-        patches('org.apache.httpcomponents:httpclient-osgi', 'org.apache.httpcomponents:httpclient')
-        patches('xml-apis:xml-apis', 'xerces:xercesImpl')
-        patches('org.slf4j:jcl.over.slf4j','commons-logging:commons-logging')
-    }
-}
-
-dependencies {
-    patch "org.hamcrest:hamcrest-library:$hamcrestLibraryVersion"
-    patch 'log4j:log4j:1.2.17'
-    patch 'commons-logging:commons-logging:1.2'
-    patch 'commons-codec:commons-codec:1.11'
-    patch 'javax.annotation:javax.annotation-api:1.3.2'
-    patch "org.apache.httpcomponents:httpclient-osgi:$httpClientOsgiVersion"
-    patch 'com.google.code.findbugs:jsr305:3.0.2'
-    patch 'org.apache.servicemix.bundles:org.apache.servicemix.bundles.xerces:2.11.0_1'
-    patch 'org.apache.httpcomponents:httpcore:4.4.6'
-    patch 'org.apache.jena:jena-shaded-guava:3.6.0'
-    patch 'org.apache.jena:jena-core:3.6.0'
-    patch 'org.apache.jena:jena-arq:3.6.0'
-    patch 'org.apache.geronimo.specs:geronimo-jms_1.1_spec:1.1.1'
-    patch 'xml-apis:xml-apis:1.4.01'
-
-    compile group: 'commons-io', name: 'commons-io', version: '2.6'
-    compile group: 'cool.pandora', name: 'ldp-client', version: '0.1.0'
-    compile group: 'com.sun.activation', name: 'javax.activation', version: '1.2.0'
-    compile group: 'org.apache.commons', name: 'commons-rdf-jena', version: commonsRdfVersion
-    compile group: 'org.trellisldp', name: 'trellis-vocabulary', version: trellisVersion
-    compile "com.github.jai-imageio:jai-imageio-core:${jaiImageIoVersion}"
-    compile "javax.ws.rs:javax.ws.rs-api:${jaxrsVersion}"
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jacksonVersion
-    compile group: 'org.slf4j', name: 'slf4j-api', version: slf4jVersion
-    testCompile group: 'xerces', name: 'xercesImpl', version: xerxesVersion
-    testCompile("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
-    testRuntime("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
-    testCompile("cool.pandora:ldp-client:0.1.0")
-    testCompile group: 'io.dropwizard', name: 'dropwizard-testing', version: dropwizardVersion
-    testCompile group: 'org.eclipse.jetty', name: 'jetty-alpn-java-server', version: jettyAlpnVersion
-    testCompile group: 'org.trellisldp', name: 'trellis-app', version: trellisAppVersion
-    testCompile group: 'org.apache.commons', name: 'commons-rdf-jena', version: commonsRdfVersion
-    testRuntimeClasspath group: 'ch.qos.logback', name: 'logback-classic', version: logbackVersion
-}
-
