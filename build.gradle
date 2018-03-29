@@ -248,7 +248,7 @@ project('web-anno') {
 
         compile project(':image')
         compile group: 'commons-io', name: 'commons-io', version: '2.6'
-        compile group: 'cool.pandora', name: 'ldp-client', version: '0.1.0'
+        compile group: 'cool.pandora', name: 'ldp-client', version: '0.2.0-SNAPSHOT'
         compile group: 'com.sun.activation', name: 'javax.activation', version: '1.2.0'
         implementation group: 'org.apache.camel', name: 'camel-core', version: camelVersion
         compile group: 'org.apache.commons', name: 'commons-rdf-jena', version: commonsRdfVersion
@@ -260,7 +260,7 @@ project('web-anno') {
         testCompile group: 'xerces', name: 'xercesImpl', version: xerxesVersion
         testCompile("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
         testRuntime("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
-        testCompile("cool.pandora:ldp-client:0.1.0")
+        testCompile("cool.pandora:ldp-client:0.2.0-SNAPSHOT")
         testImplementation group: 'org.apache.camel', name: 'camel-jetty9', version: camelVersion
         testImplementation group: 'org.apache.camel', name: 'camel-http4', version: camelVersion
         testCompile group: 'io.dropwizard', name: 'dropwizard-testing', version: dropwizardVersion

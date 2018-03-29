@@ -226,4 +226,21 @@ public class ImageMetadataGenerator {
         return buildDimensionManifest(imageManifest);
     }
 
+    /**
+     * buildDimensionManifest.
+     *
+     * @return List
+     */
+    public List<String> getFilenamesFromManifest() {
+        final List<String> filenameList = new ArrayList<String>();
+        final String imageManifest = buildImageMetadataManifest();
+        final ImageDimensionManifest dimManifest = buildDimensionManifest(imageManifest);
+        final List<ImageDimensions> dimList = dimManifest.getImageMetadata();
+        dimList.forEach(d -> {
+            filenameList.add(d.getFilename());
+        });
+        return filenameList;
+    }
+
+
 }

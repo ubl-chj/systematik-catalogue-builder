@@ -34,6 +34,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -42,6 +44,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 import javax.net.ssl.SSLContext;
 
 import org.apache.commons.rdf.api.IRI;
@@ -89,8 +92,8 @@ public class ResourceCreatorTest {
 
     @BeforeAll
     static void initAll() {
-        APP.before();
-        baseUrl = "https://localhost:8445/collection/";
+        //APP.before();
+        baseUrl = "https://localhost:8445/";
         try {
             final SimpleSSLContext sslct = new SimpleSSLContext();
             final SSLContext sslContext = sslct.get();
@@ -102,7 +105,8 @@ public class ResourceCreatorTest {
 
     @AfterAll
     static void tearDownAll() {
-        APP.after();
+
+        //APP.after();
     }
 
     private static InputStream getTestResource() {
@@ -119,7 +123,44 @@ public class ResourceCreatorTest {
     }
 
     @Test
-    void testPutImageResource() throws Exception {
+    void createDefaultContainers(){
+        final IRI identifier = rdf.createIRI(baseUrl);
+        final IRI collectionBase = rdf.createIRI(baseUrl + "collection");
+        final IRI collectionId = rdf.createIRI(baseUrl + "collection/vp");
+        try {
+            h2client.newLdpDc(identifier, "collection", identifier);
+            h2client.newLdpDc(collectionBase, "vp", collectionBase);
+            h2client.newLdpDc(collectionId, "res", collectionId);
+            h2client.newLdpDc(collectionId, "target", collectionId);
+            h2client.newLdpDc(collectionId, "body", collectionId);
+            h2client.newLdpDc(collectionId, "anno", collectionId);
+        } catch (LdpClientException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    void testPutImageResourceBatchFromSubList() throws Exception {
+        final Integer STARTINDEX = 110;
+        final Integer TOINDEX = 120;
+        final ImageMetadataGeneratorConfig imageMetadataGeneratorConfig = new ImageMetadataGeneratorConfig();
+        imageMetadataGeneratorConfig.setImageSourceDir(imageSourceDir);
+        final VorlesungImpl vi = new VorlesungImpl(imageMetadataGeneratorConfig);
+        final List<File> files = vi.getFiles();
+        files.sort(Comparator.naturalOrder());
+        List<File> sublist = files.subList(STARTINDEX, TOINDEX);
+        final Map<URI, InputStream> batch = new HashMap<>();
+        for (File file : sublist) {
+            final IRI identifier = rdf.createIRI(baseUrl + "collection/vp/res/" + file.getName().toLowerCase());
+            final URI uri = new URI(identifier.getIRIString());
+            final InputStream is = new FileInputStream(file);
+            batch.put(uri, is);
+        }
+        h2client.joiningCompletableFuturePut(batch, "image/tiff");
+    }
+
+    @Test
+    void testPutImageResourcewithAsync() throws Exception {
         final ImageMetadataGeneratorConfig imageMetadataGeneratorConfig = new ImageMetadataGeneratorConfig();
         imageMetadataGeneratorConfig.setImageSourceDir(imageSourceDir);
         final VorlesungImpl vi = new VorlesungImpl(imageMetadataGeneratorConfig);
@@ -134,7 +175,7 @@ public class ResourceCreatorTest {
     @Test
     void deleteContainer() {
         try {
-            final IRI identifier = rdf.createIRI("https://localhost:8445/collection/vp/target");
+            final IRI identifier = rdf.createIRI("http://localhost:8080/collection/vp/res3/00000037.tif");
             h2client.delete(identifier);
         } catch (LdpClientException e) {
             e.printStackTrace();
