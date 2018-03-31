@@ -14,11 +14,6 @@
 
 package org.ubl.scb.vocabulary;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.stream.Collectors;
-
 import org.apache.commons.rdf.api.IRI;
 
 /**
@@ -28,18 +23,12 @@ import org.apache.commons.rdf.api.IRI;
  */
 public class SC extends BaseVocabulary {
 
-    private static String getContext() {
-        final InputStream is = ANNO.class.getResourceAsStream("/contexts/sc.json");
-        final BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-        return reader.lines().collect(Collectors.joining("\n"));
-    }
-
     /* Namespace */
     public static final String URI = "http://iiif.io/api/presentation/2#";
     public static final String NAMESPACE = "sc:";
 
     /* Context */
-    public static final String CONTEXT = getContext();
+    public static final String CONTEXT = "http://iiif.io/api/presentation/2/context.json";
 
     public static final IRI base = createIRI(URI);
 

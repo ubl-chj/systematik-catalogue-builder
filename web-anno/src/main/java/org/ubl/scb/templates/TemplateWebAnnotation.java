@@ -43,7 +43,7 @@ public class TemplateWebAnnotation {
     private String motivation = _painting;
 
     @JsonProperty
-    private Object body;
+    private TemplateBody body;
 
     @JsonProperty
     private String target;
@@ -83,6 +83,16 @@ public class TemplateWebAnnotation {
      */
     public void setBody(final TemplateBody body) {
         this.body = body;
+    }
+
+    /**
+     * getBody.
+     *
+     * @return TemplateBody
+     */
+    @JsonIgnore
+    public TemplateBody getBody() {
+        return this.body;
     }
 
     /**

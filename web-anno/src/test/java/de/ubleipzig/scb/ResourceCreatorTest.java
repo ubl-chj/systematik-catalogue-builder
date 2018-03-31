@@ -17,9 +17,8 @@ package de.ubleipzig.scb;
 import static io.dropwizard.testing.ConfigOverride.config;
 import static io.dropwizard.testing.ResourceHelpers.resourceFilePath;
 import static javax.ws.rs.core.HttpHeaders.LINK;
-import static org.apache.jena.riot.WebContent.contentTypeJSONLD;
 import static org.apache.jena.riot.WebContent.contentTypeNTriples;
-import static org.ubl.scb.JSONSerializer.serialize;
+import static org.ubl.scb.JSONSerializer.serializeToBytes;
 
 import cool.pandora.ldpclient.ACLStatement;
 import cool.pandora.ldpclient.LdpClient;
@@ -41,10 +40,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
 import javax.net.ssl.SSLContext;
 
 import org.apache.commons.rdf.api.IRI;
@@ -60,6 +57,7 @@ import org.trellisldp.vocabulary.ACL;
 import org.trellisldp.vocabulary.LDP;
 import org.ubl.image.metadata.ImageMetadataGeneratorConfig;
 import org.ubl.scb.AnnotationBuilder;
+import org.ubl.scb.JsonLdUtils;
 import org.ubl.scb.ScbConfig;
 import org.ubl.scb.TargetBuilder;
 import org.ubl.scb.VorlesungImpl;
@@ -72,7 +70,7 @@ import org.ubl.scb.templates.TemplateWebAnnotation;
  *
  * @author christopher-johnson
  */
-public class ResourceCreatorTest {
+public class ResourceCreatorTest extends CommonTests {
 
     private static final DropwizardTestSupport<TrellisConfiguration> APP = new DropwizardTestSupport<>(
             TrellisApplication.class, resourceFilePath("trellis-config.yml"),
@@ -85,14 +83,11 @@ public class ResourceCreatorTest {
     private static String baseUrl;
     private static String pid;
     private static LdpClient h2client = null;
-    private String imageSourceDir = "/media/christopher/OVAUBIMG/UBiMG/images/ubleipzig_sk2";
-    private String metadataFile = "/sk2-titles-semester.tsv";
-    private String imageServiceBase = "http://localhost:5000/iiif/";
-    private String dimensionManifestFile = "/dimension-manifest-test-8efc742f-709e-47ea-a346-e7bdc3266b49";
+    private JsonLdUtils jsonLdUtils = new JsonLdUtils();
 
     @BeforeAll
     static void initAll() {
-        //APP.before();
+        APP.before();
         baseUrl = "https://localhost:8445/";
         try {
             final SimpleSSLContext sslct = new SimpleSSLContext();
@@ -106,7 +101,7 @@ public class ResourceCreatorTest {
     @AfterAll
     static void tearDownAll() {
 
-        //APP.after();
+        APP.after();
     }
 
     private static InputStream getTestResource() {
@@ -123,7 +118,7 @@ public class ResourceCreatorTest {
     }
 
     @Test
-    void createDefaultContainers(){
+    void createDefaultContainers() {
         final IRI identifier = rdf.createIRI(baseUrl);
         final IRI collectionBase = rdf.createIRI(baseUrl + "collection");
         final IRI collectionId = rdf.createIRI(baseUrl + "collection/vp");
@@ -141,14 +136,14 @@ public class ResourceCreatorTest {
 
     @Test
     void testPutImageResourceBatchFromSubList() throws Exception {
-        final Integer STARTINDEX = 110;
-        final Integer TOINDEX = 120;
+        final Integer startIndex = 110;
+        final Integer toIndex = 120;
         final ImageMetadataGeneratorConfig imageMetadataGeneratorConfig = new ImageMetadataGeneratorConfig();
         imageMetadataGeneratorConfig.setImageSourceDir(imageSourceDir);
         final VorlesungImpl vi = new VorlesungImpl(imageMetadataGeneratorConfig);
         final List<File> files = vi.getFiles();
         files.sort(Comparator.naturalOrder());
-        List<File> sublist = files.subList(STARTINDEX, TOINDEX);
+        final List<File> sublist = files.subList(startIndex, toIndex);
         final Map<URI, InputStream> batch = new HashMap<>();
         for (File file : sublist) {
             final IRI identifier = rdf.createIRI(baseUrl + "collection/vp/res/" + file.getName().toLowerCase());
@@ -223,22 +218,27 @@ public class ResourceCreatorTest {
 
     @Test
     void putCanvases() {
+        final Integer startIndex = 110;
+        final Integer toIndex = 120;
         final ImageMetadataGeneratorConfig imageMetadataGeneratorConfig = new ImageMetadataGeneratorConfig();
         final ScbConfig scbConfig = new ScbConfig();
         scbConfig.setBaseUrl(baseUrl);
-        imageMetadataGeneratorConfig.setImageSourceDir(imageSourceDir);
-        scbConfig.setMetadataFile(metadataFile);
-        imageMetadataGeneratorConfig.setDimensionManifestFilePath(DeserializeDimensionManifestTest.class.getResource(
+        scbConfig.setTargetContext(targetContext);
+        imageMetadataGeneratorConfig.setDimensionManifestFilePath(AnnotationBuilderTest.class.getResource(
                 dimensionManifestFile).getPath());
-        final TargetBuilder cb = new TargetBuilder(imageMetadataGeneratorConfig, scbConfig);
-        final List<TemplateTarget> canvaslist = cb.buildCanvases();
-        for (TemplateTarget canvas : canvaslist) {
-            final IRI identifier = rdf.createIRI(canvas.getCanvasId());
-            final Optional<String> json = serialize(canvas);
-            final String output = json.orElse(null);
-            final InputStream is = new ByteArrayInputStream(Objects.requireNonNull(output).getBytes());
+        scbConfig.setMetadataFile(metadataFile);
+        final TargetBuilder tb = new TargetBuilder(imageMetadataGeneratorConfig, scbConfig);
+        final List<TemplateTarget> targetList = tb.buildCanvases();
+        targetList.sort(Comparator.comparing(TemplateTarget::getCanvasLabel));
+        final List<TemplateTarget> sublist = targetList.subList(startIndex, toIndex);
+        for (TemplateTarget target : sublist) {
+            final IRI identifier = rdf.createIRI(target.getCanvasId());
+            final InputStream is = new ByteArrayInputStream(Objects.requireNonNull(serializeToBytes(target).orElse(
+                    null)));
+            final String n3 = (String) jsonLdUtils.unmarshallToNQuads(is);
+            final InputStream n3Stream = new ByteArrayInputStream(Objects.requireNonNull(n3).getBytes());
             try {
-                h2client.put(identifier, is, contentTypeJSONLD);
+                h2client.put(identifier, n3Stream, contentTypeNTriples);
             } catch (LdpClientException e) {
                 e.printStackTrace();
             }
@@ -247,25 +247,31 @@ public class ResourceCreatorTest {
 
     @Test
     void putAnnotations() {
+        final Integer startIndex = 110;
+        final Integer toIndex = 120;
         final ImageMetadataGeneratorConfig imageMetadataGeneratorConfig = new ImageMetadataGeneratorConfig();
         final ScbConfig scbConfig = new ScbConfig();
         scbConfig.setBaseUrl(baseUrl);
-        imageMetadataGeneratorConfig.setImageSourceDir(imageSourceDir);
         scbConfig.setMetadataFile(metadataFile);
-        imageMetadataGeneratorConfig.setDimensionManifestFilePath(DeserializeDimensionManifestTest.class.getResource(
+        imageMetadataGeneratorConfig.setDimensionManifestFilePath(AnnotationBuilderTest.class.getResource(
                 dimensionManifestFile).getPath());
-        scbConfig.setImageServiceBaseUrl(imageServiceBase);
-        scbConfig.setAnnotationContext("vp/anno/");
-        scbConfig.setBodyContext("vp/anno/");
+        scbConfig.setAnnotationContext(annotationContext);
+        scbConfig.setTargetContext(targetContext);
+        scbConfig.setBodyContext(bodyContext);
+        scbConfig.setImageServiceBaseUrl(imageServiceBaseUrl);
+        scbConfig.setImageServiceType(imageServiceType);
         final AnnotationBuilder ab = new AnnotationBuilder(imageMetadataGeneratorConfig, scbConfig);
-        final List<TemplateWebAnnotation> annolist = ab.getAnnotationsWithDimensionedBodies();
-        for (TemplateWebAnnotation anno : annolist) {
-            final IRI identifier = rdf.createIRI(anno.getAnnoId());
-            final Optional<String> json = serialize(anno);
-            final String output = json.orElse(null);
-            final InputStream is = new ByteArrayInputStream(Objects.requireNonNull(output).getBytes());
+        final List<TemplateWebAnnotation> annoList = ab.getAnnotationsWithDimensionedBodies();
+        final List<TemplateWebAnnotation> sublist = annoList.subList(startIndex, toIndex);
+        for (TemplateWebAnnotation webAnno : sublist) {
+            final IRI identifier = rdf.createIRI(webAnno.getAnnoId());
+            System.out.println(webAnno.getBody().getResourceId());
+            final InputStream is = new ByteArrayInputStream(Objects.requireNonNull(serializeToBytes(webAnno).orElse(
+                    null)));
+            final String n3 = (String) jsonLdUtils.unmarshallToNQuads(is);
+            final InputStream n3Stream = new ByteArrayInputStream(Objects.requireNonNull(n3).getBytes());
             try {
-                h2client.put(identifier, is, contentTypeJSONLD);
+                h2client.put(identifier, n3Stream, contentTypeNTriples);
             } catch (LdpClientException e) {
                 e.printStackTrace();
             }

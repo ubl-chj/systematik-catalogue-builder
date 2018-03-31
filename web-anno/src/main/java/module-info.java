@@ -25,4 +25,5 @@ module org.ubl.scb {
     requires jdk.incubator.httpclient;
     //noinspection removal
     requires java.activation;
+    requires jsonld.java;
 }

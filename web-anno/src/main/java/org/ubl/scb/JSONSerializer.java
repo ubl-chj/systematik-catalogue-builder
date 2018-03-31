@@ -61,6 +61,20 @@ public final class JSONSerializer {
         }
     }
 
+    /**
+     * Serialize the Template.
+     *
+     * @param template a JSON template
+     * @return the Template as a JSON string
+     */
+    public static Optional<byte[]> serializeToBytes(final Object template) {
+        try {
+            return of(MAPPER.writer(PrettyPrinter.instance).writeValueAsBytes(template));
+        } catch (final JsonProcessingException ex) {
+            return empty();
+        }
+    }
+
     private static class PrettyPrinter extends DefaultPrettyPrinter {
 
         public static final PrettyPrinter instance = new PrettyPrinter();

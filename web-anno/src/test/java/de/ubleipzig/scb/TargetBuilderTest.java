@@ -15,6 +15,7 @@
 package de.ubleipzig.scb;
 
 import static org.junit.Assert.assertEquals;
+import static org.ubl.scb.JSONSerializer.serialize;
 
 import java.util.List;
 
@@ -29,21 +30,20 @@ import org.ubl.scb.templates.TemplateTarget;
  *
  * @author christopher-johnson
  */
-public class TargetBuilderTest {
-
-    private String baseUrl = "https://localhost:8445/collection/";
-    private String imageSourceDir = "/media/christopher/OVAUBIMG/UBiMG/images/ubleipzig_sk2";
-    private String metadataFile = "/sk2-titles-semester.tsv";
+public class TargetBuilderTest extends CommonTests {
 
     @Test
     void getTargets() {
         final ImageMetadataGeneratorConfig imageMetadataGeneratorConfig = new ImageMetadataGeneratorConfig();
         final ScbConfig scbConfig = new ScbConfig();
         scbConfig.setBaseUrl(baseUrl);
-        imageMetadataGeneratorConfig.setImageSourceDir(imageSourceDir);
+        scbConfig.setTargetContext(targetContext);
+        imageMetadataGeneratorConfig.setDimensionManifestFilePath(AnnotationBuilderTest.class.getResource(
+                dimensionManifestFile).getPath());
         scbConfig.setMetadataFile(metadataFile);
-        final TargetBuilder cb = new TargetBuilder(imageMetadataGeneratorConfig, scbConfig);
-        final List<TemplateTarget> targetList = cb.buildCanvases();
+        final TargetBuilder tb = new TargetBuilder(imageMetadataGeneratorConfig, scbConfig);
+        final List<TemplateTarget> targetList = tb.buildCanvases();
+        System.out.println(serialize(targetList.get(1)).orElse(""));
         assertEquals(52218, targetList.size());
     }
 }

@@ -14,7 +14,8 @@
 
 package de.ubleipzig.scb;
 
-import java.util.Iterator;
+import static org.ubl.scb.JSONSerializer.serialize;
+
 import java.util.List;
 
 import org.junit.Assert;
@@ -22,23 +23,13 @@ import org.junit.jupiter.api.Test;
 import org.ubl.image.metadata.ImageMetadataGeneratorConfig;
 import org.ubl.scb.BodyBuilder;
 import org.ubl.scb.ScbConfig;
-import org.ubl.scb.TargetBuilder;
 import org.ubl.scb.templates.TemplateBody;
-import org.ubl.scb.templates.TemplateTarget;
 
 /**
  * BodyBuilderTest.
  *
- * @author christopher-johnson
  */
-public class BodyBuilderTest {
-
-    private String baseUrl = "https://localhost:8445/collection/";
-    private String imageSourceDir = "/media/christopher/OVAUBIMG/UBiMG/images/ubleipzig_sk2";
-    private String metadataFile = "/sk2-titles-semester.tsv";
-    private String imageServiceBaseUrl = "http://localhost:5000/iiif/";
-    private String imageServiceType = "http://iiif.io/api/image/2/context.json";
-    private String dimensionManifestFile = "/dimension-manifest-test-8efc742f-709e-47ea-a346-e7bdc3266b49";
+public class BodyBuilderTest extends CommonTests {
 
     @Test
     void getBodiesWithDimensions() {
@@ -47,23 +38,14 @@ public class BodyBuilderTest {
         scbConfig.setBaseUrl(baseUrl);
         imageMetadataGeneratorConfig.setImageSourceDir(imageSourceDir);
         scbConfig.setMetadataFile(metadataFile);
-        scbConfig.setBodyContext("vp/res");
+        scbConfig.setBodyContext(bodyContext);
         scbConfig.setImageServiceBaseUrl(imageServiceBaseUrl);
         scbConfig.setImageServiceType(imageServiceType);
         imageMetadataGeneratorConfig.setDimensionManifestFilePath(BodyBuilder.class.getResource(
                 dimensionManifestFile).getPath());
         final BodyBuilder bb = new BodyBuilder(imageMetadataGeneratorConfig, scbConfig);
-        final TargetBuilder tb = new TargetBuilder(imageMetadataGeneratorConfig, scbConfig);
-        final List<TemplateTarget> targetList = tb.buildCanvases();
-        final List<TemplateBody> bodyList = bb.buildBodies();
-        final Iterator<TemplateBody> i1 = bodyList.iterator();
-        final Iterator<TemplateTarget> i2 = targetList.iterator();
-        while (i1.hasNext() && i2.hasNext()) {
-            final TemplateBody body = i1.next();
-            final TemplateTarget target = i2.next();
-            body.setResourceHeight(target.getCanvasHeight());
-            body.setResourceWidth(target.getCanvasWidth());
-        }
+        final List<TemplateBody> bodyList = bb.getBodiesWithDimensions();
+        System.out.println(serialize(bodyList.get(1)).orElse(""));
         Assert.assertEquals(52218, bodyList.size());
     }
 }

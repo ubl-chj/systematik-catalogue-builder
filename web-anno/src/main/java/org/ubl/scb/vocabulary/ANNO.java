@@ -14,11 +14,6 @@
 
 package org.ubl.scb.vocabulary;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.stream.Collectors;
-
 import org.apache.commons.rdf.api.IRI;
 
 /**
@@ -28,14 +23,8 @@ import org.apache.commons.rdf.api.IRI;
  */
 public final class ANNO extends BaseVocabulary {
 
-    private static String getContext() {
-        final InputStream is = ANNO.class.getResourceAsStream("/contexts/web-anno.json");
-        final BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-        return reader.lines().collect(Collectors.joining("\n"));
-    }
-
     /* CONTEXT */
-    public static final String CONTEXT = getContext();
+    public static final String CONTEXT = "https://www.w3.org/ns/anno.jsonld";
 
     /* NAMESPACES */
 

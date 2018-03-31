@@ -14,6 +14,7 @@
 
 package org.ubl.scb.templates;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
@@ -56,6 +57,16 @@ public class TemplateBody {
      */
     public void setResourceId(final String id) {
         this.id = id;
+    }
+
+    /**
+     * getResourceId.
+     *
+     * @return String
+     */
+    @JsonIgnore
+    public String getResourceId() {
+        return this.id;
     }
 
     /**

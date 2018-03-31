@@ -187,6 +187,9 @@ project('image') {
     apply plugin: 'com.zyxist.chainsaw'
     javaModule {
         name = 'org.ubl.image.metadata'
+        hacks {
+            patches('org.apache.httpcomponents:httpcore-nio', 'org.apache.httpcomponents:httpcore-osgi')
+        }
     }
 
     dependencies {
@@ -217,6 +220,7 @@ project('web-anno') {
             patches('com.google.code.findbugs:jsr305', 'javax.annotation:jsr250-api')
             patches('xerces:xercesImpl', 'org.apache.servicemix.bundles:org.apache.servicemix.bundles.xerces')
             patches('org.apache.httpcomponents:httpcore', 'org.apache.httpcomponents:httpcore-osgi')
+            patches('org.apache.httpcomponents:httpcore-nio', 'org.apache.httpcomponents:httpcore-osgi')
             patches('org.apache.jena:jena-shaded-guava', 'org.apache.jena:jena-osgi')
             patches('org.apache.jena:jena-core', 'org.apache.jena:jena-osgi')
             patches('org.apache.jena:jena-arq', 'org.apache.jena:jena-osgi')
@@ -240,6 +244,7 @@ project('web-anno') {
         patch 'com.google.code.findbugs:jsr305:3.0.2'
         patch 'org.apache.servicemix.bundles:org.apache.servicemix.bundles.xerces:2.11.0_1'
         patch 'org.apache.httpcomponents:httpcore:4.4.6'
+        patch 'org.apache.httpcomponents:httpcore-nio:4.4.6'
         patch 'org.apache.jena:jena-shaded-guava:3.6.0'
         patch 'org.apache.jena:jena-core:3.6.0'
         patch 'org.apache.jena:jena-arq:3.6.0'
@@ -250,7 +255,7 @@ project('web-anno') {
         compile group: 'commons-io', name: 'commons-io', version: '2.6'
         compile group: 'cool.pandora', name: 'ldp-client', version: '0.2.0-SNAPSHOT'
         compile group: 'com.sun.activation', name: 'javax.activation', version: '1.2.0'
-        implementation group: 'org.apache.camel', name: 'camel-core', version: camelVersion
+        compile group: 'com.github.jsonld-java', name: 'jsonld-java', version: '0.11.1'
         compile group: 'org.apache.commons', name: 'commons-rdf-jena', version: commonsRdfVersion
         compile group: 'org.trellisldp', name: 'trellis-vocabulary', version: trellisVersion
         compile "com.github.jai-imageio:jai-imageio-core:${jaiImageIoVersion}"
@@ -261,12 +266,9 @@ project('web-anno') {
         testCompile("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
         testRuntime("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
         testCompile("cool.pandora:ldp-client:0.2.0-SNAPSHOT")
-        testImplementation group: 'org.apache.camel', name: 'camel-jetty9', version: camelVersion
-        testImplementation group: 'org.apache.camel', name: 'camel-http4', version: camelVersion
         testCompile group: 'io.dropwizard', name: 'dropwizard-testing', version: dropwizardVersion
         testCompile group: 'org.eclipse.jetty', name: 'jetty-alpn-java-server', version: jettyAlpnVersion
         testCompile group: 'org.trellisldp', name: 'trellis-app', version: trellisAppVersion
-        testCompile group: 'org.apache.commons', name: 'commons-rdf-jena', version: commonsRdfVersion
         testRuntimeClasspath group: 'ch.qos.logback', name: 'logback-classic', version: logbackVersion
     }
 }

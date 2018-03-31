@@ -17,7 +17,6 @@ package org.ubl.scb;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.ubl.scb.UUIDType5.NAMESPACE_URL;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;

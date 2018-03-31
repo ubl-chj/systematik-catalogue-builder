@@ -89,11 +89,13 @@ public class AnnotationBuilder {
         final List<TemplateBody> bodyList = bb.getBodiesWithDimensions();
         final Iterator<TemplateWebAnnotation> i1 = annoList.iterator();
         final Iterator<TemplateBody> i2 = bodyList.iterator();
+        final List<TemplateWebAnnotation> webAnnoList = new ArrayList<>();
         while (i1.hasNext() && i2.hasNext()) {
             final TemplateWebAnnotation webAnno = i1.next();
             final TemplateBody body = i2.next();
             webAnno.setBody(body);
+            webAnnoList.add(webAnno);
         }
-        return annoList;
+        return webAnnoList;
     }
 }
