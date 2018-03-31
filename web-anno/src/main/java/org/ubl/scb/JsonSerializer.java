@@ -30,21 +30,21 @@ import java.util.Optional;
 import org.slf4j.Logger;
 
 /**
- * JSONSerializer.
+ * JsonSerializer.
  *
  * @author christopher-johnson
  */
-public final class JSONSerializer {
+public final class JsonSerializer {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
-    private static Logger logger = getLogger(JSONSerializer.class);
+    private static Logger logger = getLogger(JsonSerializer.class);
 
     static {
         MAPPER.configure(WRITE_DATES_AS_TIMESTAMPS, false);
         MAPPER.configure(INDENT_OUTPUT, true);
     }
 
-    private JSONSerializer() {
+    private JsonSerializer() {
     }
 
     /**

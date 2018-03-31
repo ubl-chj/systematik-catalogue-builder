@@ -14,7 +14,7 @@
 
 package de.ubleipzig.scb;
 
-import static org.ubl.scb.JSONSerializer.serialize;
+import static org.ubl.scb.JsonSerializer.serialize;
 
 import java.util.List;
 
@@ -38,7 +38,7 @@ public class BodyBuilderTest extends CommonTests {
         scbConfig.setBaseUrl(baseUrl);
         imageMetadataGeneratorConfig.setImageSourceDir(imageSourceDir);
         scbConfig.setMetadataFile(metadataFile);
-        scbConfig.setBodyContext(bodyContext);
+        scbConfig.setBodyContainer(bodyContainer);
         scbConfig.setImageServiceBaseUrl(imageServiceBaseUrl);
         scbConfig.setImageServiceType(imageServiceType);
         imageMetadataGeneratorConfig.setDimensionManifestFilePath(BodyBuilder.class.getResource(

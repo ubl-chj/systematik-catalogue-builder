@@ -61,7 +61,7 @@ public class BodyBuilder {
      * @return a {@link List} of {@link TemplateBody}
      */
     public List<TemplateBody> buildBodies() {
-        final String bodyContext = scbConfig.getBodyContext();
+        final String bodyContainer = scbConfig.getBodyContainer();
         final FileTypeMap mimes = FileTypeMap.getDefaultFileTypeMap();
         final VorlesungImpl vi = new VorlesungImpl(imageMetadataGeneratorConfig);
         final List<ImageDimensions> files = vi.getDimensions();
@@ -69,14 +69,14 @@ public class BodyBuilder {
         for (ImageDimensions file : files) {
             final String filename = file.getFilename().toLowerCase();
             final TemplateBody body = new TemplateBody();
-            final String identifier = scbConfig.getBaseUrl() + bodyContext + filename;
+            final String identifier = scbConfig.getBaseUrl() + bodyContainer + filename;
             body.setResourceId(identifier);
             body.setResourceType(DCTypes.Image.getIRIString());
             final String contentType = mimes.getContentType(filename);
             body.setResourceFormat(contentType);
             final TemplateService service = new TemplateService();
             final UUID imageUUID = UUIDType5.nameUUIDFromNamespaceAndString(
-                    NAMESPACE_URL, bodyContext + filename);
+                    NAMESPACE_URL, bodyContainer + filename);
             final String serviceId = scbConfig.getImageServiceBaseUrl() + imageUUID;
             final String serviceType = scbConfig.getImageServiceType();
             final String serviceProfile = IIIF.SERVICE_PROFILE;

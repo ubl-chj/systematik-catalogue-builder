@@ -81,7 +81,7 @@ public class TargetBuilder {
         }
 
         final List<String> contexts = new ArrayList<>();
-        final String targetContext = scbConfig.getTargetContext();
+        final String targetContainer = scbConfig.getTargetContainer();
         contexts.add(ANNO.CONTEXT);
         contexts.add(SC.CONTEXT);
         final List<String> files = vi.getFileNames();
@@ -90,7 +90,7 @@ public class TargetBuilder {
         while (i1.hasNext() && i2.hasNext()) {
             final String label = i1.next();
             final UUID canvasUUID = UUIDType5.nameUUIDFromNamespaceAndString(NAMESPACE_URL, label);
-            final String id = scbConfig.getBaseUrl() + targetContext + canvasUUID.toString();
+            final String id = scbConfig.getBaseUrl() + targetContainer + canvasUUID.toString();
             final TemplateTarget canvas = i2.next();
             canvas.setCanvasId(id);
             canvas.setContext(contexts);

@@ -15,7 +15,7 @@
 package de.ubleipzig.scb;
 
 import static org.junit.Assert.assertEquals;
-import static org.ubl.scb.JSONSerializer.serialize;
+import static org.ubl.scb.JsonSerializer.serialize;
 
 import java.util.List;
 
@@ -37,7 +37,7 @@ public class TargetBuilderTest extends CommonTests {
         final ImageMetadataGeneratorConfig imageMetadataGeneratorConfig = new ImageMetadataGeneratorConfig();
         final ScbConfig scbConfig = new ScbConfig();
         scbConfig.setBaseUrl(baseUrl);
-        scbConfig.setTargetContext(targetContext);
+        scbConfig.setTargetContainer(targetContainer);
         imageMetadataGeneratorConfig.setDimensionManifestFilePath(AnnotationBuilderTest.class.getResource(
                 dimensionManifestFile).getPath());
         scbConfig.setMetadataFile(metadataFile);

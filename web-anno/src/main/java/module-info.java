@@ -16,7 +16,6 @@ module org.ubl.scb {
     requires org.apache.commons.rdf.api;
     requires slf4j.api;
     requires java.desktop;
-    requires jai.imageio.core;
     requires com.fasterxml.jackson.databind;
     requires com.fasterxml.jackson.core;
     requires org.ubl.image.metadata;

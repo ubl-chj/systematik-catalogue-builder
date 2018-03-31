@@ -58,7 +58,7 @@ public class AnnotationBuilder {
      * @return a {@link List} of {@link TemplateWebAnnotation}
      */
     public List<TemplateWebAnnotation> buildAnnotations() {
-        final String annoContext = scbConfig.getAnnotationContext();
+        final String annoContext = scbConfig.getAnnotationContainer();
         final List<String> contexts = new ArrayList<>();
         contexts.add(ANNO.CONTEXT);
         contexts.add(SC.CONTEXT);

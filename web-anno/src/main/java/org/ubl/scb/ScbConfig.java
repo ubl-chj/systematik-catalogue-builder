@@ -5,9 +5,9 @@ public class ScbConfig {
     private String baseUrl;
     private String imageServiceBaseUrl;
     private String imageServiceType;
-    private String annotationContext;
-    private String bodyContext;
-    private String targetContext;
+    private String annotationContainer;
+    private String bodyContainer;
+    private String targetContainer;
 
     /**
      * getMetadataFile.
@@ -64,61 +64,61 @@ public class ScbConfig {
     }
 
     /**
-     * getAnnotationContext.
+     * getAnnotationContainer.
      *
      * @return {@link String}
      */
-    public String getAnnotationContext() {
-        return this.annotationContext;
+    public String getAnnotationContainer() {
+        return this.annotationContainer;
     }
 
     /**
-     * setAnnotationContext.
+     * setAnnotationContainer.
      *
-     * @param annotationContext annotationContext
+     * @param annotationContainer annotationContainer
      */
-    public final void setAnnotationContext(final String annotationContext) {
-        this.annotationContext = annotationContext;
+    public final void setAnnotationContainer(final String annotationContainer) {
+        this.annotationContainer = annotationContainer;
     }
 
     /**
-     * getBodyContext.
-     *
-     * @return {@link String}
-     */
-    public String getBodyContext() {
-        return this.bodyContext;
-    }
-
-    /**
-     * setBodyContext.
-     *
-     * @param bodyContext annotationContext
-     */
-    public final void setBodyContext(final String bodyContext) {
-        this.bodyContext = bodyContext;
-    }
-
-    /**
-     * getTargetContext.
+     * getBodyContainer.
      *
      * @return {@link String}
      */
-    public String getTargetContext() {
-        return this.targetContext;
+    public String getBodyContainer() {
+        return this.bodyContainer;
+    }
+
+    /**
+     * setBodyContainer.
+     *
+     * @param bodyContainer annotationContainer
+     */
+    public final void setBodyContainer(final String bodyContainer) {
+        this.bodyContainer = bodyContainer;
+    }
+
+    /**
+     * getTargetContainer.
+     *
+     * @return {@link String}
+     */
+    public String getTargetContainer() {
+        return this.targetContainer;
     }
 
     /**
      * setTargeContext.
      *
-     * @param targetContext targetContext
+     * @param targetContainer targetContainer
      */
-    public final void setTargetContext(final String targetContext) {
-        this.targetContext = targetContext;
+    public final void setTargetContainer(final String targetContainer) {
+        this.targetContainer = targetContainer;
     }
 
     /**
-     * getTargetContext.
+     * getTargetContainer.
      *
      * @return {@link String}
      */

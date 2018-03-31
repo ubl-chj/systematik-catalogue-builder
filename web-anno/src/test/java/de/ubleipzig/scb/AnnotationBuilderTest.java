@@ -14,7 +14,7 @@
 
 package de.ubleipzig.scb;
 
-import static org.ubl.scb.JSONSerializer.serialize;
+import static org.ubl.scb.JsonSerializer.serialize;
 
 import java.util.List;
 
@@ -40,9 +40,9 @@ public class AnnotationBuilderTest extends CommonTests {
         scbConfig.setMetadataFile(metadataFile);
         imageMetadataGeneratorConfig.setDimensionManifestFilePath(AnnotationBuilderTest.class.getResource(
                 dimensionManifestFile).getPath());
-        scbConfig.setAnnotationContext(annotationContext);
-        scbConfig.setTargetContext(targetContext);
-        scbConfig.setBodyContext(bodyContext);
+        scbConfig.setAnnotationContainer(annotationContainer);
+        scbConfig.setTargetContainer(targetContainer);
+        scbConfig.setBodyContainer(bodyContainer);
         scbConfig.setImageServiceBaseUrl(imageServiceBaseUrl);
         scbConfig.setImageServiceType(imageServiceType);
         final AnnotationBuilder ab = new AnnotationBuilder(imageMetadataGeneratorConfig, scbConfig);

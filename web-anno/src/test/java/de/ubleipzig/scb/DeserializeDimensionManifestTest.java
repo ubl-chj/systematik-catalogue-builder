@@ -1,7 +1,7 @@
 package de.ubleipzig.scb;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.ubl.scb.JSONSerializer.serialize;
+import static org.ubl.scb.JsonSerializer.serialize;
 
 import java.util.List;
 
