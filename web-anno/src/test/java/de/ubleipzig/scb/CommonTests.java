@@ -2,10 +2,10 @@ package de.ubleipzig.scb;
 
 class CommonTests {
 
-    String baseUrl = "https://localhost:8445/";
+    String baseUrl = "https://workspaces.ub.uni-leipzig.de:8445/";
     String imageSourceDir = "/media/christopher/OVAUBIMG/UBiMG/images/ubleipzig_sk2";
     String metadataFile = "/sk2-titles-semester.tsv";
-    String imageServiceBaseUrl = "http://localhost:5000/iiif/";
+    String imageServiceBaseUrl = "http://workspaces.ub.uni-leipzig.de:8182/iiif/2/";
     String imageServiceType = "http://iiif.io/api/image/2/context.json";
     String annotationContainer = "collection/vp/anno/";
     String targetContainer = "collection/vp/target/";

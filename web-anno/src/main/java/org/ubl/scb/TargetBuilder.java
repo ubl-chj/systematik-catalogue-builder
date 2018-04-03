@@ -14,6 +14,7 @@
 
 package org.ubl.scb;
 
+import static org.apache.commons.io.FilenameUtils.removeExtension;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.ubl.scb.UUIDType5.NAMESPACE_URL;
 
@@ -94,7 +95,7 @@ public class TargetBuilder {
             final TemplateTarget canvas = i2.next();
             canvas.setCanvasId(id);
             canvas.setContext(contexts);
-            canvas.setCanvasLabel(label);
+            canvas.setCanvasLabel(removeExtension(label));
             log.debug("Creating Canvas for {}", label);
         }
 

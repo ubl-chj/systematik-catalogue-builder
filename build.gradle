@@ -197,6 +197,13 @@ subprojects {
 
 }
 
+configurations {
+    all {
+        exclude group: 'com.google.code.findbugs', module: 'jsr305'
+        exclude group: 'javax.annotation' , module: 'jsr250-api'
+    }
+}
+
 project('image') {
     apply plugin: 'com.zyxist.chainsaw'
     javaModule {
@@ -267,10 +274,14 @@ project('web-anno') {
         compile group: 'com.sun.activation', name: 'javax.activation', version: javaxActivationVersion
         compile group: 'com.github.jsonld-java', name: 'jsonld-java', version: jsonLdVersion
         compile group: 'org.apache.commons', name: 'commons-rdf-api', version: commonsRdfVersion
+        compile group: 'org.apache.commons', name: 'commons-rdf-jena', version: commonsRdfVersion
         compile group: 'org.trellisldp', name: 'trellis-vocabulary', version: trellisVersion
         compile "javax.ws.rs:javax.ws.rs-api:${jaxrsVersion}"
         compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jacksonVersion
         compile group: 'org.slf4j', name: 'slf4j-api', version: slf4jVersion
+        compile group: 'xerces', name: 'xercesImpl', version: xerxesVersion
+        runtimeClasspath group: 'ch.qos.logback', name: 'logback-classic', version: logbackVersion
+
         testCompile group: 'xerces', name: 'xercesImpl', version: xerxesVersion
         testCompile("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
         testRuntime("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")

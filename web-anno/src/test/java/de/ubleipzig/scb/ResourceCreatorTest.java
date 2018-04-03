@@ -84,10 +84,14 @@ public class ResourceCreatorTest extends CommonTests {
     private static String pid;
     private static LdpClient h2client = null;
     private JsonLdUtils jsonLdUtils = new JsonLdUtils();
+    private static Integer startIndex;
+    private static Integer toIndex;
 
     @BeforeAll
     static void initAll() {
-        APP.before();
+        //APP.before();
+        startIndex = 210;
+        toIndex = 220;
         baseUrl = "https://localhost:8445/";
         try {
             final SimpleSSLContext sslct = new SimpleSSLContext();
@@ -101,7 +105,7 @@ public class ResourceCreatorTest extends CommonTests {
     @AfterAll
     static void tearDownAll() {
 
-        APP.after();
+        //APP.after();
     }
 
     private static InputStream getTestResource() {
@@ -129,15 +133,28 @@ public class ResourceCreatorTest extends CommonTests {
             h2client.newLdpDc(collectionId, "target", collectionId);
             h2client.newLdpDc(collectionId, "body", collectionId);
             h2client.newLdpDc(collectionId, "anno", collectionId);
+            h2client.newLdpDc(collectionId, "meta", collectionId);
         } catch (LdpClientException e) {
             e.printStackTrace();
         }
     }
 
     @Test
+    void putDimensionManifestResource() throws Exception {
+        final IRI identifier = rdf.createIRI(baseUrl + "collection/vp/meta" + dimensionManifestFile);
+        final InputStream is = ResourceCreatorTest.class.getResourceAsStream(dimensionManifestFile);
+        h2client.put(identifier, is, "application/json");
+    }
+
+    @Test
+    void putMetadataResource() throws Exception {
+        final IRI identifier = rdf.createIRI(baseUrl + "collection/vp/meta" + metadataFile);
+        final InputStream is = ResourceCreatorTest.class.getResourceAsStream(metadataFile);
+        h2client.put(identifier, is, "text/tab-separated-values");
+    }
+
+    @Test
     void testPutImageResourceBatchFromSubList() throws Exception {
-        final Integer startIndex = 110;
-        final Integer toIndex = 120;
         final ImageMetadataGeneratorConfig imageMetadataGeneratorConfig = new ImageMetadataGeneratorConfig();
         imageMetadataGeneratorConfig.setImageSourceDir(imageSourceDir);
         final VorlesungImpl vi = new VorlesungImpl(imageMetadataGeneratorConfig);
@@ -161,7 +178,7 @@ public class ResourceCreatorTest extends CommonTests {
         final VorlesungImpl vi = new VorlesungImpl(imageMetadataGeneratorConfig);
         final List<File> files = vi.getFiles();
         for (File file : files) {
-            final IRI identifier = rdf.createIRI(baseUrl + "vp/resources/" + file.getName());
+            final IRI identifier = rdf.createIRI(baseUrl + "vp/res/" + file.getName());
             final InputStream is = new FileInputStream(file);
             h2client.put(identifier, is, "image/tiff");
         }
@@ -170,7 +187,7 @@ public class ResourceCreatorTest extends CommonTests {
     @Test
     void deleteContainer() {
         try {
-            final IRI identifier = rdf.createIRI("http://localhost:8080/collection/vp/res3/00000037.tif");
+            final IRI identifier = rdf.createIRI("https://workspaces.ub.uni-leipzig.de:8445/vp/meta/sk2-titles-semester.tsv");
             h2client.delete(identifier);
         } catch (LdpClientException e) {
             e.printStackTrace();
@@ -218,8 +235,6 @@ public class ResourceCreatorTest extends CommonTests {
 
     @Test
     void putCanvases() throws Exception {
-        final Integer startIndex = 10;
-        final Integer toIndex = 120;
         final ImageMetadataGeneratorConfig imageMetadataGeneratorConfig = new ImageMetadataGeneratorConfig();
         final ScbConfig scbConfig = new ScbConfig();
         scbConfig.setBaseUrl(baseUrl);
@@ -240,14 +255,12 @@ public class ResourceCreatorTest extends CommonTests {
             final String n3 = (String) jsonLdUtils.unmarshallToNQuads(is);
             final InputStream n3Stream = new ByteArrayInputStream(Objects.requireNonNull(n3).getBytes());
             batch.put(uri, n3Stream);
-            h2client.joiningCompletableFuturePut(batch, contentTypeNTriples);
         }
+        h2client.joiningCompletableFuturePut(batch, contentTypeNTriples);
     }
 
     @Test
     void putAnnotations() throws Exception {
-        final Integer startIndex = 110;
-        final Integer toIndex = 120;
         final ImageMetadataGeneratorConfig imageMetadataGeneratorConfig = new ImageMetadataGeneratorConfig();
         final ScbConfig scbConfig = new ScbConfig();
         scbConfig.setBaseUrl(baseUrl);
@@ -272,8 +285,8 @@ public class ResourceCreatorTest extends CommonTests {
             final String n3 = (String) jsonLdUtils.unmarshallToNQuads(is);
             final InputStream n3Stream = new ByteArrayInputStream(Objects.requireNonNull(n3).getBytes());
             batch.put(uri, n3Stream);
-            h2client.joiningCompletableFuturePut(batch, contentTypeNTriples);
         }
+        h2client.joiningCompletableFuturePut(batch, contentTypeNTriples);
     }
 
 }

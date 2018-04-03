@@ -25,4 +25,6 @@ module org.ubl.scb {
     //noinspection removal
     requires java.activation;
     requires jsonld.java;
+    requires org.apache.commons.rdf.jena;
+    requires jena.osgi;
 }
