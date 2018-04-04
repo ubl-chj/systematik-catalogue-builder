@@ -4,7 +4,7 @@ class CommonTests {
 
     String baseUrl = "https://workspaces.ub.uni-leipzig.de:8445/";
     String imageSourceDir = "/media/christopher/OVAUBIMG/UBiMG/images/ubleipzig_sk2";
-    String metadataFile = "/sk2-titles-semester.tsv";
+    String metadataFile = "/org.ubl.scb/sk2-titles-semester.tsv";
     String imageServiceBaseUrl = "http://workspaces.ub.uni-leipzig.de:8182/iiif/2/";
     String imageServiceType = "http://iiif.io/api/image/2/context.json";
     String annotationContainer = "collection/vp/anno/";

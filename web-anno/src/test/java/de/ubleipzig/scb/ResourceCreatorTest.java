@@ -42,6 +42,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+
 import javax.net.ssl.SSLContext;
 
 import org.apache.commons.rdf.api.IRI;
@@ -63,7 +64,6 @@ import org.ubl.scb.TargetBuilder;
 import org.ubl.scb.VorlesungImpl;
 import org.ubl.scb.templates.TemplateTarget;
 import org.ubl.scb.templates.TemplateWebAnnotation;
-
 
 /**
  * ResourceCreatorTest.
@@ -90,9 +90,9 @@ public class ResourceCreatorTest extends CommonTests {
     @BeforeAll
     static void initAll() {
         //APP.before();
-        startIndex = 210;
-        toIndex = 220;
-        baseUrl = "https://localhost:8445/";
+        startIndex = 225;
+        toIndex = 226;
+        baseUrl = "https://workspaces.ub.uni-leipzig.de:8445/";
         try {
             final SimpleSSLContext sslct = new SimpleSSLContext();
             final SSLContext sslContext = sslct.get();
@@ -114,7 +114,8 @@ public class ResourceCreatorTest extends CommonTests {
 
     @BeforeEach
     void init() {
-        pid = "ldp-test-" + UUID.randomUUID().toString();
+        pid = "ldp-test-" + UUID.randomUUID()
+                                .toString();
     }
 
     @AfterEach
@@ -163,7 +164,8 @@ public class ResourceCreatorTest extends CommonTests {
         final List<File> sublist = files.subList(startIndex, toIndex);
         final Map<URI, InputStream> batch = new HashMap<>();
         for (File file : sublist) {
-            final IRI identifier = rdf.createIRI(baseUrl + bodyContainer + file.getName().toLowerCase());
+            final IRI identifier = rdf.createIRI(baseUrl + bodyContainer + file.getName()
+                                                                               .toLowerCase());
             final URI uri = new URI(identifier.getIRIString());
             final InputStream is = new FileInputStream(file);
             batch.put(uri, is);
@@ -187,7 +189,8 @@ public class ResourceCreatorTest extends CommonTests {
     @Test
     void deleteContainer() {
         try {
-            final IRI identifier = rdf.createIRI("https://workspaces.ub.uni-leipzig.de:8445/vp/meta/sk2-titles-semester.tsv");
+            final IRI identifier = rdf.createIRI("https://workspaces.ub.uni-leipzig"
+                    + ".de:8445/collection/vp/anno/de6ccd15-5fd8-4205-93db-3b502acade6a");
             h2client.delete(identifier);
         } catch (LdpClientException e) {
             e.printStackTrace();
@@ -227,7 +230,9 @@ public class ResourceCreatorTest extends CommonTests {
         try {
             final IRI identifier = rdf.createIRI("http://localhost:8080/test6?ext=acl");
             final ACLStatement acl = new ACLStatement(modes, agent, accessTo);
-            h2client.put(identifier, new ByteArrayInputStream(acl.getACL().toByteArray()), contentTypeNTriples);
+            h2client.put(
+                    identifier, new ByteArrayInputStream(acl.getACL()
+                                                            .toByteArray()), contentTypeNTriples);
         } catch (LdpClientException e) {
             e.printStackTrace();
         }
@@ -239,9 +244,8 @@ public class ResourceCreatorTest extends CommonTests {
         final ScbConfig scbConfig = new ScbConfig();
         scbConfig.setBaseUrl(baseUrl);
         scbConfig.setTargetContainer(targetContainer);
-        imageMetadataGeneratorConfig.setDimensionManifestFilePath(AnnotationBuilderTest.class.getResource(
-                dimensionManifestFile).getPath());
-        scbConfig.setMetadataFile(metadataFile);
+        imageMetadataGeneratorConfig.setDimensionManifestFilePath(dimensionManifestFile);
+        scbConfig.setMetadata(metadataFile);
         final TargetBuilder tb = new TargetBuilder(imageMetadataGeneratorConfig, scbConfig);
         final List<TemplateTarget> targetList = tb.buildCanvases();
         targetList.sort(Comparator.comparing(TemplateTarget::getCanvasLabel));
@@ -250,10 +254,11 @@ public class ResourceCreatorTest extends CommonTests {
         for (TemplateTarget target : sublist) {
             final IRI identifier = rdf.createIRI(target.getCanvasId());
             final URI uri = new URI(identifier.getIRIString());
-            final InputStream is = new ByteArrayInputStream(Objects.requireNonNull(serializeToBytes(target).orElse(
-                    null)));
+            final InputStream is = new ByteArrayInputStream(
+                    Objects.requireNonNull(serializeToBytes(target).orElse(null)));
             final String n3 = (String) jsonLdUtils.unmarshallToNQuads(is);
-            final InputStream n3Stream = new ByteArrayInputStream(Objects.requireNonNull(n3).getBytes());
+            final InputStream n3Stream = new ByteArrayInputStream(Objects.requireNonNull(n3)
+                                                                         .getBytes());
             batch.put(uri, n3Stream);
         }
         h2client.joiningCompletableFuturePut(batch, contentTypeNTriples);
@@ -264,29 +269,43 @@ public class ResourceCreatorTest extends CommonTests {
         final ImageMetadataGeneratorConfig imageMetadataGeneratorConfig = new ImageMetadataGeneratorConfig();
         final ScbConfig scbConfig = new ScbConfig();
         scbConfig.setBaseUrl(baseUrl);
-        scbConfig.setMetadataFile(metadataFile);
-        imageMetadataGeneratorConfig.setDimensionManifestFilePath(AnnotationBuilderTest.class.getResource(
-                dimensionManifestFile).getPath());
+        scbConfig.setMetadata(metadataFile);
+        imageMetadataGeneratorConfig.setDimensionManifestFilePath(
+                AnnotationBuilderTest.class.getResource(dimensionManifestFile)
+                                           .getPath());
         scbConfig.setAnnotationContainer(annotationContainer);
         scbConfig.setTargetContainer(targetContainer);
         scbConfig.setBodyContainer(bodyContainer);
         scbConfig.setImageServiceBaseUrl(imageServiceBaseUrl);
         scbConfig.setImageServiceType(imageServiceType);
         final AnnotationBuilder ab = new AnnotationBuilder(imageMetadataGeneratorConfig, scbConfig);
-        final List<TemplateWebAnnotation> annoList = ab.getAnnotationsWithDimensionedBodies();
+        final List<TemplateTarget> targetList = getTargetList(scbConfig, imageMetadataGeneratorConfig);
+        final List<TemplateWebAnnotation> annoList = ab.getAnnotationsWithDimensionedBodies(targetList);
         final List<TemplateWebAnnotation> sublist = annoList.subList(startIndex, toIndex);
         final Map<URI, InputStream> batch = new HashMap<>();
         for (TemplateWebAnnotation webAnno : sublist) {
             final IRI identifier = rdf.createIRI(webAnno.getAnnoId());
             final URI uri = new URI(identifier.getIRIString());
-            System.out.println("Image Resource created: " + webAnno.getBody().getResourceId());
-            final InputStream is = new ByteArrayInputStream(Objects.requireNonNull(serializeToBytes(webAnno).orElse(
-                    null)));
+            System.out.println("Annotation " + webAnno.getAnnoId() + " for Image Resource " + webAnno.getBody()
+                                                                                                     .getResourceId()
+                    + " created");
+            final InputStream is = new ByteArrayInputStream(
+                    Objects.requireNonNull(serializeToBytes(webAnno).orElse(null)));
             final String n3 = (String) jsonLdUtils.unmarshallToNQuads(is);
-            final InputStream n3Stream = new ByteArrayInputStream(Objects.requireNonNull(n3).getBytes());
+            final InputStream n3Stream = new ByteArrayInputStream(Objects.requireNonNull(n3)
+                                                                         .getBytes());
             batch.put(uri, n3Stream);
         }
         h2client.joiningCompletableFuturePut(batch, contentTypeNTriples);
     }
 
+    private List<TemplateTarget> getTargetList(final ScbConfig scbConfig, final ImageMetadataGeneratorConfig
+            imageMetadataGeneratorConfig) {
+        scbConfig.setBaseUrl(baseUrl);
+        scbConfig.setTargetContainer(targetContainer);
+        imageMetadataGeneratorConfig.setDimensionManifestFilePath(dimensionManifestFile);
+        scbConfig.setMetadata(metadataFile);
+        final TargetBuilder tb = new TargetBuilder(imageMetadataGeneratorConfig, scbConfig);
+        return tb.buildCanvases();
+    }
 }

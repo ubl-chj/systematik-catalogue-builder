@@ -273,6 +273,8 @@ project('web-anno') {
         compile group: 'cool.pandora', name: 'ldp-client', version: ldpClientVersion
         compile group: 'com.sun.activation', name: 'javax.activation', version: javaxActivationVersion
         compile group: 'com.github.jsonld-java', name: 'jsonld-java', version: jsonLdVersion
+        compile group: 'org.apache.httpcomponents', name: 'httpclient', version: httpClientOsgiVersion
+        compile group: 'org.apache.httpcomponents', name: 'httpclient-cache', version: httpClientOsgiVersion
         compile group: 'org.apache.commons', name: 'commons-rdf-api', version: commonsRdfVersion
         compile group: 'org.apache.commons', name: 'commons-rdf-jena', version: commonsRdfVersion
         compile group: 'org.trellisldp', name: 'trellis-vocabulary', version: trellisVersion

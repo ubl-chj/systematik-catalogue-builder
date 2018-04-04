@@ -80,7 +80,9 @@ public class VorlesungImpl {
      * @return {@link IntStream}
      */
     public static <K, V> Map<K, V> zipToMap(final List<K> keys, final List<V> values) {
-        return IntStream.range(0, keys.size()).boxed().collect(Collectors.toMap(keys::get, values::get));
+        return IntStream.range(0, keys.size())
+                        .boxed()
+                        .collect(Collectors.toMap(keys::get, values::get));
     }
 
     /**
@@ -93,13 +95,16 @@ public class VorlesungImpl {
         List<VPMetadata> inputList = new ArrayList<>();
         try {
             final BufferedReader br = new BufferedReader(new InputStreamReader(is));
-            inputList = br.lines().map(mapToItem).collect(Collectors.toList());
+            inputList = br.lines()
+                          .map(mapToItem)
+                          .collect(Collectors.toList());
             br.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
         return inputList;
     }
+
 
     /**
      * buildVPMap.
@@ -146,6 +151,21 @@ public class VorlesungImpl {
         return names;
     }
 
+    /**
+     * getFileNames.
+     *
+     * @return a list of {@link String}
+     */
+    public List<String> getFileNamesFromRemote() {
+        final List<String> names = new ArrayList<>();
+        final ImageMetadataGenerator generator = new ImageMetadataGenerator(imageMetadataGeneratorConfig);
+        final List<ImageDimensions> dimensionManifest = generator.buildDimensionManifestFromRemote();
+        dimensionManifest.forEach(p -> {
+            final String name = p.getFilename();
+            names.add(name);
+        });
+        return names;
+    }
 
     /**
      * getFiles.
@@ -154,8 +174,8 @@ public class VorlesungImpl {
      */
     public List<File> getFiles() {
         final List<File> files = new ArrayList<>();
-        try (Stream<Path> paths = Files.walk(Paths.get(imageMetadataGeneratorConfig.getImageSourceDir())).filter(
-                Files::isRegularFile)) {
+        try (Stream<Path> paths = Files.walk(Paths.get(imageMetadataGeneratorConfig.getImageSourceDir()))
+                                       .filter(Files::isRegularFile)) {
             paths.forEach(p -> {
                 final File file = new File(String.valueOf(p.toAbsolutePath()));
                 files.add(file);
@@ -174,6 +194,12 @@ public class VorlesungImpl {
      */
     public List<ImageDimensions> getDimensions() {
         final ImageMetadataGenerator generator = new ImageMetadataGenerator(imageMetadataGeneratorConfig);
-        return generator.buildDimensionManifestFromFile();
+        final List<ImageDimensions> dims;
+        if (imageMetadataGeneratorConfig.getDimensionManifest() != null) {
+            dims = generator.buildDimensionManifestFromRemote();
+        } else {
+            dims = generator.buildDimensionManifestFromFile();
+        }
+        return dims;
     }
 }

@@ -42,6 +42,7 @@ public class ImageMetadataGeneratorConfig {
     private String imageSourceDir;
     private String imageMetadataFilePath;
     private String dimensionManifestFilePath;
+    private String dimensionManifest;
 
     /**
      * getImageSourceDir.
@@ -78,6 +79,25 @@ public class ImageMetadataGeneratorConfig {
     public final void setDimensionManifestFilePath(final String dimensionManifestFilePath) {
         this.dimensionManifestFilePath = dimensionManifestFilePath;
     }
+
+    /**
+     * getDimensionManifest.
+     *
+     * @return {@link String}
+     */
+    public final String getDimensionManifest() {
+        return this.dimensionManifest;
+    }
+
+    /**
+     * setDimensionManifest.
+     *
+     * @param dimensionManifest dimensionManifest
+     */
+    public final void setDimensionManifest(final String dimensionManifest) {
+        this.dimensionManifest = dimensionManifest;
+    }
+
 
     /**
      * getImageMetadataFilePath.

@@ -92,11 +92,10 @@ public class BodyBuilder {
     /**
      * getBodiesWithDimensions.
      *
+     * @param targetList targetList
      * @return a {@link List} of {@link TemplateBody}
      */
-    public List<TemplateBody> getBodiesWithDimensions() {
-        final TargetBuilder tb = new TargetBuilder(imageMetadataGeneratorConfig, scbConfig);
-        final List<TemplateTarget> targetList = tb.buildCanvases();
+    public List<TemplateBody> getBodiesWithDimensions(final List<TemplateTarget> targetList) {
         final List<TemplateBody> bodyList = buildBodies();
         final Iterator<TemplateBody> i1 = bodyList.iterator();
         final Iterator<TemplateTarget> i2 = targetList.iterator();

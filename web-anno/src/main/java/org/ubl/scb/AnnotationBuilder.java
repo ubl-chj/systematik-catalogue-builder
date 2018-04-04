@@ -55,25 +55,24 @@ public class AnnotationBuilder {
     /**
      * buildAnnotations.
      *
+     * @param targetList targetList
      * @return a {@link List} of {@link TemplateWebAnnotation}
      */
-    public List<TemplateWebAnnotation> buildAnnotations() {
+    public List<TemplateWebAnnotation> buildAnnotations(final List<TemplateTarget> targetList) {
         final String annoContext = scbConfig.getAnnotationContainer();
         final List<String> contexts = new ArrayList<>();
         contexts.add(ANNO.CONTEXT);
         contexts.add(SC.CONTEXT);
-        final TargetBuilder cb = new TargetBuilder(imageMetadataGeneratorConfig, scbConfig);
-        final List<TemplateTarget> canvaslist = cb.buildCanvases();
         final List<TemplateWebAnnotation> annoList = new ArrayList<>();
-        for (TemplateTarget canvas : canvaslist) {
+        for (TemplateTarget target : targetList) {
             final String annoUUID = UUID.randomUUID().toString();
             final String identifier = scbConfig.getBaseUrl() + annoContext + annoUUID;
             final TemplateWebAnnotation ta = new TemplateWebAnnotation();
             ta.setId(identifier);
             ta.setContext(contexts);
-            ta.setTarget(canvas.getCanvasId());
+            ta.setTarget(target.getCanvasId());
             annoList.add(ta);
-            log.debug("Creating Annotation {}", identifier);
+            log.debug("Adding Annotation {} to list", identifier);
         }
         return annoList;
     }
@@ -81,12 +80,13 @@ public class AnnotationBuilder {
     /**
      * getAnnotationsWithDimensionedBodies.
      *
+     * @param targetList targetList
      * @return a {@link List} of {@link TemplateWebAnnotation}
      */
-    public List<TemplateWebAnnotation> getAnnotationsWithDimensionedBodies() {
+    public List<TemplateWebAnnotation> getAnnotationsWithDimensionedBodies(final List<TemplateTarget> targetList) {
         final BodyBuilder bb = new BodyBuilder(imageMetadataGeneratorConfig, scbConfig);
-        final List<TemplateWebAnnotation> annoList = buildAnnotations();
-        final List<TemplateBody> bodyList = bb.getBodiesWithDimensions();
+        final List<TemplateWebAnnotation> annoList = buildAnnotations(targetList);
+        final List<TemplateBody> bodyList = bb.getBodiesWithDimensions(targetList);
         final Iterator<TemplateWebAnnotation> i1 = annoList.iterator();
         final Iterator<TemplateBody> i2 = bodyList.iterator();
         final List<TemplateWebAnnotation> webAnnoList = new ArrayList<>();

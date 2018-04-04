@@ -1,7 +1,10 @@
 package org.ubl.scb;
 
+import java.io.InputStream;
+
 public class ScbConfig {
     private String metadataFile;
+    private InputStream metadataInputStream;
     private String baseUrl;
     private String imageServiceBaseUrl;
     private String imageServiceType;
@@ -19,11 +22,29 @@ public class ScbConfig {
     }
 
     /**
+     * getMetadataFile.
+     *
+     * @return {@link String}
+     */
+    public InputStream getMetadataInputStream() {
+        return this.metadataInputStream;
+    }
+
+    /**
+     * setMetadataFile.
+     *
+     * @param metadataInputStream metadataInputStream
+     */
+    public final void setMetadata(final InputStream metadataInputStream) {
+        this.metadataInputStream = metadataInputStream;
+    }
+
+    /**
      * setMetadataFile.
      *
      * @param metadataFile metadataFile
      */
-    public final void setMetadataFile(final String metadataFile) {
+    public final void setMetadata(final String metadataFile) {
         this.metadataFile = metadataFile;
     }
 

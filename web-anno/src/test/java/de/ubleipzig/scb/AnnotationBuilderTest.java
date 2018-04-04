@@ -23,6 +23,8 @@ import org.junit.jupiter.api.Test;
 import org.ubl.image.metadata.ImageMetadataGeneratorConfig;
 import org.ubl.scb.AnnotationBuilder;
 import org.ubl.scb.ScbConfig;
+import org.ubl.scb.TargetBuilder;
+import org.ubl.scb.templates.TemplateTarget;
 import org.ubl.scb.templates.TemplateWebAnnotation;
 
 /**
@@ -32,22 +34,35 @@ import org.ubl.scb.templates.TemplateWebAnnotation;
  */
 public class AnnotationBuilderTest extends CommonTests {
 
+
     @Test
     void getAnnotationsWithDimensionedBodies() {
         final ImageMetadataGeneratorConfig imageMetadataGeneratorConfig = new ImageMetadataGeneratorConfig();
         final ScbConfig scbConfig = new ScbConfig();
         scbConfig.setBaseUrl(baseUrl);
-        scbConfig.setMetadataFile(metadataFile);
-        imageMetadataGeneratorConfig.setDimensionManifestFilePath(AnnotationBuilderTest.class.getResource(
-                dimensionManifestFile).getPath());
+        scbConfig.setMetadata(metadataFile);
+        imageMetadataGeneratorConfig.setDimensionManifestFilePath(
+                AnnotationBuilderTest.class.getResource(dimensionManifestFile)
+                                           .getPath());
         scbConfig.setAnnotationContainer(annotationContainer);
         scbConfig.setTargetContainer(targetContainer);
         scbConfig.setBodyContainer(bodyContainer);
         scbConfig.setImageServiceBaseUrl(imageServiceBaseUrl);
         scbConfig.setImageServiceType(imageServiceType);
         final AnnotationBuilder ab = new AnnotationBuilder(imageMetadataGeneratorConfig, scbConfig);
-        final List<TemplateWebAnnotation> annoList = ab.getAnnotationsWithDimensionedBodies();
+        final List<TemplateTarget> targetList = getTargetList(scbConfig, imageMetadataGeneratorConfig);
+        final List<TemplateWebAnnotation> annoList = ab.getAnnotationsWithDimensionedBodies(targetList);
         System.out.println(serialize(annoList.get(1)).orElse(""));
         Assert.assertEquals(52218, annoList.size());
+    }
+
+    private List<TemplateTarget> getTargetList(final ScbConfig scbConfig, final ImageMetadataGeneratorConfig
+            imageMetadataGeneratorConfig) {
+        scbConfig.setBaseUrl(baseUrl);
+        scbConfig.setTargetContainer(targetContainer);
+        imageMetadataGeneratorConfig.setDimensionManifestFilePath(dimensionManifestFile);
+        scbConfig.setMetadata(metadataFile);
+        final TargetBuilder tb = new TargetBuilder(imageMetadataGeneratorConfig, scbConfig);
+        return tb.buildCanvases();
     }
 }

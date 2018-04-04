@@ -7,9 +7,12 @@
         </encoder>
     </appender>
 
-  <logger name="org.ubl.scb" additivity="false" level="DEBUG">
+  <logger name="org.apache.http" additivity="false" level="INFO">
     <appender-ref ref="STDOUT"/>
   </logger>
+    <logger name="org.ubl.scb" additivity="false" level="DEBUG">
+        <appender-ref ref="STDOUT"/>
+    </logger>
   <root additivity="false" level="INFO">
     <appender-ref ref="STDOUT"/>
   </root>

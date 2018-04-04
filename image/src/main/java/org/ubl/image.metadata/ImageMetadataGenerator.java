@@ -204,7 +204,26 @@ public class ImageMetadataGenerator {
     public List<ImageDimensions> buildDimensionManifestFromFile() {
         try {
             final byte[] body = Files.readAllBytes(
-                    Paths.get(imageMetadataGeneratorConfig.getDimensionManifestFilePath()));
+                    Paths.get(ImageMetadataGenerator.class.getResource(imageMetadataGeneratorConfig.getDimensionManifestFilePath()).getPath()));
+            final String manifestString = new String(body);
+            final ImageDimensionManifest dimManifest = MAPPER.readValue(
+                    manifestString, new TypeReference<ImageDimensionManifest>() {
+                    });
+            return dimManifest.getImageMetadata();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * buildDimensionManifestFromRemote.
+     *
+     * @return List
+     */
+    public List<ImageDimensions> buildDimensionManifestFromRemote() {
+        try {
+            final byte[] body = imageMetadataGeneratorConfig.getDimensionManifest().getBytes();
             final String manifestString = new String(body);
             final ImageDimensionManifest dimManifest = MAPPER.readValue(
                     manifestString, new TypeReference<ImageDimensionManifest>() {

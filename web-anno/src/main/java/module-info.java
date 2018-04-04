@@ -27,4 +27,6 @@ module org.ubl.scb {
     requires jsonld.java;
     requires org.apache.commons.rdf.jena;
     requires jena.osgi;
+    opens org.ubl.scb.templates to com.fasterxml.jackson.databind;
+    uses org.apache.commons.rdf.api.RDF;
 }

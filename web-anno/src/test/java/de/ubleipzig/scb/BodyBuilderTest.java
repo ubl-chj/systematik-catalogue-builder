@@ -23,11 +23,12 @@ import org.junit.jupiter.api.Test;
 import org.ubl.image.metadata.ImageMetadataGeneratorConfig;
 import org.ubl.scb.BodyBuilder;
 import org.ubl.scb.ScbConfig;
+import org.ubl.scb.TargetBuilder;
 import org.ubl.scb.templates.TemplateBody;
+import org.ubl.scb.templates.TemplateTarget;
 
 /**
  * BodyBuilderTest.
- *
  */
 public class BodyBuilderTest extends CommonTests {
 
@@ -37,15 +38,26 @@ public class BodyBuilderTest extends CommonTests {
         final ScbConfig scbConfig = new ScbConfig();
         scbConfig.setBaseUrl(baseUrl);
         imageMetadataGeneratorConfig.setImageSourceDir(imageSourceDir);
-        scbConfig.setMetadataFile(metadataFile);
+        scbConfig.setMetadata(metadataFile);
         scbConfig.setBodyContainer(bodyContainer);
         scbConfig.setImageServiceBaseUrl(imageServiceBaseUrl);
         scbConfig.setImageServiceType(imageServiceType);
-        imageMetadataGeneratorConfig.setDimensionManifestFilePath(BodyBuilder.class.getResource(
-                dimensionManifestFile).getPath());
+        imageMetadataGeneratorConfig.setDimensionManifestFilePath(BodyBuilder.class.getResource(dimensionManifestFile)
+                                                                                   .getPath());
         final BodyBuilder bb = new BodyBuilder(imageMetadataGeneratorConfig, scbConfig);
-        final List<TemplateBody> bodyList = bb.getBodiesWithDimensions();
+        final List<TemplateTarget> targetList = getTargetList(scbConfig, imageMetadataGeneratorConfig);
+        final List<TemplateBody> bodyList = bb.getBodiesWithDimensions(targetList);
         System.out.println(serialize(bodyList.get(1)).orElse(""));
         Assert.assertEquals(52218, bodyList.size());
+    }
+
+    private List<TemplateTarget> getTargetList(final ScbConfig scbConfig, final ImageMetadataGeneratorConfig
+            imageMetadataGeneratorConfig) {
+        scbConfig.setBaseUrl(baseUrl);
+        scbConfig.setTargetContainer(targetContainer);
+        imageMetadataGeneratorConfig.setDimensionManifestFilePath(dimensionManifestFile);
+        scbConfig.setMetadata(metadataFile);
+        final TargetBuilder tb = new TargetBuilder(imageMetadataGeneratorConfig, scbConfig);
+        return tb.buildCanvases();
     }
 }

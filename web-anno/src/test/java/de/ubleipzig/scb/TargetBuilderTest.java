@@ -38,12 +38,11 @@ public class TargetBuilderTest extends CommonTests {
         final ScbConfig scbConfig = new ScbConfig();
         scbConfig.setBaseUrl(baseUrl);
         scbConfig.setTargetContainer(targetContainer);
-        imageMetadataGeneratorConfig.setDimensionManifestFilePath(AnnotationBuilderTest.class.getResource(
-                dimensionManifestFile).getPath());
-        scbConfig.setMetadataFile(metadataFile);
+        imageMetadataGeneratorConfig.setDimensionManifestFilePath(dimensionManifestFile);
+        scbConfig.setMetadata(metadataFile);
         final TargetBuilder tb = new TargetBuilder(imageMetadataGeneratorConfig, scbConfig);
         final List<TemplateTarget> targetList = tb.buildCanvases();
-        System.out.println(serialize(targetList.get(1)).orElse(""));
+        System.out.println(serialize(targetList.get(49000)).orElse(""));
         assertEquals(52218, targetList.size());
     }
 }

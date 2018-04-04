@@ -7,4 +7,5 @@ module org.ubl.image.metadata {
     requires jackson.annotations;
     exports org.ubl.image.metadata;
     exports org.ubl.image.metadata.templates;
+    opens org.ubl.image.metadata.templates to com.fasterxml.jackson.databind;
 }
