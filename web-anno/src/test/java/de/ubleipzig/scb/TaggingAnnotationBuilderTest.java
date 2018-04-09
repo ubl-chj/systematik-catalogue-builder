@@ -14,31 +14,41 @@
 
 package de.ubleipzig.scb;
 
-import static org.junit.Assert.assertEquals;
 import static org.ubl.scb.JsonSerializer.serialize;
 
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.ubl.image.metadata.ImageMetadataGeneratorConfig;
 import org.ubl.scb.ScbConfig;
-import org.ubl.scb.TargetBuilder;
+import org.ubl.scb.TaggingAnnotationBuilder;
+import org.ubl.scb.templates.TemplateTaggingAnnotation;
 import org.ubl.scb.templates.TemplateTarget;
 
 /**
- * TargetBuilderTest.
+ * AnnotationBuilderTest.
  *
  * @author christopher-johnson
  */
-public class TargetBuilderTest extends CommonTests {
+public class TaggingAnnotationBuilderTest extends CommonTests {
+
 
     @Test
-    void getTargets() {
+    void testGetTaggingAnnotations() {
         final ImageMetadataGeneratorConfig imageMetadataGeneratorConfig = getImageMetadataGeneratorConfig();
         final ScbConfig scbConfig = getScbConfig();
-        final TargetBuilder tb = new TargetBuilder(imageMetadataGeneratorConfig, scbConfig);
-        final List<TemplateTarget> targetList = tb.buildCanvases();
-        System.out.println(serialize(targetList.get(49000)).orElse(""));
-        assertEquals(52218, targetList.size());
+        final TaggingAnnotationBuilder ab = new TaggingAnnotationBuilder(imageMetadataGeneratorConfig, scbConfig);
+        final List<TemplateTarget> targetList = getTargetList();
+        final List<TemplateTaggingAnnotation> annoList = ab.buildTaggingAnnotations(targetList);
+        System.out.println(serialize(annoList.get(100156)).orElse(""));
+        Assert.assertEquals(260512, annoList.size());
+    }
+
+    private List<TemplateTarget> getTargetList() {
+        final ImageMetadataGeneratorConfig imageMetadataGeneratorConfig = getImageMetadataGeneratorConfig();
+        final ScbConfig scbConfig = getScbConfig();
+        final TaggingAnnotationBuilder tb = new TaggingAnnotationBuilder(imageMetadataGeneratorConfig, scbConfig);
+        return tb.buildTaggingTargets();
     }
 }

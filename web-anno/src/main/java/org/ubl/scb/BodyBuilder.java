@@ -40,7 +40,7 @@ import org.ubl.scb.vocabulary.IIIF;
  */
 public class BodyBuilder {
 
-    private static Logger log = getLogger(TargetBuilder.class);
+    private static Logger log = getLogger(BodyBuilder.class);
     private final ImageMetadataGeneratorConfig imageMetadataGeneratorConfig;
     private final ScbConfig scbConfig;
 

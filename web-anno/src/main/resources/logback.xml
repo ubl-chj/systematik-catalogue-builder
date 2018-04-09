@@ -13,6 +13,9 @@
     <logger name="org.ubl.scb" additivity="false" level="DEBUG">
         <appender-ref ref="STDOUT"/>
     </logger>
+    <logger name="com.github.jsonldjava" additivity="false" level="DEBUG">
+        <appender-ref ref="STDOUT"/>
+    </logger>
   <root additivity="false" level="INFO">
     <appender-ref ref="STDOUT"/>
   </root>

@@ -71,21 +71,21 @@ public class TemplateTarget {
     }
 
     /**
-     * getCanvasId.
+     * getTargetId.
      *
      * @return id
      */
     @JsonIgnore
-    public String getCanvasId() {
+    public String getTargetId() {
         return this.id;
     }
 
     /**
-     * setCanvasId.
+     * setTargetId.
      *
      * @param id id
      */
-    public void setCanvasId(final String id) {
+    public void setTargetId(final String id) {
         this.id = id;
     }
 
@@ -109,22 +109,32 @@ public class TemplateTarget {
     }
 
     /**
-     * getCanvasGroup.
+     * getTargetGroup.
      *
      * @return group
      */
     @JsonIgnore
-    public int getCanvasGroup() {
+    public int getTargetGroup() {
         return this.group;
     }
 
     /**
-     * setCanvasGroup.
+     * setTargetGroup.
      *
      * @param group group
      */
-    public void setCanvasGroup(final int group) {
+    public void setTargetGroup(final int group) {
         this.group = group;
+    }
+
+    /**
+     * getMetadata.
+     *
+     * @return metadata
+     */
+    @JsonIgnore
+    public List<TemplateMetadata> getMetadata() {
+        return this.metadata;
     }
 
     /**

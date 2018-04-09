@@ -24,8 +24,8 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.ubl.image.metadata.ImageMetadataGeneratorConfig;
 import org.ubl.scb.templates.TemplateBody;
+import org.ubl.scb.templates.TemplatePaintingAnnotation;
 import org.ubl.scb.templates.TemplateTarget;
-import org.ubl.scb.templates.TemplateWebAnnotation;
 import org.ubl.scb.vocabulary.ANNO;
 import org.ubl.scb.vocabulary.SC;
 
@@ -36,7 +36,7 @@ import org.ubl.scb.vocabulary.SC;
  */
 public class AnnotationBuilder {
 
-    private static Logger log = getLogger(TargetBuilder.class);
+    private static Logger log = getLogger(AnnotationBuilder.class);
     private final ImageMetadataGeneratorConfig imageMetadataGeneratorConfig;
     private final ScbConfig scbConfig;
 
@@ -56,21 +56,21 @@ public class AnnotationBuilder {
      * buildAnnotations.
      *
      * @param targetList targetList
-     * @return a {@link List} of {@link TemplateWebAnnotation}
+     * @return a {@link List} of {@link TemplatePaintingAnnotation}
      */
-    public List<TemplateWebAnnotation> buildAnnotations(final List<TemplateTarget> targetList) {
+    public List<TemplatePaintingAnnotation> buildAnnotations(final List<TemplateTarget> targetList) {
         final String annoContext = scbConfig.getAnnotationContainer();
         final List<String> contexts = new ArrayList<>();
         contexts.add(ANNO.CONTEXT);
         contexts.add(SC.CONTEXT);
-        final List<TemplateWebAnnotation> annoList = new ArrayList<>();
+        final List<TemplatePaintingAnnotation> annoList = new ArrayList<>();
         for (TemplateTarget target : targetList) {
             final String annoUUID = UUID.randomUUID().toString();
             final String identifier = scbConfig.getBaseUrl() + annoContext + annoUUID;
-            final TemplateWebAnnotation ta = new TemplateWebAnnotation();
+            final TemplatePaintingAnnotation ta = new TemplatePaintingAnnotation();
             ta.setId(identifier);
             ta.setContext(contexts);
-            ta.setTarget(target.getCanvasId());
+            ta.setTarget(target.getTargetId());
             annoList.add(ta);
             log.debug("Adding Annotation {} to list", identifier);
         }
@@ -81,17 +81,17 @@ public class AnnotationBuilder {
      * getAnnotationsWithDimensionedBodies.
      *
      * @param targetList targetList
-     * @return a {@link List} of {@link TemplateWebAnnotation}
+     * @return a {@link List} of {@link TemplatePaintingAnnotation}
      */
-    public List<TemplateWebAnnotation> getAnnotationsWithDimensionedBodies(final List<TemplateTarget> targetList) {
+    public List<TemplatePaintingAnnotation> getAnnotationsWithDimensionedBodies(final List<TemplateTarget> targetList) {
         final BodyBuilder bb = new BodyBuilder(imageMetadataGeneratorConfig, scbConfig);
-        final List<TemplateWebAnnotation> annoList = buildAnnotations(targetList);
+        final List<TemplatePaintingAnnotation> annoList = buildAnnotations(targetList);
         final List<TemplateBody> bodyList = bb.getBodiesWithDimensions(targetList);
-        final Iterator<TemplateWebAnnotation> i1 = annoList.iterator();
+        final Iterator<TemplatePaintingAnnotation> i1 = annoList.iterator();
         final Iterator<TemplateBody> i2 = bodyList.iterator();
-        final List<TemplateWebAnnotation> webAnnoList = new ArrayList<>();
+        final List<TemplatePaintingAnnotation> webAnnoList = new ArrayList<>();
         while (i1.hasNext() && i2.hasNext()) {
-            final TemplateWebAnnotation webAnno = i1.next();
+            final TemplatePaintingAnnotation webAnno = i1.next();
             final TemplateBody body = i2.next();
             webAnno.setBody(body);
             webAnnoList.add(webAnno);

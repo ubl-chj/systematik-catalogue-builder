@@ -5,6 +5,7 @@ buildscript {
 
     dependencies {
         classpath 'com.bmuschko:gradle-nexus-plugin:2.3.1'
+        classpath 'org.junit.platform:junit-platform-gradle-plugin:1.1.0'
     }
 }
 
@@ -56,7 +57,7 @@ configure(allprojects) { project ->
         javaxActivationVersion = '1.2.0'
         jettyAlpnVersion = '9.4.8.v20171121'
         jsonLdVersion = '0.11.1'
-        junitVersion = '5.1.0'
+        junitVersion = '5.1.1'
         ldpClientVersion = '0.2.0-SNAPSHOT'
         logbackVersion = '1.2.3'
         slf4jVersion = "1.7.25"
@@ -64,7 +65,6 @@ configure(allprojects) { project ->
         jaxrsVersion = '2.1'
         trellisVersion = '0.5.2'
         trellisAppVersion = '0.7.0-SNAPSHOT'
-        projectOsgiVersion = project.version.replaceAll("-SNAPSHOT", ".SNAPSHOT")
         xerxesVersion = '2.11.0'
 
         /* Transitive patched modules */
@@ -89,6 +89,11 @@ configure(allprojects) { project ->
 }
 
 subprojects {
+
+    dependencies {
+        testCompile("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
+        testRuntime("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
+    }
 
     gradle.projectsEvaluated {
         tasks.withType(JavaCompile) {
@@ -232,11 +237,12 @@ project('web-anno') {
     javaModule.name = 'org.ubl.scb'
     javaModule {
         name = 'org.ubl.scb'
-        extraTestModules = ['org.trellisldp.app', 'org.apache.commons.rdf.jena']
+        extraTestModules = ['org.trellisldp.app','org.apache.commons.rdf.jena']
         hacks {
             patches('com.sun.xml.bind:jaxb-impl', 'com.sun.xml.bind:jaxb-core')
             patches('org.slf4j:log4j.over.slf4j', 'log4j:log4j')
             patches('com.google.code.findbugs:jsr305', 'javax.annotation:jsr250-api')
+            patches('org.apache.geronimo.specs:geronimo-annotation', 'javax.annotation:javax.annotation-api')
             patches('xerces:xercesImpl', 'org.apache.servicemix.bundles:org.apache.servicemix.bundles.xerces')
             patches('org.apache.httpcomponents:httpcore', 'org.apache.httpcomponents:httpcore-osgi')
             patches('org.apache.httpcomponents:httpcore-nio', 'org.apache.httpcomponents:httpcore-osgi')
@@ -259,6 +265,7 @@ project('web-anno') {
         patch "commons-logging:commons-logging:${commonsLoggingVersion}"
         patch "org.apache.httpcomponents:httpclient-osgi:$httpClientOsgiVersion"
         patch "com.google.code.findbugs:jsr305:${findbugsVersion}"
+        patch "org.apache.geronimo.specs:geronimo-annotation_1.2_spec:1.0-alpha-1"
         patch "org.apache.servicemix.bundles:org.apache.servicemix.bundles.xerces:${servicemixXercesVersion}"
         patch "org.apache.httpcomponents:httpcore:${httpCoreOsgiVersion}"
         patch "org.apache.httpcomponents:httpcore-nio:${httpCoreOsgiVersion}"
@@ -268,30 +275,30 @@ project('web-anno') {
         patch "org.apache.geronimo.specs:geronimo-jms_1.1_spec:${geronimoJmsSpecVersion}"
         patch "xml-apis:xml-apis:${xmlApisVersion}"
 
-        compile project(':image')
-        compile group: 'commons-io', name: 'commons-io', version: commonsIoVersion
-        compile group: 'cool.pandora', name: 'ldp-client', version: ldpClientVersion
-        compile group: 'com.sun.activation', name: 'javax.activation', version: javaxActivationVersion
-        compile group: 'com.github.jsonld-java', name: 'jsonld-java', version: jsonLdVersion
-        compile group: 'org.apache.httpcomponents', name: 'httpclient', version: httpClientOsgiVersion
-        compile group: 'org.apache.httpcomponents', name: 'httpclient-cache', version: httpClientOsgiVersion
-        compile group: 'org.apache.commons', name: 'commons-rdf-api', version: commonsRdfVersion
-        compile group: 'org.apache.commons', name: 'commons-rdf-jena', version: commonsRdfVersion
-        compile group: 'org.trellisldp', name: 'trellis-vocabulary', version: trellisVersion
-        compile "javax.ws.rs:javax.ws.rs-api:${jaxrsVersion}"
-        compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jacksonVersion
-        compile group: 'org.slf4j', name: 'slf4j-api', version: slf4jVersion
-        compile group: 'xerces', name: 'xercesImpl', version: xerxesVersion
+        implementation project(':image')
+        implementation group: 'commons-io', name: 'commons-io', version: commonsIoVersion
+        implementation group: 'cool.pandora', name: 'ldp-client', version: ldpClientVersion
+        implementation group: 'com.sun.activation', name: 'javax.activation', version: javaxActivationVersion
+        implementation group: 'com.github.jsonld-java', name: 'jsonld-java', version: jsonLdVersion
+        implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: httpClientOsgiVersion
+        implementation group: 'org.apache.httpcomponents', name: 'httpclient-cache', version: httpClientOsgiVersion
+        implementation group: 'org.apache.commons', name: 'commons-rdf-api', version: commonsRdfVersion
+        implementation group: 'org.apache.commons', name: 'commons-rdf-jena', version: commonsRdfVersion
+        implementation group: 'org.trellisldp', name: 'trellis-vocabulary', version: trellisVersion
+        implementation "javax.ws.rs:javax.ws.rs-api:${jaxrsVersion}"
+        implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jacksonVersion
+        implementation group: 'org.slf4j', name: 'slf4j-api', version: slf4jVersion
+        implementation group: 'xerces', name: 'xercesImpl', version: xerxesVersion
         runtimeClasspath group: 'ch.qos.logback', name: 'logback-classic', version: logbackVersion
 
-        testCompile group: 'xerces', name: 'xercesImpl', version: xerxesVersion
-        testCompile("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
+        testImplementation group: 'xerces', name: 'xercesImpl', version: xerxesVersion
+        testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
         testRuntime("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
-        testCompile("cool.pandora:ldp-client:${ldpClientVersion}")
-        testCompile group: 'io.dropwizard', name: 'dropwizard-testing', version: dropwizardVersion
-        testCompile group: 'org.eclipse.jetty', name: 'jetty-alpn-java-server', version: jettyAlpnVersion
-        testCompile group: 'org.trellisldp', name: 'trellis-app', version: trellisAppVersion
-        testCompile group: 'org.apache.commons', name: 'commons-rdf-jena', version: commonsRdfVersion
+        testImplementation("cool.pandora:ldp-client:${ldpClientVersion}")
+        testImplementation group: 'io.dropwizard', name: 'dropwizard-testing', version: dropwizardVersion
+        testImplementation group: 'org.eclipse.jetty', name: 'jetty-alpn-java-server', version: jettyAlpnVersion
+        testImplementation group: 'org.trellisldp', name: 'trellis-app', version: trellisAppVersion
+        testImplementation group: 'org.apache.commons', name: 'commons-rdf-jena', version: commonsRdfVersion
         testRuntimeClasspath group: 'ch.qos.logback', name: 'logback-classic', version: logbackVersion
     }
 }

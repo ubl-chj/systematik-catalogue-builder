@@ -10,6 +10,7 @@ public class ScbConfig {
     private String imageServiceType;
     private String annotationContainer;
     private String bodyContainer;
+    private String tagBodyContainer;
     private String targetContainer;
 
     /**
@@ -100,6 +101,7 @@ public class ScbConfig {
      */
     public final void setAnnotationContainer(final String annotationContainer) {
         this.annotationContainer = annotationContainer;
+
     }
 
     /**
@@ -114,10 +116,28 @@ public class ScbConfig {
     /**
      * setBodyContainer.
      *
-     * @param bodyContainer annotationContainer
+     * @param bodyContainer bodyContainer
      */
     public final void setBodyContainer(final String bodyContainer) {
         this.bodyContainer = bodyContainer;
+    }
+
+    /**
+     * getTagBodyContainer.
+     *
+     * @return {@link String}
+     */
+    public String getTagBodyContainer() {
+        return this.tagBodyContainer;
+    }
+
+    /**
+     * setTagBodyContainer.
+     *
+     * @param tagBodyContainer tagBodyContainer
+     */
+    public final void setTagBodyContainer(final String tagBodyContainer) {
+        this.tagBodyContainer = tagBodyContainer;
     }
 
     /**
