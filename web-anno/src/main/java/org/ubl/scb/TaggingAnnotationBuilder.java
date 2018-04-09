@@ -17,6 +17,8 @@ package org.ubl.scb;
 import static org.apache.commons.io.FilenameUtils.removeExtension;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.ubl.scb.UUIDType5.NAMESPACE_URL;
+import static org.ubl.scb.vocabulary.ANNO.TextualBody;
+import static org.ubl.scb.vocabulary.ANNO.tagging;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,20 +33,21 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.ubl.image.metadata.ImageMetadataGeneratorConfig;
-import org.ubl.image.metadata.templates.ImageDimensions;
 import org.ubl.scb.templates.TemplateMetadata;
+import org.ubl.scb.templates.TemplateTagBody;
+import org.ubl.scb.templates.TemplateTaggingAnnotation;
 import org.ubl.scb.templates.TemplateTarget;
 import org.ubl.scb.vocabulary.ANNO;
 import org.ubl.scb.vocabulary.SC;
 
 /**
- * TargetBuilder.
+ * TaggingAnnotationBuilder.
  *
  * @author christopher-johnson
  */
-public class TargetBuilder {
+public class TaggingAnnotationBuilder {
 
-    private static Logger log = getLogger(TargetBuilder.class);
+    private static Logger log = getLogger(TaggingAnnotationBuilder.class);
     private final ImageMetadataGeneratorConfig imageMetadataGeneratorConfig;
     private final ScbConfig scbConfig;
 
@@ -54,27 +57,28 @@ public class TargetBuilder {
      * @param imageMetadataGeneratorConfig imageMetadataGeneratorConfig
      * @param scbConfig scbConfig
      */
-    public TargetBuilder(final ImageMetadataGeneratorConfig imageMetadataGeneratorConfig, final ScbConfig scbConfig) {
+    public TaggingAnnotationBuilder(final ImageMetadataGeneratorConfig imageMetadataGeneratorConfig, final ScbConfig
+            scbConfig) {
         this.imageMetadataGeneratorConfig = imageMetadataGeneratorConfig;
         this.scbConfig = scbConfig;
     }
 
     /**
-     * buildCanvases.
+     * buildTaggingAnnotations.
      *
      * @return {@link List} of {@link TemplateTarget}
      */
-    public List<TemplateTarget> buildCanvases() {
+    public List<TemplateTarget> buildTaggingTargets() {
         final VorlesungImpl vi = new VorlesungImpl(imageMetadataGeneratorConfig);
         final List<VPMetadata> inputList;
         if (scbConfig.getMetadataInputStream() != null) {
             inputList = vi.processInputFile(scbConfig.getMetadataInputStream());
         } else {
             inputList = vi.processInputFile(
-                    TargetBuilder.class.getResourceAsStream(scbConfig.getMetadataFile()));
+                    TaggingAnnotationBuilder.class.getResourceAsStream(scbConfig.getMetadataFile()));
         }
         final AtomicInteger atomicInteger = new AtomicInteger(0);
-        final List<TemplateTarget> groupedCanvases = new ArrayList<>();
+        final List<TemplateTarget> groupedTargets = new ArrayList<>();
         final List<int[]> result = inputList.stream()
                                             .map(v -> new int[v.getGroupSize()])
                                             .collect(Collectors.toList());
@@ -83,9 +87,9 @@ public class TargetBuilder {
                                                            .iterator();
             atomicInteger.getAndIncrement();
             iterable.forEach(x -> {
-                final TemplateTarget canvas = new TemplateTarget();
-                canvas.setTargetGroup(atomicInteger.get());
-                groupedCanvases.add(canvas);
+                final TemplateTarget target = new TemplateTarget();
+                target.setTargetGroup(atomicInteger.get());
+                groupedTargets.add(target);
             });
         }
 
@@ -101,7 +105,7 @@ public class TargetBuilder {
         }
         final Iterator<String> i1 = Objects.requireNonNull(files)
                                            .iterator();
-        final Iterator<TemplateTarget> i2 = groupedCanvases.iterator();
+        final Iterator<TemplateTarget> i2 = groupedTargets.iterator();
         while (i1.hasNext() && i2.hasNext()) {
             final String label = i1.next();
             final UUID canvasUUID = UUIDType5.nameUUIDFromNamespaceAndString(NAMESPACE_URL, label);
@@ -110,11 +114,10 @@ public class TargetBuilder {
             canvas.setTargetId(id);
             canvas.setContext(contexts);
             canvas.setCanvasLabel(removeExtension(label));
-            log.debug("Creating Canvas for {}", label);
+            log.debug("Creating Target for {}", label);
         }
 
-        //TODO remove this
-        final Iterator<TemplateTarget> i6 = groupedCanvases.iterator();
+        final Iterator<TemplateTarget> i6 = groupedTargets.iterator();
         final Map<Integer, VPMetadata> vpmap = vi.buildVPMap(inputList);
         while (i6.hasNext()) {
             final TemplateTarget c = i6.next();
@@ -137,23 +140,50 @@ public class TargetBuilder {
                                                  .filter(s -> !s.isEmpty());
             vi.setMetadata(gt5, mlist);
             c.setMetadata(mlist);
-            c.setTargetGroup(groupId);
-            log.debug("Setting Metadata for {}", c.getCanvasLabel());
+            log.debug("Setting Metadata for {}", c.getTargetId());
         }
 
-        final List<ImageDimensions> dims = vi.getDimensions();
-        final Iterator<ImageDimensions> i3 = Objects.requireNonNull(dims)
-                                                    .iterator();
-        final Iterator<TemplateTarget> i4 = groupedCanvases.iterator();
-        while (i3.hasNext() && i4.hasNext()) {
-            final ImageDimensions dim = i3.next();
-            final TemplateTarget canvas = i4.next();
-            if (dim != null) {
-                canvas.setCanvasWidth(dim.getWidth());
-                canvas.setCanvasHeight(dim.getHeight());
-            }
-            log.debug("Setting Dimensions for {}", canvas.getCanvasLabel());
-        }
-        return groupedCanvases;
+        return groupedTargets;
+    }
+
+
+    /**
+     * buildTaggingAnnotations.
+     *
+     * @param targetList targetList
+     * @return a {@link List} of {@link TemplateTaggingAnnotation}
+     */
+    public List<TemplateTaggingAnnotation> buildTaggingAnnotations(final List<TemplateTarget> targetList) {
+        final String annoContext = scbConfig.getAnnotationContainer();
+        final String bodyContext = scbConfig.getTagBodyContainer();
+        final List<String> contexts = new ArrayList<>();
+        contexts.add(ANNO.CONTEXT);
+        contexts.add(SC.CONTEXT);
+        final List<TemplateTaggingAnnotation> annoList = new ArrayList<>();
+        targetList.forEach(t -> {
+            final List<TemplateMetadata> metadataList = t.getMetadata();
+            metadataList.forEach(m -> {
+                final String annoUUID = UUID.randomUUID()
+                                            .toString();
+                final String identifier = scbConfig.getBaseUrl() + annoContext + annoUUID;
+                final TemplateTaggingAnnotation ta = new TemplateTaggingAnnotation();
+                ta.setAnnoId(identifier);
+                ta.setContext(contexts);
+                final TemplateTagBody body = new TemplateTagBody();
+                final String tagUUID = UUID.randomUUID()
+                                           .toString();
+                final String tagIdentifier = scbConfig.getBaseUrl() + bodyContext + tagUUID;
+                body.setTagId(tagIdentifier);
+                body.setTagPurpose(tagging.getIRIString());
+                body.setTagType(TextualBody.getIRIString());
+                body.setTagValue(m.getMetadataValue());
+                ta.setTargetGroup(t.getTargetGroup());
+                ta.setBody(body);
+                ta.setTarget(t.getTargetId());
+                annoList.add(ta);
+                log.debug("Adding Annotation {} to list", identifier);
+            });
+        });
+        return annoList;
     }
 }

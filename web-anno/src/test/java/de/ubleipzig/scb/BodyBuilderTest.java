@@ -34,29 +34,20 @@ public class BodyBuilderTest extends CommonTests {
 
     @Test
     void getBodiesWithDimensions() {
-        final ImageMetadataGeneratorConfig imageMetadataGeneratorConfig = new ImageMetadataGeneratorConfig();
-        final ScbConfig scbConfig = new ScbConfig();
-        scbConfig.setBaseUrl(baseUrl);
-        imageMetadataGeneratorConfig.setImageSourceDir(imageSourceDir);
-        scbConfig.setMetadata(metadataFile);
-        scbConfig.setBodyContainer(bodyContainer);
-        scbConfig.setImageServiceBaseUrl(imageServiceBaseUrl);
-        scbConfig.setImageServiceType(imageServiceType);
+        final ImageMetadataGeneratorConfig imageMetadataGeneratorConfig = getImageMetadataGeneratorConfig();
+        final ScbConfig scbConfig = getScbConfig();
         imageMetadataGeneratorConfig.setDimensionManifestFilePath(BodyBuilder.class.getResource(dimensionManifestFile)
                                                                                    .getPath());
         final BodyBuilder bb = new BodyBuilder(imageMetadataGeneratorConfig, scbConfig);
-        final List<TemplateTarget> targetList = getTargetList(scbConfig, imageMetadataGeneratorConfig);
+        final List<TemplateTarget> targetList = getTargetList();
         final List<TemplateBody> bodyList = bb.getBodiesWithDimensions(targetList);
         System.out.println(serialize(bodyList.get(1)).orElse(""));
         Assert.assertEquals(52218, bodyList.size());
     }
 
-    private List<TemplateTarget> getTargetList(final ScbConfig scbConfig, final ImageMetadataGeneratorConfig
-            imageMetadataGeneratorConfig) {
-        scbConfig.setBaseUrl(baseUrl);
-        scbConfig.setTargetContainer(targetContainer);
-        imageMetadataGeneratorConfig.setDimensionManifestFilePath(dimensionManifestFile);
-        scbConfig.setMetadata(metadataFile);
+    private List<TemplateTarget> getTargetList() {
+        final ImageMetadataGeneratorConfig imageMetadataGeneratorConfig = getImageMetadataGeneratorConfig();
+        final ScbConfig scbConfig = getScbConfig();
         final TargetBuilder tb = new TargetBuilder(imageMetadataGeneratorConfig, scbConfig);
         return tb.buildCanvases();
     }

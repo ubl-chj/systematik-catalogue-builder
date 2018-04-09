@@ -26,7 +26,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 public class TemplateMetadata {
 
     @JsonProperty("label")
-    private String label = "unnamed metadata";
+    private String label;
 
     @JsonProperty("value")
     private String value;
@@ -40,5 +40,9 @@ public class TemplateMetadata {
     public TemplateMetadata(final String label, final String value) {
         this.label = label;
         this.value = value;
+    }
+
+    public String getMetadataValue() {
+        return this.value;
     }
 }

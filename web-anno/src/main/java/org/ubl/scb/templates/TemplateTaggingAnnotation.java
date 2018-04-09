@@ -14,7 +14,8 @@
 
 package org.ubl.scb.templates;
 
-import static org.ubl.scb.vocabulary.SC._painting;
+import static org.ubl.scb.vocabulary.ANNO.Annotation;
+import static org.ubl.scb.vocabulary.ANNO.tagging;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -23,12 +24,12 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import java.util.List;
 
 /**
- * TemplateWebAnnotation.
+ * TemplateTaggingAnnotation.
  *
  * @author christopher-johnson
  */
 @JsonPropertyOrder({"@context", "id", "type", "motivation", "body", "target"})
-public class TemplateWebAnnotation {
+public class TemplateTaggingAnnotation {
 
     @JsonProperty("@context")
     private List<String> context;
@@ -37,16 +38,19 @@ public class TemplateWebAnnotation {
     private String id;
 
     @JsonProperty("type")
-    private String type = "oa:Annotation";
+    private String type = Annotation.getIRIString();
 
     @JsonProperty
-    private String motivation = _painting;
+    private String motivation = tagging.getIRIString();
 
     @JsonProperty
-    private TemplateBody body;
+    private TemplateTagBody body;
 
     @JsonProperty
     private String target;
+
+    @JsonProperty
+    private int group;
 
     /**
      * setContext.
@@ -62,7 +66,7 @@ public class TemplateWebAnnotation {
      *
      * @param id id
      */
-    public void setId(final String id) {
+    public void setAnnoId(final String id) {
         this.id = id;
     }
 
@@ -81,7 +85,7 @@ public class TemplateWebAnnotation {
      *
      * @param body body
      */
-    public void setBody(final TemplateBody body) {
+    public void setBody(final TemplateTagBody body) {
         this.body = body;
     }
 
@@ -91,7 +95,7 @@ public class TemplateWebAnnotation {
      * @return TemplateBody
      */
     @JsonIgnore
-    public TemplateBody getBody() {
+    public TemplateTagBody getBody() {
         return this.body;
     }
 
@@ -102,6 +106,25 @@ public class TemplateWebAnnotation {
      */
     public void setTarget(final String target) {
         this.target = target;
+    }
+
+    /**
+     * getTargetGroup.
+     *
+     * @return group
+     */
+    @JsonIgnore
+    public int getTargetGroup() {
+        return this.group;
+    }
+
+    /**
+     * setTargetGroup.
+     *
+     * @param group group
+     */
+    public void setTargetGroup(final int group) {
+        this.group = group;
     }
 
 }

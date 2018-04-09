@@ -19,12 +19,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 /**
- * TemplateBody.
+ * TemplateTagBody.
  *
  * @author christopher-johnson
  */
-@JsonPropertyOrder({"id", "type", "label", "format", "height", "width", "service"})
-public class TemplateBody {
+@JsonPropertyOrder({"id", "type", "label", "purpose", "value"})
+public class TemplateTagBody {
 
     @JsonProperty("id")
     private String id;
@@ -33,29 +33,23 @@ public class TemplateBody {
     private String type;
 
     @JsonProperty
-    private String format;
+    private String purpose;
 
     @JsonProperty
-    private Integer height;
-
-    @JsonProperty
-    private Integer width;
-
-    @JsonProperty
-    private TemplateService service;
+    private String value;
 
     /**
      * TemplateBody.
      */
-    public TemplateBody() {
+    public TemplateTagBody() {
     }
 
     /**
-     * setResourceId.
+     * setTagId.
      *
      * @param id id
      */
-    public void setResourceId(final String id) {
+    public void setTagId(final String id) {
         this.id = id;
     }
 
@@ -65,7 +59,7 @@ public class TemplateBody {
      * @return String
      */
     @JsonIgnore
-    public String getResourceId() {
+    public String getTagId() {
         return this.id;
     }
 
@@ -74,43 +68,25 @@ public class TemplateBody {
      *
      * @param type label
      */
-    public void setResourceType(final String type) {
+    public void setTagType(final String type) {
         this.type = type;
     }
 
     /**
      * setResourceFormat.
      *
-     * @param format format
+     * @param purpose purpose
      */
-    public void setResourceFormat(final String format) {
-        this.format = format;
+    public void setTagPurpose(final String purpose) {
+        this.purpose = purpose;
     }
 
     /**
-     * setService.
+     * setResourceFormat.
      *
-     * @param service service
+     * @param value value
      */
-    public void setService(final TemplateService service) {
-        this.service = service;
-    }
-
-    /**
-     * setResourceHeight.
-     *
-     * @param height height
-     */
-    public void setResourceHeight(final Integer height) {
-        this.height = height;
-    }
-
-    /**
-     * setResourceWidth.
-     *
-     * @param width width
-     */
-    public void setResourceWidth(final Integer width) {
-        this.width = width;
+    public void setTagValue(final String value) {
+        this.value = value;
     }
 }
