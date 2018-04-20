@@ -7,10 +7,10 @@
         </encoder>
     </appender>
 
-  <logger name="de.ubleipzig.scb" additivity="false" level="DEBUG">
+  <logger name="de.ubleipzig.scb" additivity="false" level="INFO">
     <appender-ref ref="STDOUT"/>
   </logger>
-  <root additivity="false" level="DEBUG">
+  <root additivity="false" level="INFO">
     <appender-ref ref="STDOUT"/>
   </root>
 </configuration>

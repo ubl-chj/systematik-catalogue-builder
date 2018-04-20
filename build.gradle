@@ -212,7 +212,7 @@ subprojects { subproj ->
             options.addStringOption('-module-path', classpath.asPath)
             options.addBooleanOption('html5', true)
         }
-        destinationDir = new File(projectDir, "docs/${version}")
+        destinationDir = new File(subproj.buildDir, "docs/${version}")
         options {
             links 'https://trellis-ldp.github.io/trellis/apidocs/'
             links 'https://commons.apache.org/proper/commons-rdf/apidocs/'

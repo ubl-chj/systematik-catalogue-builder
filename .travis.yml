@@ -6,10 +6,8 @@ group: edge
 matrix:
   fast_finish: true
 
-  include:
-    # JDK 10
-    - env: JDK_RELEASE='JDK 10'
-      install: . ./buildtools/src/install/install-jdk-10.sh
+install: true
 
 script:
-- ./gradlew build
+- . ./buildtools/src/install/install-jdk-10.sh
+- . ./buildtools/src/install/install-jpms.sh
