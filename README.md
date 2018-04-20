@@ -1,6 +1,10 @@
 ## Systematik Catalogue Builder
 
 [![Build Status](https://travis-ci.org/ub-leipzig/systematik-catalogue-builder.png?branch=master)](https://travis-ci.org/ub-leipzig/systematik-catalogue-builder)
+[![codecov](https://codecov.io/gh/ub-leipzig/systematik-catalogue-builder/branch/master/graph/badge.svg)](https://codecov.io/gh/ub-leipzig/systematik-catalogue-builder)
+[![Javadoc](https://javadoc-badge.appspot.com/de.ubleipzig/image.metadata.svg?label=javadoc)](https://ub-leipzig.github.io/systematik-catalogue-builder/apidocs/)
+[![Maven Central](https://img.shields.io/maven-central/v/de.ubleipzig/scb.creator.svg)](https://mvnrepository.com/artifact/de.ubleipzig/scb.creator/0.1.0)
+
 
 An [Web Annotation](https://www.w3.org/TR/annotation-model/) data builder for use with the [Trellis Linked Data Platform](https://trellis-ldp.github.io/trellis/apidocs/).
 
@@ -11,45 +15,6 @@ An [Web Annotation](https://www.w3.org/TR/annotation-model/) data builder for us
 Image Metadata Builder Process:
 * Generate an image dimension manifest with :
 
-```java
-/**
-@param String imageSourceDir
-*/
-```
-
-```java
-    ImageMetadataGeneratorConfig config = new ImageMetadataGeneratorConfig();
-    config.setImageSourceDir(imageSourceDir);
-    final ImageMetadataGenerator generator = new ImageMetadataGenerator(config);
-    final ImageDimensionManifest dimManifest = generator.build();
-```
-
-The dimension manifest looks like this:
-```json
-{
-  "collection" : "/home/christopher/IdeaProjects/systematik-catalogue-builder/image/out/test/resources",
-  "images" : [
-    {
-      "filename" : "00000001.jpg",
-      "digest" : "jeUrOCoqaYw/89LmIo3gQlxhipE=",
-      "height" : 2130,
-      "width" : 1705
-    },
-    {
-      "filename" : "00000002.jpg",
-      "digest" : "5t/uKe+X1vTe0fR2YAGYj4OzgiI=",
-      "height" : 2130,
-      "width" : 1705
-    },
-    {
-      "filename" : "00000003.jpg",
-      "digest" : "8caG/XPRwwAZSU3Pldcsl7ZEtoA=",
-      "height" : 2130,
-      "width" : 1705
-    }
-  ]
-}
-``` 
    
 This file rather than the binaries will be used for all subsequent annotation builder processes.
 
