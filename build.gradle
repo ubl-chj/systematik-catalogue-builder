@@ -23,7 +23,7 @@ ext {
     commonsRdfJenaVersion = '0.6.0-SNAPSHOT'
     dexxCollectionVersion = '0.7'
     dropwizardVersion = '1.2.0'
-    iiifVocabularyVersion = '0.1.0'
+    iiifVocabularyVersion = '0.1.1'
     imageMetadataVersion = '0.1.0'
     metadataExtractorVersion = '2.11.0'
     jaiImageIoVersion = '1.3.0'

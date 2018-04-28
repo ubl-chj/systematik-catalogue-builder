@@ -27,7 +27,7 @@ module de.ubleipzig.scb.creator {
     requires jsonld.java;
     requires org.apache.commons.rdf.jena;
     requires org.trellisldp.jpms.vocabulary;
-    requires de.ubleipzig.iiiif.vocabulary;
+    requires de.ubleipzig.iiif.vocabulary;
     requires de.ubleipzig.scb.templates;
     requires org.apache.jena.arq;
     uses org.apache.commons.rdf.api.RDF;
