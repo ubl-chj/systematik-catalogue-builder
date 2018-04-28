@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"de.ubleipzig.scb.creator"},{"l":"de.ubleipzig.scb.templates"}]

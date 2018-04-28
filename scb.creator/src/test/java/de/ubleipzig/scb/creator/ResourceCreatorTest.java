@@ -20,8 +20,6 @@ import static io.dropwizard.testing.ResourceHelpers.resourceFilePath;
 import static javax.ws.rs.core.HttpHeaders.LINK;
 import static org.apache.jena.arq.riot.WebContent.contentTypeNTriples;
 
-import org.trellisldp.client.ACLStatement;
-
 import de.ubleipzig.image.metadata.ImageMetadataServiceConfig;
 import de.ubleipzig.scb.templates.TemplatePaintingAnnotation;
 import de.ubleipzig.scb.templates.TemplateTaggingAnnotation;
@@ -58,8 +56,9 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.trellisldp.app.triplestore.TrellisApplication;
 import org.trellisldp.app.config.TrellisConfiguration;
+import org.trellisldp.app.triplestore.TrellisApplication;
+import org.trellisldp.client.ACLStatement;
 import org.trellisldp.client.LdpClient;
 import org.trellisldp.client.LdpClientException;
 import org.trellisldp.client.LdpClientImpl;

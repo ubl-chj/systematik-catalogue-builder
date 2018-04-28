@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/ub-leipzig/systematik-catalogue-builder.png?branch=master)](https://travis-ci.org/ub-leipzig/systematik-catalogue-builder)
 [![codecov](https://codecov.io/gh/ub-leipzig/systematik-catalogue-builder/branch/master/graph/badge.svg)](https://codecov.io/gh/ub-leipzig/systematik-catalogue-builder)
-[![Javadoc](https://javadoc-badge.appspot.com/de.ubleipzig/image.metadata.svg?label=javadoc)](https://ub-leipzig.github.io/systematik-catalogue-builder/apidocs/)
+[![Javadoc](https://javadoc-badge.appspot.com/de.ub-leipzig/scb.creator.svg?label=javadoc)](https://ub-leipzig.github.io/systematik-catalogue-builder/apidocs/)
 [![Maven Central](https://img.shields.io/maven-central/v/de.ubleipzig/scb.creator.svg)](https://mvnrepository.com/artifact/de.ubleipzig/scb.creator/0.1.0)
 
 

@@ -30,8 +30,8 @@ public class SonatypeSSLTest extends CommonTests {
     @BeforeAll
     static void initAll() {
         try {
-            final SSLContext sslContext = new SSLContextBuilder()
-                    .loadTrustMaterial(null, (x509CertChain, authType) -> true).build();
+            final SSLContext sslContext = new SSLContextBuilder().loadTrustMaterial(
+                    null, (x509CertChain, authType) -> true).build();
             h2client = new LdpClientImpl(sslContext);
         } catch (NoSuchAlgorithmException | KeyStoreException | KeyManagementException e) {
             e.printStackTrace();
@@ -41,19 +41,20 @@ public class SonatypeSSLTest extends CommonTests {
     @Test
     void connectToSonatype() throws LdpClientException {
         final IRI identifier = rdf.createIRI("https://oss.sonatype.org/content/repositories/snapshots/");
-        String res = h2client.getWithContentType(identifier, "text/html");
-        System.out.println(res);
+        final String res = h2client.getWithContentType(identifier, "text/html");
+        //System.out.println(res);
     }
 
     @Test
-    void connectToSonatypeWithApacheClient() throws IOException, KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
-        final SSLContext sslContext = new SSLContextBuilder()
-                .loadTrustMaterial(null, (x509CertChain, authType) -> true).build();
-        CloseableHttpClient httpClient = HttpClients.custom()
-                                                    .setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE)
-                                                    .setSSLContext(sslContext).build();
-        CloseableHttpResponse response = httpClient.execute(new HttpGet("https://oss.sonatype.org/content/repositories/snapshots/"));
-        String bodyAsString = EntityUtils.toString(response.getEntity());
-        System.out.println(bodyAsString);
+    void connectToSonatypeWithApacheClient() throws IOException, KeyStoreException, NoSuchAlgorithmException,
+            KeyManagementException {
+        final SSLContext sslContext = new SSLContextBuilder().loadTrustMaterial(
+                null, (x509CertChain, authType) -> true).build();
+        final CloseableHttpClient httpClient = HttpClients.custom().setSSLHostnameVerifier(
+                NoopHostnameVerifier.INSTANCE).setSSLContext(sslContext).build();
+        final CloseableHttpResponse response = httpClient.execute(
+                new HttpGet("https://oss.sonatype.org/content/repositories/snapshots/"));
+        final String bodyAsString = EntityUtils.toString(response.getEntity());
+        // System.out.println(bodyAsString);
     }
 }

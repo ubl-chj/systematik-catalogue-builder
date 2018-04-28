@@ -11,3 +11,10 @@ install: true
 script:
 - . ./buildtools/src/install/install-jdk-10.sh
 - . ./buildtools/src/install/install-jpms.sh
+
+after_success:
+  - ./gradlew jacocoRootReport && bash <(curl -s https://codecov.io/bash) || true
+
+env:
+  global:
+    - CODECOV_TOKEN=22551be3-6b7f-4d9e-87f2-f78202f74b64

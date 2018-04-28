@@ -19,6 +19,8 @@ ext {
     apiguardianVersion = '1.0.0'
     commonsCodecVersion = '1.11'
     commonsIoVersion = '2.6'
+    commonsRdfVersion = '0.5.0'
+    commonsRdfJenaVersion = '0.6.0-SNAPSHOT'
     dexxCollectionVersion = '0.7'
     dropwizardVersion = '1.2.0'
     iiifVocabularyVersion = '0.1.0'
@@ -27,15 +29,13 @@ ext {
     jaiImageIoVersion = '1.3.0'
     jacksonVersion = '2.9.5'
     javaxActivationVersion = '1.2.0'
+    jaxrsVersion = '2.1'
     jettyAlpnVersion = '9.4.8.v20171121'
     jsonLdVersion = '0.11.1'
     junitVersion = '5.1.1'
     trellisClientVersion = '0.2.0-SNAPSHOT'
     logbackVersion = '1.2.3'
     slf4jVersion = "1.7.25"
-    commonsRdfVersion = '0.5.0'
-    commonsRdfJenaVersion = '0.6.0-SNAPSHOT'
-    jaxrsVersion = '2.1'
     trellisVersion = '0.7.0-SNAPSHOT'
     xerxesVersion = '2.11.0'
 
@@ -56,33 +56,35 @@ ext {
     jsr305Version = '3.0.2'
     log4jVersion = '1.2.17'
     kafkaVersion = '1.0.0_1'
+    mockitoVersion = '2.18.0'
     mustacheVersion = '0.9.5_1'
     servicemixXercesVersion = '2.11.0_1'
     thriftVersion = '0.11.0'
-    xmlApisVersion = '1.4.01'
+
+    osgiEeJavaVersion= 'osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.10))'
+    projectOsgiVersion = project.version.replaceAll("-SNAPSHOT", ".SNAPSHOT")
 
     jacocoVersion = '0.8.1'
     checkstyleVersion = '8.8'
 
-    jacocoTestProjects = ['scb.creator, scb.templates']
+    jacocoTestProjects = [
+            'scb.creator',
+            'scb.templates'
+    ]
 
 }
 
 allprojects { subproj ->
 
+    apply plugin: 'checkstyle'
+    apply plugin: 'idea'
+    apply plugin: 'jacoco'
     apply plugin: 'java'
     apply plugin: 'java-library'
     apply plugin: 'maven-publish'
-    apply plugin: 'checkstyle'
+
     apply plugin: 'com.bmuschko.nexus'
     apply plugin: 'org.junit.platform.gradle.plugin'
-    apply plugin: 'idea'
-    apply plugin: 'jacoco'
-
-    group = 'de.ubleipzig'
-
-    sourceCompatibility = 1.10
-    targetCompatibility = 1.10
 
     ext {
         name = 'Systematik Catalogue Builder'
@@ -95,6 +97,8 @@ allprojects { subproj ->
         docURL = 'https://github.com/ub-leipzig/systematik-catalogue-builder/wiki'
         license = 'Apache 2'
     }
+
+    group = 'de.ubleipzig'
 
     repositories {
         mavenCentral()
@@ -116,6 +120,9 @@ allprojects { subproj ->
 }
 
 subprojects { subproj ->
+
+    sourceCompatibility = 1.10
+    targetCompatibility = 1.10
 
     gradle.projectsEvaluated {
         tasks.withType(JavaCompile) {
@@ -210,7 +217,6 @@ subprojects { subproj ->
     }
 
     javadoc {
-        inputs.property("moduleName", moduleName)
         doFirst {
             options.addStringOption('-module-path', classpath.asPath)
             options.addBooleanOption('html5', true)
@@ -222,6 +228,13 @@ subprojects { subproj ->
         }
     }
 
+    afterEvaluate {
+        if (subproj.name in jacocoTestProjects) {
+            jacoco {
+                applyTo junitPlatformTest
+            }
+        }
+    }
 }
 
 configure(rootProject) {
@@ -232,6 +245,7 @@ configure(rootProject) {
         title = "SCB Documentation"
         exclude '**/impl/*'
         exclude '**/*Tests.java'
+        exclude '**/*module-info.java'
         options {
             memberLevel = JavadocMemberLevel.PUBLIC
             links "https://docs.oracle.com/javase/10/docs/api/"

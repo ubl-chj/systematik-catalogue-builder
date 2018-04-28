@@ -31,7 +31,7 @@ public abstract class CommonTests {
     }
 
     ImageMetadataServiceConfig getImageMetadataGeneratorConfig() {
-        String dimManifestPath = CommonTests.class.getResource(dimensionManifestFile).getPath();
+        final String dimManifestPath = CommonTests.class.getResource(dimensionManifestFile).getPath();
         imageMetadataServiceConfig.setDimensionManifestFilePath(dimManifestPath);
         return this.imageMetadataServiceConfig;
     }

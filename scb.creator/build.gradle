@@ -1,17 +1,15 @@
 apply plugin: 'com.zyxist.chainsaw'
+apply plugin: 'osgi'
+apply plugin: 'jacoco'
 
-configurations {
-    all {
-        exclude group: 'com.google.code.findbugs', module: 'jsr305'
-        exclude group: 'javax.annotation' , module: 'jsr250-api'
-    }
+ext {
+    javaModuleName = 'de.ubleipzig.scb.creator'
 }
 
 javaModule {
-    name = 'de.ubleipzig.scb.creator'
+    name = javaModuleName
     extraTestModules = ['org.trellisldp.jpms.app','com.fasterxml.jackson.annotation','org.apache.commons.rdf.jena', 'org.trellisldp.jpms.app.triplestore']
     hacks {
-        patches('com.google.code.findbugs:jsr305', 'javax.annotation:jsr250-api')
         patches('javax.annotation:javax.annotation-api', 'org.apache.geronimo.specs:geronimo-annotation_1.2_spec')
         patches('org.apache.geronimo.specs:geronimo-jms_1.1_spec', 'javax.jms:javax.jms-api')
         patches('org.hamcrest:hamcrest-library', 'org.hamcrest:hamcrest-core')
@@ -20,8 +18,9 @@ javaModule {
 
 configurations {
     all {
+        exclude group: 'com.google.code.findbugs', module: 'jsr305'
+        exclude group: 'javax.annotation' , module: 'jsr250-api'
         exclude group: 'commons-logging', module: 'commons-logging'
-        exclude group: 'org.apache.jena', module: 'jena-osgi'
         exclude group: 'javax.inject', module: 'javax.inject'
         exclude group: 'org.apache.httpcomponents', module: 'httpclient-osgi'
         exclude group: 'org.apache.httpcomponents', module: 'httpcore-osgi'
@@ -29,8 +28,6 @@ configurations {
 }
 
 dependencies {
-
-    patch 'com.google.code.findbugs:jsr305:3.0.2'
     patch 'org.apache.geronimo.specs:geronimo-annotation_1.2_spec:1.0-alpha-1'
     patch 'org.apache.geronimo.specs:geronimo-jms_1.1_spec:1.1.1'
     patch "org.hamcrest:hamcrest-library:$hamcrestLibraryVersion"
@@ -88,4 +85,17 @@ dependencies {
     testImplementation("org.trellisldp:trellis-triplestore-jpms:$trellisVersion")
     testImplementation("org.trellisldp:trellis-webac-jpms:$trellisVersion")
 
+}
+
+jar {
+    manifest {
+        description project.description
+        vendor project.vendor
+        license project.license
+
+        instruction 'Automatic-Module-Name', javaModuleName
+        instruction 'Import-Package', '*'
+        instruction 'Export-Package', "$javaModuleName;version=$projectOsgiVersion"
+        instruction 'Require-Capability', "$osgiEeJavaVersion"
+    }
 }

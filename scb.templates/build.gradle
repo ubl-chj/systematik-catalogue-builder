@@ -1,6 +1,30 @@
 apply plugin: 'com.zyxist.chainsaw'
+apply plugin: 'osgi'
+apply plugin: 'jacoco'
+
+ext {
+    javaModuleName = 'de.ubleipzig.scb.templates'
+}
+
+javaModule {
+    name = javaModuleName
+}
 
 dependencies {
     implementation("de.ubleipzig:iiif.vocabulary:$iiifVocabularyVersion")
     implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion") {force = true}
+    testImplementation("org.mockito:mockito-core:$mockitoVersion")
+}
+
+jar {
+    manifest {
+        description project.description
+        vendor project.vendor
+        license project.license
+
+        instruction 'Automatic-Module-Name', javaModuleName
+        instruction 'Import-Package', '*'
+        instruction 'Export-Package', "$javaModuleName;version=$projectOsgiVersion"
+        instruction 'Require-Capability', "$osgiEeJavaVersion"
+    }
 }

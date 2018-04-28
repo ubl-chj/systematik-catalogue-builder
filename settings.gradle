@@ -1,3 +1,6 @@
 rootProject.name = 'systematik-catalogue-builder'
 include 'scb.creator'
 include 'scb.templates'
+
+project(':scb.creator').projectDir = "$rootDir/scb.creator" as File
+project(':scb.templates').projectDir = "$rootDir/scb.templates" as File
