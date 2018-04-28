@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 module de.ubleipzig.scb.creator {
-    requires jackson.annotations;
+    requires com.fasterxml.jackson.annotation;
     requires org.apache.commons.rdf.api;
     requires slf4j.api;
     requires java.desktop;
@@ -20,13 +20,13 @@ module de.ubleipzig.scb.creator {
     requires com.fasterxml.jackson.core;
     requires de.ubleipzig.image.metadata;
     requires org.apache.commons.io;
-    requires cool.pandora.ldpclient;
+    requires org.trellisldp.client;
     requires jdk.incubator.httpclient;
     //noinspection removal
     requires java.activation;
     requires jsonld.java;
     requires org.apache.commons.rdf.jena;
-    requires org.trellisldp.vocabulary;
+    requires org.trellisldp.jpms.vocabulary;
     requires de.ubleipzig.iiiif.vocabulary;
     requires de.ubleipzig.scb.templates;
     requires org.apache.jena.arq;

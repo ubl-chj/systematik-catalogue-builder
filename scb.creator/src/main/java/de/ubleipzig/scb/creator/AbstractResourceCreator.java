@@ -1,13 +1,12 @@
 package de.ubleipzig.scb.creator;
 
-import cool.pandora.ldpclient.LdpClientException;
-
 import de.ubleipzig.image.metadata.ImageMetadataServiceConfig;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import org.apache.commons.rdf.jena.JenaRDF;
+import org.trellisldp.client.LdpClientException;
 
 /**
  * AbstractResourceCreator.

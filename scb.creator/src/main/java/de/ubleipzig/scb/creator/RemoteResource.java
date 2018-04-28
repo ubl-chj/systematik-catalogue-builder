@@ -1,10 +1,5 @@
 package de.ubleipzig.scb.creator;
 
-import cool.pandora.ldpclient.LdpClient;
-import cool.pandora.ldpclient.LdpClientException;
-import cool.pandora.ldpclient.LdpClientImpl;
-import cool.pandora.ldpclient.SimpleSSLContext;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -14,6 +9,9 @@ import javax.net.ssl.SSLContext;
 
 import org.apache.commons.rdf.api.IRI;
 import org.apache.commons.rdf.jena.JenaRDF;
+import org.trellisldp.client.LdpClient;
+import org.trellisldp.client.LdpClientException;
+import org.trellisldp.client.LdpClientImpl;
 
 /**
  * RemoteResource.

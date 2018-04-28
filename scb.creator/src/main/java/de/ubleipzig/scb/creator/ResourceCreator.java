@@ -1,7 +1,7 @@
 package de.ubleipzig.scb.creator;
 
 import static de.ubleipzig.scb.creator.JsonSerializer.serializeToBytes;
-import static org.apache.jena.riot.WebContent.contentTypeNTriples;
+import static org.apache.jena.arq.riot.WebContent.contentTypeNTriples;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import de.ubleipzig.image.metadata.ImageMetadataServiceConfig;

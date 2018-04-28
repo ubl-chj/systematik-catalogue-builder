@@ -18,13 +18,9 @@ import static de.ubleipzig.scb.creator.JsonSerializer.serializeToBytes;
 import static io.dropwizard.testing.ConfigOverride.config;
 import static io.dropwizard.testing.ResourceHelpers.resourceFilePath;
 import static javax.ws.rs.core.HttpHeaders.LINK;
-import static org.apache.jena.riot.WebContent.contentTypeNTriples;
+import static org.apache.jena.arq.riot.WebContent.contentTypeNTriples;
 
-import cool.pandora.ldpclient.ACLStatement;
-import cool.pandora.ldpclient.LdpClient;
-import cool.pandora.ldpclient.LdpClientException;
-import cool.pandora.ldpclient.LdpClientImpl;
-import cool.pandora.ldpclient.SimpleSSLContext;
+import org.trellisldp.client.ACLStatement;
 
 import de.ubleipzig.image.metadata.ImageMetadataServiceConfig;
 import de.ubleipzig.scb.templates.TemplatePaintingAnnotation;
@@ -64,6 +60,9 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.trellisldp.app.triplestore.TrellisApplication;
 import org.trellisldp.app.config.TrellisConfiguration;
+import org.trellisldp.client.LdpClient;
+import org.trellisldp.client.LdpClientException;
+import org.trellisldp.client.LdpClientImpl;
 import org.trellisldp.vocabulary.ACL;
 import org.trellisldp.vocabulary.LDP;
 
@@ -212,7 +211,7 @@ public class ResourceCreatorTest extends CommonTests {
     @Test
     void testCreateDirectContainer() {
         try {
-            final IRI identifier = rdf.createIRI("http://localhost:8080/collection/vp");
+            final IRI identifier = rdf.createIRI(baseUrl + "collection/vp");
             h2client.newLdpDc(identifier, "resources", identifier);
         } catch (LdpClientException e) {
             e.printStackTrace();
@@ -222,7 +221,7 @@ public class ResourceCreatorTest extends CommonTests {
     @Test
     void testCreateBasicContainer() {
         try {
-            final IRI identifier = rdf.createIRI("http://localhost:8080/test4");
+            final IRI identifier = rdf.createIRI(baseUrl + "test4");
             final Map<String, String> metadata = new HashMap<>();
             metadata.put(LINK, LDP.BasicContainer + "; rel=\"type\"");
             h2client.putWithMetadata(identifier, getTestResource(), metadata);
