@@ -14,6 +14,7 @@
 
 package de.ubleipzig.scb.creator;
 
+import static de.ubleipzig.scb.creator.UUIDType5.NAMESPACE_URL;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import de.ubleipzig.iiif.vocabulary.ANNO;
@@ -66,7 +67,9 @@ public class AnnotationBuilder {
         contexts.add(SC.CONTEXT);
         final List<TemplatePaintingAnnotation> annoList = new ArrayList<>();
         for (TemplateTarget target : targetList) {
-            final String annoUUID = UUID.randomUUID().toString();
+            final String annoId = annoContext + target.getTargetId();
+            final UUID annoUUID = UUIDType5.nameUUIDFromNamespaceAndString(
+                    NAMESPACE_URL, annoId);
             final String identifier = scbConfig.getBaseUrl() + annoContext + annoUUID;
             final TemplatePaintingAnnotation ta = new TemplatePaintingAnnotation();
             ta.setId(identifier);

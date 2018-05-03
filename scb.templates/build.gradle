@@ -12,6 +12,7 @@ javaModule {
 
 dependencies {
     implementation("de.ubleipzig:iiif.vocabulary:$iiifVocabularyVersion")
+    implementation("com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion") {force = true}
     implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion") {force = true}
     testImplementation("org.mockito:mockito-core:$mockitoVersion")
 }

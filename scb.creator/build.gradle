@@ -33,6 +33,9 @@ dependencies {
     patch "org.hamcrest:hamcrest-library:$hamcrestLibraryVersion"
 
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
+    implementation("com.github.andrewoma.dexx:collection:$dexxCollectionVersion")
+    implementation("com.google.guava:guava:$guavaVersion")
+    implementation("org.apache.commons:commons-lang3:$commonsLangVersion")
     implementation("de.ubleipzig:image.metadata:$imageMetadataVersion")
     implementation("de.ubleipzig:iiif.vocabulary:$iiifVocabularyVersion")
     implementation project(":scb.templates")
@@ -43,6 +46,7 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion") {force = true}
     implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion") {force = true}
     implementation("javax.ws.rs:javax.ws.rs-api:$jaxrsVersion")
+    implementation("org.apache.commons:commons-csv:$commonsCsvVersion")
     implementation("org.apache.httpcomponents:httpclient:$httpclientVersion")
     implementation("org.apache.httpcomponents:httpclient-cache:$httpclientVersion")
     implementation("org.apache.commons:commons-rdf-jena-jpms:$commonsRdfJenaVersion")
@@ -50,11 +54,16 @@ dependencies {
     implementation("org.apache.jena:jena.base-jpms:$jenaVersion")
     implementation("org.apache.jena:jena.core-jpms:$jenaVersion")
     implementation("org.apache.jena:jena.iri-jpms:$jenaVersion")
+    implementation("org.apache.thrift:libthrift:$thriftVersion"){
+        exclude(module: 'httpclient')
+        exclude(module: 'httpcore')
+    }
+    implementation("org.apache.servicemix.bundles:org.apache.servicemix.bundles.xerces:$servicemixXercesVersion"){
+        exclude group: 'xml-apis', module: 'xml-apis'
+    }
     implementation("org.slf4j:slf4j-api:$slf4jVersion")
     implementation("org.trellisldp:trellis-vocabulary-jpms:$trellisVersion")
 
-    testImplementation("ch.qos.logback:logback-classic:$logbackVersion")
-    testImplementation("com.github.andrewoma.dexx:collection:$dexxCollectionVersion")
     testImplementation("io.dropwizard:dropwizard-auth:$dropwizardVersion")
     testImplementation("io.dropwizard:dropwizard-testing:$dropwizardVersion")
     testImplementation("io.dropwizard:dropwizard-http2:$dropwizardVersion")
@@ -66,10 +75,6 @@ dependencies {
     testImplementation("org.apache.httpcomponents:httpclient-cache:$httpclientVersion")
     testImplementation("org.apache.servicemix.bundles:org.apache.servicemix.bundles.kafka-clients:$kafkaVersion")
     testImplementation("org.apache.servicemix.bundles:org.apache.servicemix.bundles.mustache-compiler:$mustacheVersion")
-    testImplementation("org.apache.servicemix.bundles:org.apache.servicemix.bundles.xerces:$servicemixXercesVersion"){
-        exclude group: 'xml-apis', module: 'xml-apis'
-    }
-    testImplementation("org.apache.thrift:libthrift:$thriftVersion")
     testImplementation("org.eclipse.jetty:jetty-alpn-java-server:$jettyAlpnVersion")
 
     testImplementation("org.trellisldp:trellis-agent-jpms:$trellisVersion")

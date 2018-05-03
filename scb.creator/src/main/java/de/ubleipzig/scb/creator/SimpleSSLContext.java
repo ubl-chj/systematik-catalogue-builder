@@ -43,7 +43,7 @@ public class SimpleSSLContext {
      * @throws IOException ioexception
      */
     public SimpleSSLContext() throws IOException {
-        init(SimpleSSLContext.class.getResourceAsStream("/keystore/trellis.jks"));
+        init(SimpleSSLContext.class.getResourceAsStream("/trellis.jks"));
     }
 
     /**

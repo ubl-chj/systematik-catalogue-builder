@@ -42,8 +42,8 @@ public final class ResourceCreator extends AbstractResourceCreator {
     private ResourceCreator(final ScbConfig scbConfig, final ImageMetadataServiceConfig
             imageMetadataServiceConfig) {
         super();
-        startIndex = 1100;
-        toIndex = 1110;
+        startIndex = 2210;
+        toIndex = 2230;
         this.scbConfig = scbConfig;
         this.imageMetadataServiceConfig = imageMetadataServiceConfig;
     }
