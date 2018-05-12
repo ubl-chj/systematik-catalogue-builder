@@ -14,29 +14,23 @@
 
 package de.ubleipzig.scb.creator;
 
-import static de.ubleipzig.scb.creator.JsonSerializer.serializeToBytes;
 import static io.dropwizard.testing.ConfigOverride.config;
 import static io.dropwizard.testing.ResourceHelpers.resourceFilePath;
 import static javax.ws.rs.core.HttpHeaders.LINK;
 import static org.apache.jena.arq.riot.WebContent.contentTypeNTriples;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import de.ubleipzig.image.metadata.ImageMetadataServiceConfig;
-import de.ubleipzig.scb.templates.TemplatePaintingAnnotation;
-import de.ubleipzig.scb.templates.TemplateTaggingAnnotation;
 import de.ubleipzig.scb.templates.TemplateTarget;
 
 import io.dropwizard.testing.DropwizardTestSupport;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -83,14 +77,13 @@ public class ResourceCreatorTest extends CommonTests {
     private static String baseUrl;
     private static String pid;
     private static LdpClient h2client = null;
-    private JsonLdUtils jsonLdUtils = new JsonLdUtils();
-    private static Integer startIndex;
+    private static Integer fromIndex;
     private static Integer toIndex;
 
     @BeforeAll
     static void initAll() {
         APP.before();
-        startIndex = 0;
+        fromIndex = 0;
         toIndex = 10;
         baseUrl = "https://localhost:8445/";
         try {
@@ -104,7 +97,6 @@ public class ResourceCreatorTest extends CommonTests {
 
     @AfterAll
     static void tearDownAll() {
-
         APP.after();
     }
 
@@ -121,20 +113,21 @@ public class ResourceCreatorTest extends CommonTests {
     void tearDown() {
     }
 
+    @Disabled
     @Test
     void testCreateDefaultContainers() {
         final IRI identifier = rdf.createIRI(baseUrl);
         final IRI collectionBase = rdf.createIRI(baseUrl + "collection");
         final IRI collectionId = rdf.createIRI(baseUrl + "collection/vp");
         try {
-            h2client.newLdpDc(identifier, "collection", identifier);
-            h2client.newLdpDc(collectionBase, "vp", collectionBase);
-            h2client.newLdpDc(collectionId, "res", collectionId);
-            h2client.newLdpDc(collectionId, "target", collectionId);
-            h2client.newLdpDc(collectionId, "body", collectionId);
-            h2client.newLdpDc(collectionId, "tag", collectionId);
-            h2client.newLdpDc(collectionId, "anno", collectionId);
-            h2client.newLdpDc(collectionId, "meta", collectionId);
+            h2client.createDirectContainer(identifier, "collection", identifier);
+            h2client.createDirectContainer(collectionBase, "vp", collectionBase);
+            h2client.createDirectContainer(collectionId, "res", collectionId);
+            h2client.createDirectContainer(collectionId, "target", collectionId);
+            h2client.createDirectContainer(collectionId, "body", collectionId);
+            h2client.createDirectContainer(collectionId, "tag", collectionId);
+            h2client.createDirectContainer(collectionId, "anno", collectionId);
+            h2client.createDirectContainer(collectionId, "meta", collectionId);
         } catch (LdpClientException e) {
             e.printStackTrace();
         }
@@ -142,56 +135,72 @@ public class ResourceCreatorTest extends CommonTests {
 
     @Test
     void testPutDimensionManifestResource() throws Exception {
-        ScbConfig scbConfig = getScbConfig();
+        final ScbConfig scbConfig = getScbConfig();
         final String dimensionManifestFilePath = scbConfig.getImageMetadataServiceConfig()
                 .getDimensionManifestFilePath();
-        final IRI identifier = rdf.createIRI(baseUrl + "collection/vp/meta/" + dimensionManifestFilePath);
+        final IRI identifier = rdf.createIRI(baseUrl + "collection/vp/meta" + dimensionManifestFilePath);
         final InputStream is = ResourceCreatorTest.class.getResourceAsStream(dimensionManifestFilePath);
         h2client.put(identifier, is, "application/json");
     }
 
+    @Disabled
     @Test
     void testPutMetadataResource() throws Exception {
-        ScbConfig scbConfig = getScbConfig();
+        final ScbConfig scbConfig = getScbConfig();
         final String metadataFile = scbConfig.getMetadataFile();
         final IRI identifier = rdf.createIRI(baseUrl + "collection/vp/meta" + metadataFile);
         final InputStream is = ResourceCreatorTest.class.getResourceAsStream(metadataFile);
         h2client.put(identifier, is, "text/tab-separated-values");
     }
 
-    @Disabled
     @Test
-    void testPutImageResourceBatchFromSubList() throws Exception {
-        ScbConfig scbConfig = getScbConfig();
-        final ImageMetadataServiceConfig imageMetadataServiceConfig = new ImageMetadataServiceConfig();
-        imageMetadataServiceConfig.setImageSourceDir(scbConfig.getImageMetadataServiceConfig().getImageSourceDir());
-        final VorlesungImpl vi = new VorlesungImpl(imageMetadataServiceConfig);
-        final List<File> files = vi.getFiles();
-        files.sort(Comparator.naturalOrder());
-        final List<File> sublist = files.subList(startIndex, toIndex);
-        final Map<URI, InputStream> batch = new HashMap<>();
-        for (File file : sublist) {
-            final IRI identifier = rdf.createIRI(baseUrl + scbConfig.getBodyContainer() + file.getName().toLowerCase());
-            final URI uri = new URI(identifier.getIRIString());
-            final InputStream is = new FileInputStream(file);
-            batch.put(uri, is);
-        }
-        h2client.joiningCompletableFuturePut(batch, "image/tiff");
+    void testBuildImageResourceBatchFromSubList() {
+        final ScbConfig scbConfig = getScbConfigWithAbsolutePath();
+        scbConfig.setFromIndex(0);
+        scbConfig.setToIndex(3);
+        final ResourceCreator creator = new ResourceCreator(scbConfig);
+        final Map<URI, InputStream> imageBatch = creator.buildImageResourceBatchFromSubList();
+        assertEquals(3, imageBatch.size());
+        assertEquals(
+                "https://localhost:8445/collection/vp/res/00000003.jpg", Objects.requireNonNull(
+                        imageBatch.entrySet().stream().map(Map.Entry::getKey).findFirst().orElse(null)).toString());
     }
 
-    @Disabled
+
     @Test
-    void testPutImageResourcewithAsync() throws Exception {
-        ScbConfig scbConfig = getScbConfig();
-        final ImageMetadataServiceConfig imageMetadataServiceConfig = new ImageMetadataServiceConfig();
-        imageMetadataServiceConfig.setImageSourceDir(scbConfig.getImageMetadataServiceConfig().getImageSourceDir());
-        final VorlesungImpl vi = new VorlesungImpl(imageMetadataServiceConfig);
-        final List<File> files = vi.getFiles();
-        for (File file : files) {
-            final IRI identifier = rdf.createIRI(baseUrl + "vp/res/" + file.getName());
-            final InputStream is = new FileInputStream(file);
-            h2client.put(identifier, is, "image/tiff");
-        }
+    void testBuildCanvasBatch() {
+        final ScbConfig scbConfig = getScbConfigWithAbsolutePath();
+        scbConfig.setFromIndex(0);
+        scbConfig.setToIndex(50);
+        final ResourceCreator creator = new ResourceCreator(scbConfig);
+        final List<TemplateTarget> targetList = creator.getTargetList();
+        final Map<URI, InputStream> canvasBatch = creator.buildCanvasBatch(targetList);
+        assertEquals(50, canvasBatch.size());
+    }
+
+
+    @Test
+    void testBuildAnnotationBatch() {
+        final ScbConfig scbConfig = getScbConfigWithAbsolutePath();
+        scbConfig.setFromIndex(0);
+        scbConfig.setToIndex(50);
+        final ResourceCreator creator = new ResourceCreator(scbConfig);
+        final List<TemplateTarget> targetList = creator.getTargetList();
+        final Map<URI, InputStream> annotationBatch = creator.buildAnnotationBatch(targetList);
+        assertEquals(50, annotationBatch.size());
+
+    }
+
+    @Test
+    void testPutTaggingAnnotations() {
+        final ScbConfig scbConfig = getScbConfigWithAbsolutePath();
+        scbConfig.setFromIndex(0);
+        scbConfig.setToIndex(50);
+        scbConfig.setBuilderType("tagging");
+        final TaggingAnnotationCreator creator = new TaggingAnnotationCreator(scbConfig);
+        final List<TemplateTarget> targetList = creator.getTargetList();
+        final Map<URI, InputStream> annotationBatch = creator.buildAnnotationBatch(targetList);
+        assertEquals(50, annotationBatch.size());
     }
 
     @Disabled
@@ -212,16 +221,18 @@ public class ResourceCreatorTest extends CommonTests {
         }
     }
 
+    @Disabled
     @Test
     void testCreateDirectContainer() {
         try {
             final IRI identifier = rdf.createIRI(baseUrl + "collection/vp");
-            h2client.newLdpDc(identifier, "resources", identifier);
+            h2client.createDirectContainer(identifier, "resources", identifier);
         } catch (LdpClientException e) {
             e.printStackTrace();
         }
     }
 
+    @Disabled
     @Test
     void testCreateBasicContainer() {
         try {
@@ -234,6 +245,7 @@ public class ResourceCreatorTest extends CommonTests {
         }
     }
 
+    @Disabled
     @Test
     void testCreateContainerACL() {
         final Set<IRI> modes = new HashSet<>();
@@ -249,76 +261,5 @@ public class ResourceCreatorTest extends CommonTests {
         } catch (LdpClientException e) {
             e.printStackTrace();
         }
-    }
-
-    @Test
-    void testPutCanvases() throws Exception {
-        ScbConfig scbConfig = getScbConfigWithAbsolutePath();
-        final TargetBuilder tb = new TargetBuilder(scbConfig);
-        final List<TemplateTarget> targetList = tb.buildCanvases();
-        targetList.sort(Comparator.comparing(TemplateTarget::getCanvasLabel));
-        final List<TemplateTarget> sublist = targetList.subList(startIndex, toIndex);
-        final Map<URI, InputStream> batch = new HashMap<>();
-        for (TemplateTarget target : sublist) {
-            final IRI identifier = rdf.createIRI(target.getTargetId());
-            final URI uri = new URI(identifier.getIRIString());
-            final InputStream is = new ByteArrayInputStream(
-                    Objects.requireNonNull(serializeToBytes(target).orElse(null)));
-            final String n3 = (String) jsonLdUtils.unmarshallToNQuads(is);
-            final InputStream n3Stream = new ByteArrayInputStream(Objects.requireNonNull(n3).getBytes());
-            batch.put(uri, n3Stream);
-        }
-        h2client.joiningCompletableFuturePut(batch, contentTypeNTriples);
-    }
-
-    @Test
-    void testPutAnnotations() throws Exception {
-        ScbConfig scbConfig = getScbConfigWithAbsolutePath();
-        final AnnotationBuilder ab = new AnnotationBuilder(scbConfig);
-        final List<TemplateTarget> targetList = getTargetList();
-        final List<TemplatePaintingAnnotation> annoList = ab.getAnnotationsWithDimensionedBodies(targetList);
-        final List<TemplatePaintingAnnotation> sublist = annoList.subList(startIndex, toIndex);
-        final Map<URI, InputStream> batch = new HashMap<>();
-        for (TemplatePaintingAnnotation webAnno : sublist) {
-            final IRI identifier = rdf.createIRI(webAnno.getAnnoId());
-            final URI uri = new URI(identifier.getIRIString());
-            System.out.println(
-                    "Annotation " + webAnno.getAnnoId() + " for Image Resource " + webAnno.getBody().getResourceId()
-                            + " created");
-            final InputStream is = new ByteArrayInputStream(
-                    Objects.requireNonNull(serializeToBytes(webAnno).orElse(null)));
-            final String n3 = (String) jsonLdUtils.unmarshallToNQuads(is);
-            final InputStream n3Stream = new ByteArrayInputStream(Objects.requireNonNull(n3).getBytes());
-            batch.put(uri, n3Stream);
-        }
-        h2client.joiningCompletableFuturePut(batch, contentTypeNTriples);
-    }
-
-    @Test
-    void testPutTaggingAnnotations() throws Exception {
-        ScbConfig scbConfig = getScbConfigWithAbsolutePath();
-        final TaggingAnnotationBuilder tab = new TaggingAnnotationBuilder(scbConfig);
-        final List<TemplateTarget> targetList = getTargetList();
-        final List<TemplateTaggingAnnotation> annoList = tab.buildTaggingAnnotations(targetList);
-        final List<TemplateTaggingAnnotation> sublist = annoList.subList(startIndex, toIndex);
-        final Map<URI, InputStream> batch = new HashMap<>();
-        for (TemplateTaggingAnnotation webAnno : sublist) {
-            final IRI identifier = rdf.createIRI(webAnno.getAnnoId());
-            final URI uri = new URI(identifier.getIRIString());
-            System.out.println(
-                    "Annotation " + webAnno.getAnnoId() + " for Tag Body " + webAnno.getBody().getTagId() + " created");
-            final InputStream is = new ByteArrayInputStream(
-                    Objects.requireNonNull(serializeToBytes(webAnno).orElse(null)));
-            final String n3 = (String) jsonLdUtils.unmarshallToNQuads(is);
-            final InputStream n3Stream = new ByteArrayInputStream(Objects.requireNonNull(n3).getBytes());
-            batch.put(uri, n3Stream);
-        }
-        h2client.joiningCompletableFuturePut(batch, contentTypeNTriples);
-    }
-
-    private List<TemplateTarget> getTargetList() {
-        ScbConfig scbConfig = getScbConfigWithAbsolutePath();
-        final TargetBuilder tb = new TargetBuilder(scbConfig);
-        return tb.buildCanvases();
     }
 }

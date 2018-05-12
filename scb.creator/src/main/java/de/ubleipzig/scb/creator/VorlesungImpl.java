@@ -35,7 +35,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
@@ -72,21 +71,6 @@ public class VorlesungImpl {
     }
 
     /**
-     * zipToMap.
-     *
-     * @param keys keys
-     * @param values values
-     * @param <K> K
-     * @param <V> V
-     * @return {@link IntStream}
-     */
-    public static <K, V> Map<K, V> zipToMap(final List<K> keys, final List<V> values) {
-        return IntStream.range(0, keys.size())
-                        .boxed()
-                        .collect(Collectors.toMap(keys::get, values::get));
-    }
-
-    /**
      * processInputFile.
      *
      * @param is {@link InputStream}
@@ -96,9 +80,7 @@ public class VorlesungImpl {
         List<VPMetadata> inputList = new ArrayList<>();
         try {
             final BufferedReader br = new BufferedReader(new InputStreamReader(is));
-            inputList = br.lines()
-                          .map(mapToItem)
-                          .collect(Collectors.toList());
+            inputList = br.lines().map(mapToItem).collect(Collectors.toList());
             br.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -125,7 +107,7 @@ public class VorlesungImpl {
     /**
      * setMetadata.
      *
-     * @param tag an {@link Optional} {@link String}
+     * @param tag   an {@link Optional} {@link String}
      * @param mlist a list of {@link TemplateMetadata}
      */
     public void setMetadata(@SuppressWarnings("OptionalUsedAsFieldOrParameterType") final Optional<String> tag, final
@@ -175,8 +157,8 @@ public class VorlesungImpl {
      */
     public List<File> getFiles() {
         final List<File> files = new ArrayList<>();
-        try (Stream<Path> paths = Files.walk(Paths.get(imageMetadataServiceConfig.getImageSourceDir()))
-                                       .filter(Files::isRegularFile)) {
+        try (Stream<Path> paths = Files.walk(Paths.get(imageMetadataServiceConfig.getImageSourceDir())).filter(
+                Files::isRegularFile)) {
             paths.forEach(p -> {
                 final File file = new File(String.valueOf(p.toAbsolutePath()));
                 files.add(file);

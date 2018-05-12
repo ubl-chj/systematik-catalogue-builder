@@ -42,6 +42,7 @@ dependencies {
     implementation("com.github.jsonld-java:jsonld-java:$jsonLdVersion")
     implementation("com.google.guava:guava:$guavaVersion")
     implementation("com.sun.activation:javax.activation:$javaxActivationVersion")
+    implementation("commons-cli:commons-cli:$commonsCliVersion")
     implementation("commons-io:commons-io:$commonsIoVersion")
     implementation("de.ubleipzig:iiif.vocabulary:$iiifVocabularyVersion")
     implementation("de.ubleipzig:image.metadata:$imageMetadataVersion")
@@ -54,7 +55,7 @@ dependencies {
     implementation("org.apache.commons:commons-csv:$commonsCsvVersion")
     implementation("org.apache.httpcomponents:httpclient:$httpclientVersion")
     implementation("org.apache.httpcomponents:httpclient-cache:$httpclientVersion")
-    implementation("org.apache.commons:commons-rdf-jena-jpms:$commonsRdfJenaVersion")
+    implementation("de.ubleipzig:commons-rdf-jena-jpms:$commonsRdfJenaVersion")
     implementation("org.apache.thrift:libthrift:$thriftVersion"){
         exclude(module: 'httpclient')
         exclude(module: 'httpcore')

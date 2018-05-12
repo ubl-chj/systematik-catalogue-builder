@@ -17,12 +17,13 @@ plugins {
 
 ext {
     apiguardianVersion = '1.0.0'
+    commonsCliVersion = '1.4'
     commonsCodecVersion = '1.11'
     commonsCsvVersion = '1.5'
     commonsIoVersion = '2.6'
     commonsLangVersion = '3.7'
     commonsRdfVersion = '0.5.0'
-    commonsRdfJenaVersion = '0.6.0-SNAPSHOT'
+    commonsRdfJenaVersion = '1.0.0-SNAPSHOT'
     dexxCollectionVersion = '0.7'
     dropwizardVersion = '1.2.0'
     guavaVersion = '24.1-jre'
@@ -39,7 +40,6 @@ ext {
     logbackVersion = '1.2.3'
     slf4jVersion = "1.7.25"
     trellisVersion = '0.7.0-SNAPSHOT'
-    xerxesVersion = '2.11.0'
 
     /* Trellis Testing modules */
     activationApiVersion = '1.2.0'
@@ -78,6 +78,7 @@ ext {
 allprojects { subproj ->
 
     apply plugin: 'checkstyle'
+    apply plugin: 'com.github.hierynomus.license'
     apply plugin: 'idea'
     apply plugin: 'jacoco'
     apply plugin: 'java'
@@ -103,11 +104,37 @@ allprojects { subproj ->
 
     repositories {
         mavenCentral()
-        flatDir {
-            dirs "$rootProject.projectDir/lib"
-        }
         maven {
             url "https://oss.sonatype.org/content/repositories/snapshots"
+        }
+    }
+    configurations {
+        all {
+            resolutionStrategy {
+                force("org.trellisldp:trellis-agent-jpms:$trellisVersion")
+                force("org.trellisldp:trellis-api-jpms:$trellisVersion")
+                force("org.trellisldp:trellis-app-jpms:$trellisVersion")
+                force("org.trellisldp:trellis-app-triplestore-jpms:$trellisVersion")
+                force("org.trellisldp:trellis-audit-jpms:$trellisVersion")
+                force("org.trellisldp:trellis-constraint-rules-jpms:$trellisVersion")
+                force("org.trellisldp:trellis-event-serialization-jpms:$trellisVersion")
+                force("org.trellisldp:trellis-file-jpms:$trellisVersion")
+                force("org.trellisldp:trellis-id-jpms:$trellisVersion")
+                force("org.trellisldp:trellis-io-jena-jpms:$trellisVersion")
+                force("org.trellisldp:trellis-http-jpms:$trellisVersion")
+                force("org.trellisldp:trellis-namespaces-jpms:$trellisVersion")
+                force("org.trellisldp:trellis-rdfa-jpms:$trellisVersion")
+                force("org.trellisldp:trellis-triplestore-jpms:$trellisVersion")
+                force("org.trellisldp:trellis-vocabulary-jpms:$trellisVersion")
+                force("org.trellisldp:trellis-webac-jpms:$trellisVersion")
+                force "de.ubleipzig:jena.arq-jpms:$jenaVersion"
+                force "de.ubleipzig:jena.base-jpms:$jenaVersion"
+                force "de.ubleipzig:jena.core-jpms:$jenaVersion"
+                force "de.ubleipzig:jena.iri-jpms:$jenaVersion"
+                force "de.ubleipzig:jena.rdfconnection-jpms:$jenaVersion"
+                force "org.trellisldp:trellis-client:$trellisClientVersion"
+                cacheChangingModulesFor 0, 'seconds'
+            }
         }
     }
 

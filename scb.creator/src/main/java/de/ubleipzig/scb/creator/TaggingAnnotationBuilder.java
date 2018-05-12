@@ -14,13 +14,14 @@
 
 package de.ubleipzig.scb.creator;
 
-import static de.ubleipzig.scb.creator.UUIDType5.NAMESPACE_URL;
+import static de.ubleipzig.scb.creator.internal.UUIDType5.NAMESPACE_URL;
 import static org.apache.commons.io.FilenameUtils.removeExtension;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import de.ubleipzig.iiif.vocabulary.ANNO;
 import de.ubleipzig.iiif.vocabulary.SC;
 import de.ubleipzig.image.metadata.ImageMetadataServiceConfig;
+import de.ubleipzig.scb.creator.internal.UUIDType5;
 import de.ubleipzig.scb.templates.TemplateMetadata;
 import de.ubleipzig.scb.templates.TemplateTagBody;
 import de.ubleipzig.scb.templates.TemplateTaggingAnnotation;
@@ -46,7 +47,7 @@ import org.slf4j.Logger;
  */
 public class TaggingAnnotationBuilder {
 
-    private static Logger log = getLogger(TaggingAnnotationBuilder.class);
+    private static Logger logger = getLogger(TaggingAnnotationBuilder.class);
     private final ImageMetadataServiceConfig imageMetadataServiceConfig;
     private final ScbConfig scbConfig;
 
@@ -112,7 +113,7 @@ public class TaggingAnnotationBuilder {
             canvas.setTargetId(id);
             canvas.setContext(contexts);
             canvas.setCanvasLabel(removeExtension(label));
-            log.debug("Creating Target for {}", label);
+            logger.debug("Creating Target for {}", label);
         }
 
         final Iterator<TemplateTarget> i6 = groupedTargets.iterator();
@@ -138,7 +139,7 @@ public class TaggingAnnotationBuilder {
                                                  .filter(s -> !s.isEmpty());
             vi.setMetadata(gt5, mlist);
             c.setMetadata(mlist);
-            log.debug("Setting Metadata for {}", c.getTargetId());
+            logger.debug("Setting Metadata for {}", c.getTargetId());
         }
 
         return groupedTargets;
@@ -179,7 +180,7 @@ public class TaggingAnnotationBuilder {
                 ta.setBody(body);
                 ta.setTarget(t.getTargetId());
                 annoList.add(ta);
-                log.debug("Adding Annotation {} to list", identifier);
+                logger.debug("Adding Annotation {} to list", identifier);
             });
         });
         return annoList;

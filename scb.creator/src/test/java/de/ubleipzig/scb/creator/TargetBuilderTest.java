@@ -14,7 +14,7 @@
 
 package de.ubleipzig.scb.creator;
 
-import static de.ubleipzig.scb.creator.JsonSerializer.serialize;
+import static de.ubleipzig.scb.creator.internal.JsonSerializer.serialize;
 import static org.junit.Assert.assertEquals;
 
 import de.ubleipzig.scb.templates.TemplateTarget;
@@ -32,7 +32,7 @@ public class TargetBuilderTest extends CommonTests {
 
     @Test
     void getTargets() {
-        ScbConfig scbConfig = getScbConfigWithAbsolutePath();
+        final ScbConfig scbConfig = getScbConfigWithAbsolutePath();
         final TargetBuilder tb = new TargetBuilder(scbConfig);
         final List<TemplateTarget> targetList = tb.buildCanvases();
         System.out.println(serialize(targetList.get(49000)).orElse(""));

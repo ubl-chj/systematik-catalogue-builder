@@ -14,7 +14,7 @@
 
 package de.ubleipzig.scb.creator;
 
-import static de.ubleipzig.scb.creator.JsonSerializer.serialize;
+import static de.ubleipzig.scb.creator.internal.JsonSerializer.serialize;
 
 import de.ubleipzig.scb.templates.TemplateTaggingAnnotation;
 import de.ubleipzig.scb.templates.TemplateTarget;
@@ -34,7 +34,7 @@ public class TaggingAnnotationBuilderTest extends CommonTests {
 
     @Test
     void testGetTaggingAnnotations() {
-        ScbConfig scbConfig = getScbConfigWithAbsolutePath();
+        final ScbConfig scbConfig = getScbConfigWithAbsolutePath();
         final TaggingAnnotationBuilder ab = new TaggingAnnotationBuilder(scbConfig);
         final List<TemplateTarget> targetList = getTargetList();
         final List<TemplateTaggingAnnotation> annoList = ab.buildTaggingAnnotations(targetList);
@@ -43,7 +43,7 @@ public class TaggingAnnotationBuilderTest extends CommonTests {
     }
 
     private List<TemplateTarget> getTargetList() {
-        ScbConfig scbConfig = getScbConfigWithAbsolutePath();
+        final ScbConfig scbConfig = getScbConfigWithAbsolutePath();
         final TaggingAnnotationBuilder tb = new TaggingAnnotationBuilder(scbConfig);
         return tb.buildTaggingTargets();
     }

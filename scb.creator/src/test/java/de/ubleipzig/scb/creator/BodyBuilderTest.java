@@ -14,7 +14,7 @@
 
 package de.ubleipzig.scb.creator;
 
-import static de.ubleipzig.scb.creator.JsonSerializer.serialize;
+import static de.ubleipzig.scb.creator.internal.JsonSerializer.serialize;
 
 import de.ubleipzig.scb.templates.TemplateBody;
 import de.ubleipzig.scb.templates.TemplateTarget;
@@ -31,7 +31,7 @@ public class BodyBuilderTest extends CommonTests {
 
     @Test
     void getBodiesWithDimensions() {
-        ScbConfig scbConfig = getScbConfigWithAbsolutePath();
+        final ScbConfig scbConfig = getScbConfigWithAbsolutePath();
         final BodyBuilder bb = new BodyBuilder(scbConfig);
         final List<TemplateTarget> targetList = getTargetList();
         final List<TemplateBody> bodyList = bb.getBodiesWithDimensions(targetList);
@@ -40,7 +40,7 @@ public class BodyBuilderTest extends CommonTests {
     }
 
     private List<TemplateTarget> getTargetList() {
-        ScbConfig scbConfig = getScbConfigWithAbsolutePath();
+        final ScbConfig scbConfig = getScbConfigWithAbsolutePath();
         final TargetBuilder tb = new TargetBuilder(scbConfig);
         return tb.buildCanvases();
     }

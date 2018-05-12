@@ -14,12 +14,12 @@
 
 package de.ubleipzig.scb.creator;
 
-import static de.ubleipzig.scb.creator.UUIDType5.NAMESPACE_URL;
+import static de.ubleipzig.scb.creator.internal.UUIDType5.NAMESPACE_URL;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import de.ubleipzig.iiif.vocabulary.ANNO;
 import de.ubleipzig.iiif.vocabulary.SC;
-import de.ubleipzig.image.metadata.ImageMetadataServiceConfig;
+import de.ubleipzig.scb.creator.internal.UUIDType5;
 import de.ubleipzig.scb.templates.TemplateBody;
 import de.ubleipzig.scb.templates.TemplatePaintingAnnotation;
 import de.ubleipzig.scb.templates.TemplateTarget;
@@ -39,7 +39,6 @@ import org.slf4j.Logger;
 public class AnnotationBuilder {
 
     private static Logger log = getLogger(AnnotationBuilder.class);
-    private final ImageMetadataServiceConfig imageMetadataServiceConfig;
     private final ScbConfig scbConfig;
 
     /**
@@ -49,7 +48,6 @@ public class AnnotationBuilder {
      */
     public AnnotationBuilder(final ScbConfig
             scbConfig) {
-        this.imageMetadataServiceConfig = scbConfig.getImageMetadataServiceConfig();
         this.scbConfig = scbConfig;
     }
 

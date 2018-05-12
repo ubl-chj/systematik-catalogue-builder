@@ -10,4 +10,4 @@ metadataRemoteLocation: "https://workspaces.ub.uni-leipzig.de:8445/collection/vp
 
 imageMetadataServiceConfig:
   dimensionManifestFilePath: "/dimension-manifest-test-8efc742f-709e-47ea-a346-e7bdc3266b49.json"
-  imageSourceDir: "/media/christopher/OVAUBIMG/UBiMG/images/ubleipzig_sk2"
+  imageSourceDir: "/images"

@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package de.ubleipzig.scb.creator;
+package de.ubleipzig.scb.creator.internal;
 
 import java.nio.charset.Charset;
 import java.security.MessageDigest;

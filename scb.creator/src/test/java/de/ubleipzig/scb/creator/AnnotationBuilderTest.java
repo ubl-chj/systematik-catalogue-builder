@@ -14,7 +14,7 @@
 
 package de.ubleipzig.scb.creator;
 
-import static de.ubleipzig.scb.creator.JsonSerializer.serialize;
+import static de.ubleipzig.scb.creator.internal.JsonSerializer.serialize;
 
 import de.ubleipzig.scb.templates.TemplatePaintingAnnotation;
 import de.ubleipzig.scb.templates.TemplateTarget;
@@ -33,7 +33,7 @@ public class AnnotationBuilderTest extends CommonTests {
 
     @Test
     void getAnnotationsWithDimensionedBodies() {
-        ScbConfig scbConfig = getScbConfigWithAbsolutePath();
+        final ScbConfig scbConfig = getScbConfigWithAbsolutePath();
         final AnnotationBuilder ab = new AnnotationBuilder(scbConfig);
         final List<TemplateTarget> targetList = getTargetList();
         final List<TemplatePaintingAnnotation> annoList = ab.getAnnotationsWithDimensionedBodies(targetList);
@@ -42,7 +42,7 @@ public class AnnotationBuilderTest extends CommonTests {
     }
 
     private List<TemplateTarget> getTargetList() {
-        ScbConfig scbConfig = getScbConfigWithAbsolutePath();
+        final ScbConfig scbConfig = getScbConfigWithAbsolutePath();
         final TargetBuilder tb = new TargetBuilder(scbConfig);
         return tb.buildCanvases();
     }

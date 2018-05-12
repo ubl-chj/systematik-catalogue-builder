@@ -12,22 +12,19 @@
  * limitations under the License.
  */
 
-package de.ubleipzig.scb.creator;
+package de.ubleipzig.scb.creator.internal;
 
 import static com.fasterxml.jackson.core.util.DefaultIndenter.SYSTEM_LINEFEED_INSTANCE;
 import static com.fasterxml.jackson.databind.SerializationFeature.INDENT_OUTPUT;
 import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
-import static org.slf4j.LoggerFactory.getLogger;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Optional;
-
-import org.slf4j.Logger;
 
 /**
  * JsonSerializer.
@@ -37,7 +34,6 @@ import org.slf4j.Logger;
 public final class JsonSerializer {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
-    private static Logger logger = getLogger(JsonSerializer.class);
 
     static {
         MAPPER.configure(WRITE_DATES_AS_TIMESTAMPS, false);

@@ -14,13 +14,14 @@
 
 package de.ubleipzig.scb.creator;
 
-import static de.ubleipzig.scb.creator.UUIDType5.NAMESPACE_URL;
+import static de.ubleipzig.scb.creator.internal.UUIDType5.NAMESPACE_URL;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import de.ubleipzig.iiif.vocabulary.DCTypes;
 import de.ubleipzig.iiif.vocabulary.IIIFEnum;
 import de.ubleipzig.image.metadata.ImageMetadataServiceConfig;
 import de.ubleipzig.image.metadata.templates.ImageDimensions;
+import de.ubleipzig.scb.creator.internal.UUIDType5;
 import de.ubleipzig.scb.templates.TemplateBody;
 import de.ubleipzig.scb.templates.TemplateService;
 import de.ubleipzig.scb.templates.TemplateTarget;
@@ -42,7 +43,7 @@ import org.slf4j.Logger;
  */
 public class BodyBuilder {
 
-    private static Logger log = getLogger(BodyBuilder.class);
+    private static Logger logger = getLogger(BodyBuilder.class);
     private final ImageMetadataServiceConfig imageMetadataServiceConfig;
     private final ScbConfig scbConfig;
 
@@ -86,6 +87,7 @@ public class BodyBuilder {
             service.setServiceProfile(serviceProfile);
             body.setService(service);
             bodyList.add(body);
+            logger.debug("Adding Body {} to list", identifier);
         }
         return bodyList;
     }

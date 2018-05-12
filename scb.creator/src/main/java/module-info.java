@@ -36,5 +36,7 @@ module de.ubleipzig.scb.creator {
     requires dropwizard.configuration;
     requires dropwizard.jersey;
     requires dropwizard.jackson;
+    requires commons.cli;
+    requires validation.api;
     uses org.apache.commons.rdf.api.RDF;
 }

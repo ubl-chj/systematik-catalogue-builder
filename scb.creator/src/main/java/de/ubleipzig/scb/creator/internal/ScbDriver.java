@@ -12,7 +12,29 @@
  * limitations under the License.
  */
 
-package de.ubleipzig.scb.creator;
+package de.ubleipzig.scb.creator.internal;
 
-public class VorlesungImplTest {
+import de.ubleipzig.scb.creator.SystematikCatalogueBuilder;
+
+/**
+ * ScbDriver.
+ */
+public class ScbDriver {
+
+    /**
+     * main.
+     *
+     * @param args args
+     */
+    public static void main(final String[] args) {
+        final ScbDriver driver = new ScbDriver();
+        driver.run(args);
+    }
+
+    private void run(final String[] args) {
+
+        final ArgParser parser = new ArgParser();
+        final SystematikCatalogueBuilder builder = parser.init(args);
+        builder.run();
+    }
 }

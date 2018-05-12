@@ -1,11 +1,22 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package de.ubleipzig.scb.creator;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Map;
-
-import javax.net.ssl.SSLContext;
 
 import org.apache.commons.rdf.api.IRI;
 import org.apache.commons.rdf.jena.JenaRDF;
@@ -28,16 +39,7 @@ public class RemoteResource {
     }
 
     private static LdpClient getClient() {
-
-        final SimpleSSLContext sslct;
-        try {
-            sslct = new SimpleSSLContext();
-            final SSLContext sslContext = sslct.get();
-            return h2client = new LdpClientImpl(sslContext);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return h2client = new LdpClientImpl();
     }
 
     /**
@@ -59,16 +61,10 @@ public class RemoteResource {
     /**
      * joiningCompletableFuturePut.
      *
-     * @param batch batch
+     * @param batch       batch
      * @param contentType contentType
-     * @throws LdpClientException LdpClientException
      */
-    public void joiningCompletableFuturePut(final Map<URI, InputStream> batch, final String contentType) throws
-            LdpClientException {
-        try {
-            h2client.joiningCompletableFuturePut(batch, contentType);
-        } catch (Exception ex) {
-            throw new LdpClientException(ex.toString(), ex.getCause());
-        }
+    public void joiningCompletableFuturePut(final Map<URI, InputStream> batch, final String contentType) {
+        h2client.joiningCompletableFuturePut(batch, contentType);
     }
 }

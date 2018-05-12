@@ -11,8 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package de.ubleipzig.scb.creator;
-
-public class VorlesungImplTest {
-}
+/**
+ *
+ */
+package de.ubleipzig.scb.creator.internal;

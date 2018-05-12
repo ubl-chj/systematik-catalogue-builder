@@ -14,7 +14,7 @@
 
 package de.ubleipzig.scb.creator;
 
-import static de.ubleipzig.scb.creator.UUIDType5.NAMESPACE_URL;
+import static de.ubleipzig.scb.creator.internal.UUIDType5.NAMESPACE_URL;
 import static org.apache.commons.io.FilenameUtils.removeExtension;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -22,6 +22,7 @@ import de.ubleipzig.iiif.vocabulary.ANNO;
 import de.ubleipzig.iiif.vocabulary.SC;
 import de.ubleipzig.image.metadata.ImageMetadataServiceConfig;
 import de.ubleipzig.image.metadata.templates.ImageDimensions;
+import de.ubleipzig.scb.creator.internal.UUIDType5;
 import de.ubleipzig.scb.templates.TemplateMetadata;
 import de.ubleipzig.scb.templates.TemplateTarget;
 
