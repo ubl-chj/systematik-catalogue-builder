@@ -17,7 +17,6 @@ package de.ubleipzig.scb.creator;
 import static de.ubleipzig.scb.creator.JsonSerializer.serialize;
 import static org.junit.Assert.assertEquals;
 
-import de.ubleipzig.image.metadata.ImageMetadataServiceConfig;
 import de.ubleipzig.scb.templates.TemplateTarget;
 
 import java.util.List;
@@ -33,9 +32,8 @@ public class TargetBuilderTest extends CommonTests {
 
     @Test
     void getTargets() {
-        final ImageMetadataServiceConfig imageMetadataServiceConfig = getImageMetadataGeneratorConfig();
-        final ScbConfig scbConfig = getScbConfig();
-        final TargetBuilder tb = new TargetBuilder(imageMetadataServiceConfig, scbConfig);
+        ScbConfig scbConfig = getScbConfigWithAbsolutePath();
+        final TargetBuilder tb = new TargetBuilder(scbConfig);
         final List<TemplateTarget> targetList = tb.buildCanvases();
         System.out.println(serialize(targetList.get(49000)).orElse(""));
         assertEquals(52218, targetList.size());

@@ -12,6 +12,8 @@
  * limitations under the License.
  */
 module de.ubleipzig.scb.creator {
+    exports de.ubleipzig.scb.creator;
+    opens de.ubleipzig.scb.creator to com.fasterxml.jackson.databind;
     requires com.fasterxml.jackson.annotation;
     requires org.apache.commons.rdf.api;
     requires slf4j.api;
@@ -30,5 +32,9 @@ module de.ubleipzig.scb.creator {
     requires de.ubleipzig.iiif.vocabulary;
     requires de.ubleipzig.scb.templates;
     requires org.apache.jena.arq;
+    requires dropwizard.core;
+    requires dropwizard.configuration;
+    requires dropwizard.jersey;
+    requires dropwizard.jackson;
     uses org.apache.commons.rdf.api.RDF;
 }

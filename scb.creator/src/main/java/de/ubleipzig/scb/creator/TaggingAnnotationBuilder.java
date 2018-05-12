@@ -53,12 +53,11 @@ public class TaggingAnnotationBuilder {
     /**
      * TargetBuilder.
      *
-     * @param imageMetadataServiceConfig imageMetadataServiceConfig
      * @param scbConfig scbConfig
      */
-    public TaggingAnnotationBuilder(final ImageMetadataServiceConfig imageMetadataServiceConfig, final ScbConfig
+    public TaggingAnnotationBuilder(final ScbConfig
             scbConfig) {
-        this.imageMetadataServiceConfig = imageMetadataServiceConfig;
+        this.imageMetadataServiceConfig = scbConfig.getImageMetadataServiceConfig();
         this.scbConfig = scbConfig;
     }
 

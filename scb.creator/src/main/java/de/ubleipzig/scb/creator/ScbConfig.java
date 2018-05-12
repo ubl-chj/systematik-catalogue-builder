@@ -1,8 +1,14 @@
 package de.ubleipzig.scb.creator;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import de.ubleipzig.image.metadata.ImageMetadataServiceConfig;
+
+import io.dropwizard.Configuration;
+
 import java.io.InputStream;
 
-public class ScbConfig {
+public class ScbConfig extends Configuration {
     private String metadataFile;
     private InputStream metadataInputStream;
     private String baseUrl;
@@ -12,14 +18,78 @@ public class ScbConfig {
     private String bodyContainer;
     private String tagBodyContainer;
     private String targetContainer;
+    private ImageMetadataServiceConfig imageMetadataServiceConfig = new ImageMetadataServiceConfig();
+    private String metadataRemoteLocation;
+    private String dimensionManifestRemoteLocation;
+
+    /**
+     * getImageMetadataServiceConfig.
+     *
+     * @return {@link ImageMetadataServiceConfig}
+     */
+    @JsonProperty
+    public ImageMetadataServiceConfig getImageMetadataServiceConfig() {
+        return imageMetadataServiceConfig;
+    }
+
+    /**
+     * setImageMetadataServiceConfig.
+     *
+     * @param imageMetadataServiceConfig {@link ImageMetadataServiceConfig}
+     */
+    @JsonProperty
+    public void setImageMetadataServiceConfig(final ImageMetadataServiceConfig imageMetadataServiceConfig) {
+        this.imageMetadataServiceConfig = imageMetadataServiceConfig;
+    }
+
+    /**
+     * getMetadataRemoteLocation.
+     *
+     * @return {@link String}
+     */
+    @JsonProperty
+    public String getMetadataRemoteLocation() {
+        return metadataRemoteLocation;
+    }
+
+    /**
+     * setMetadataFile.
+     *
+     * @param metadataRemoteLocation metadataRemoteLocation
+     */
+    @JsonProperty
+    public final void setMetadataRemoteLocation(final String metadataRemoteLocation) {
+        this.metadataRemoteLocation = metadataRemoteLocation;
+    }
+
+    /**
+     * getMetadataRemoteLocation.
+     *
+     * @return {@link String}
+     */
+    @JsonProperty
+    public String getDimensionManifestRemoteLocation() {
+        return dimensionManifestRemoteLocation;
+    }
+
+    /**
+     * setMetadataFile.
+     *
+     * @param dimensionManifestRemoteLocation dimensionManifetRemoteLocation
+     */
+    @JsonProperty
+    public final void setDimensionManifestRemoteLocation(final String dimensionManifestRemoteLocation) {
+        this.dimensionManifestRemoteLocation = dimensionManifestRemoteLocation;
+    }
 
     /**
      * getMetadataFile.
      *
      * @return {@link String}
      */
+    @JsonProperty
     public String getMetadataFile() {
-        return this.metadataFile;
+        return metadataFile;
     }
 
     /**
@@ -28,7 +98,17 @@ public class ScbConfig {
      * @return {@link String}
      */
     public InputStream getMetadataInputStream() {
-        return this.metadataInputStream;
+        return metadataInputStream;
+    }
+
+    /**
+     * setMetadataFile.
+     *
+     * @param metadataFile metadataFile
+     */
+    @JsonProperty
+    public final void setMetadata(final String metadataFile) {
+        this.metadataFile = metadataFile;
     }
 
     /**
@@ -41,21 +121,13 @@ public class ScbConfig {
     }
 
     /**
-     * setMetadataFile.
-     *
-     * @param metadataFile metadataFile
-     */
-    public final void setMetadata(final String metadataFile) {
-        this.metadataFile = metadataFile;
-    }
-
-    /**
      * getBaseUrl.
      *
      * @return {@link String}
      */
+    @JsonProperty
     public String getBaseUrl() {
-        return this.baseUrl;
+        return baseUrl;
     }
 
     /**
@@ -63,6 +135,7 @@ public class ScbConfig {
      *
      * @param baseUrl baseUrl
      */
+    @JsonProperty
     public final void setBaseUrl(final String baseUrl) {
         this.baseUrl = baseUrl;
     }
@@ -72,8 +145,9 @@ public class ScbConfig {
      *
      * @return {@link String}
      */
+    @JsonProperty
     public String getImageServiceBaseUrl() {
-        return this.imageServiceBaseUrl;
+        return imageServiceBaseUrl;
     }
 
     /**
@@ -81,6 +155,7 @@ public class ScbConfig {
      *
      * @param imageServiceBaseUrl imageServiceBaseUrl
      */
+    @JsonProperty
     public final void setImageServiceBaseUrl(final String imageServiceBaseUrl) {
         this.imageServiceBaseUrl = imageServiceBaseUrl;
     }
@@ -90,8 +165,9 @@ public class ScbConfig {
      *
      * @return {@link String}
      */
+    @JsonProperty
     public String getAnnotationContainer() {
-        return this.annotationContainer;
+        return annotationContainer;
     }
 
     /**
@@ -99,6 +175,7 @@ public class ScbConfig {
      *
      * @param annotationContainer annotationContainer
      */
+    @JsonProperty
     public final void setAnnotationContainer(final String annotationContainer) {
         this.annotationContainer = annotationContainer;
 
@@ -109,8 +186,9 @@ public class ScbConfig {
      *
      * @return {@link String}
      */
+    @JsonProperty
     public String getBodyContainer() {
-        return this.bodyContainer;
+        return bodyContainer;
     }
 
     /**
@@ -118,6 +196,7 @@ public class ScbConfig {
      *
      * @param bodyContainer bodyContainer
      */
+    @JsonProperty
     public final void setBodyContainer(final String bodyContainer) {
         this.bodyContainer = bodyContainer;
     }
@@ -127,8 +206,9 @@ public class ScbConfig {
      *
      * @return {@link String}
      */
+    @JsonProperty
     public String getTagBodyContainer() {
-        return this.tagBodyContainer;
+        return tagBodyContainer;
     }
 
     /**
@@ -136,6 +216,7 @@ public class ScbConfig {
      *
      * @param tagBodyContainer tagBodyContainer
      */
+    @JsonProperty
     public final void setTagBodyContainer(final String tagBodyContainer) {
         this.tagBodyContainer = tagBodyContainer;
     }
@@ -145,8 +226,9 @@ public class ScbConfig {
      *
      * @return {@link String}
      */
+    @JsonProperty
     public String getTargetContainer() {
-        return this.targetContainer;
+        return targetContainer;
     }
 
     /**
@@ -154,6 +236,7 @@ public class ScbConfig {
      *
      * @param targetContainer targetContainer
      */
+    @JsonProperty
     public final void setTargetContainer(final String targetContainer) {
         this.targetContainer = targetContainer;
     }
@@ -163,8 +246,9 @@ public class ScbConfig {
      *
      * @return {@link String}
      */
+    @JsonProperty
     public String getImageServiceType() {
-        return this.imageServiceType;
+        return imageServiceType;
     }
 
     /**
@@ -172,6 +256,7 @@ public class ScbConfig {
      *
      * @param imageServiceType imageServiceType
      */
+    @JsonProperty
     public final void setImageServiceType(final String imageServiceType) {
         this.imageServiceType = imageServiceType;
     }

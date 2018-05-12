@@ -16,7 +16,6 @@ package de.ubleipzig.scb.creator;
 
 import static de.ubleipzig.scb.creator.JsonSerializer.serialize;
 
-import de.ubleipzig.image.metadata.ImageMetadataServiceConfig;
 import de.ubleipzig.scb.templates.TemplatePaintingAnnotation;
 import de.ubleipzig.scb.templates.TemplateTarget;
 
@@ -32,12 +31,10 @@ import org.junit.jupiter.api.Test;
  */
 public class AnnotationBuilderTest extends CommonTests {
 
-
     @Test
     void getAnnotationsWithDimensionedBodies() {
-        final ImageMetadataServiceConfig imageMetadataServiceConfig = getImageMetadataGeneratorConfig();
-        final ScbConfig scbConfig = getScbConfig();
-        final AnnotationBuilder ab = new AnnotationBuilder(imageMetadataServiceConfig, scbConfig);
+        ScbConfig scbConfig = getScbConfigWithAbsolutePath();
+        final AnnotationBuilder ab = new AnnotationBuilder(scbConfig);
         final List<TemplateTarget> targetList = getTargetList();
         final List<TemplatePaintingAnnotation> annoList = ab.getAnnotationsWithDimensionedBodies(targetList);
         System.out.println(serialize(annoList.get(1)).orElse(""));
@@ -45,9 +42,8 @@ public class AnnotationBuilderTest extends CommonTests {
     }
 
     private List<TemplateTarget> getTargetList() {
-        final ImageMetadataServiceConfig imageMetadataServiceConfig = getImageMetadataGeneratorConfig();
-        final ScbConfig scbConfig = getScbConfig();
-        final TargetBuilder tb = new TargetBuilder(imageMetadataServiceConfig, scbConfig);
+        ScbConfig scbConfig = getScbConfigWithAbsolutePath();
+        final TargetBuilder tb = new TargetBuilder(scbConfig);
         return tb.buildCanvases();
     }
 }

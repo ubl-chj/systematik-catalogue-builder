@@ -114,8 +114,7 @@ public class ResourceCreatorTest extends CommonTests {
 
     @BeforeEach
     void init() {
-        pid = "ldp-test-" + UUID.randomUUID()
-                                .toString();
+        pid = "ldp-test-" + UUID.randomUUID().toString();
     }
 
     @AfterEach
@@ -143,13 +142,18 @@ public class ResourceCreatorTest extends CommonTests {
 
     @Test
     void testPutDimensionManifestResource() throws Exception {
-        final IRI identifier = rdf.createIRI(baseUrl + "collection/vp/meta" + dimensionManifestFile);
-        final InputStream is = ResourceCreatorTest.class.getResourceAsStream(dimensionManifestFile);
+        ScbConfig scbConfig = getScbConfig();
+        final String dimensionManifestFilePath = scbConfig.getImageMetadataServiceConfig()
+                .getDimensionManifestFilePath();
+        final IRI identifier = rdf.createIRI(baseUrl + "collection/vp/meta/" + dimensionManifestFilePath);
+        final InputStream is = ResourceCreatorTest.class.getResourceAsStream(dimensionManifestFilePath);
         h2client.put(identifier, is, "application/json");
     }
 
     @Test
     void testPutMetadataResource() throws Exception {
+        ScbConfig scbConfig = getScbConfig();
+        final String metadataFile = scbConfig.getMetadataFile();
         final IRI identifier = rdf.createIRI(baseUrl + "collection/vp/meta" + metadataFile);
         final InputStream is = ResourceCreatorTest.class.getResourceAsStream(metadataFile);
         h2client.put(identifier, is, "text/tab-separated-values");
@@ -158,16 +162,16 @@ public class ResourceCreatorTest extends CommonTests {
     @Disabled
     @Test
     void testPutImageResourceBatchFromSubList() throws Exception {
+        ScbConfig scbConfig = getScbConfig();
         final ImageMetadataServiceConfig imageMetadataServiceConfig = new ImageMetadataServiceConfig();
-        imageMetadataServiceConfig.setImageSourceDir(imageSourceDir);
+        imageMetadataServiceConfig.setImageSourceDir(scbConfig.getImageMetadataServiceConfig().getImageSourceDir());
         final VorlesungImpl vi = new VorlesungImpl(imageMetadataServiceConfig);
         final List<File> files = vi.getFiles();
         files.sort(Comparator.naturalOrder());
         final List<File> sublist = files.subList(startIndex, toIndex);
         final Map<URI, InputStream> batch = new HashMap<>();
         for (File file : sublist) {
-            final IRI identifier = rdf.createIRI(baseUrl + bodyContainer + file.getName()
-                                                                               .toLowerCase());
+            final IRI identifier = rdf.createIRI(baseUrl + scbConfig.getBodyContainer() + file.getName().toLowerCase());
             final URI uri = new URI(identifier.getIRIString());
             final InputStream is = new FileInputStream(file);
             batch.put(uri, is);
@@ -178,8 +182,9 @@ public class ResourceCreatorTest extends CommonTests {
     @Disabled
     @Test
     void testPutImageResourcewithAsync() throws Exception {
+        ScbConfig scbConfig = getScbConfig();
         final ImageMetadataServiceConfig imageMetadataServiceConfig = new ImageMetadataServiceConfig();
-        imageMetadataServiceConfig.setImageSourceDir(imageSourceDir);
+        imageMetadataServiceConfig.setImageSourceDir(scbConfig.getImageMetadataServiceConfig().getImageSourceDir());
         final VorlesungImpl vi = new VorlesungImpl(imageMetadataServiceConfig);
         final List<File> files = vi.getFiles();
         for (File file : files) {
@@ -240,9 +245,7 @@ public class ResourceCreatorTest extends CommonTests {
         try {
             final IRI identifier = rdf.createIRI("http://localhost:8080/test6?ext=acl");
             final ACLStatement acl = new ACLStatement(modes, agent, accessTo);
-            h2client.put(
-                    identifier, new ByteArrayInputStream(acl.getACL()
-                                                            .toByteArray()), contentTypeNTriples);
+            h2client.put(identifier, new ByteArrayInputStream(acl.getACL().toByteArray()), contentTypeNTriples);
         } catch (LdpClientException e) {
             e.printStackTrace();
         }
@@ -250,9 +253,8 @@ public class ResourceCreatorTest extends CommonTests {
 
     @Test
     void testPutCanvases() throws Exception {
-        final ImageMetadataServiceConfig imageMetadataServiceConfig = getImageMetadataGeneratorConfig();
-        final ScbConfig scbConfig = getScbConfig();
-        final TargetBuilder tb = new TargetBuilder(imageMetadataServiceConfig, scbConfig);
+        ScbConfig scbConfig = getScbConfigWithAbsolutePath();
+        final TargetBuilder tb = new TargetBuilder(scbConfig);
         final List<TemplateTarget> targetList = tb.buildCanvases();
         targetList.sort(Comparator.comparing(TemplateTarget::getCanvasLabel));
         final List<TemplateTarget> sublist = targetList.subList(startIndex, toIndex);
@@ -263,8 +265,7 @@ public class ResourceCreatorTest extends CommonTests {
             final InputStream is = new ByteArrayInputStream(
                     Objects.requireNonNull(serializeToBytes(target).orElse(null)));
             final String n3 = (String) jsonLdUtils.unmarshallToNQuads(is);
-            final InputStream n3Stream = new ByteArrayInputStream(Objects.requireNonNull(n3)
-                                                                         .getBytes());
+            final InputStream n3Stream = new ByteArrayInputStream(Objects.requireNonNull(n3).getBytes());
             batch.put(uri, n3Stream);
         }
         h2client.joiningCompletableFuturePut(batch, contentTypeNTriples);
@@ -272,9 +273,8 @@ public class ResourceCreatorTest extends CommonTests {
 
     @Test
     void testPutAnnotations() throws Exception {
-        final ImageMetadataServiceConfig imageMetadataServiceConfig = getImageMetadataGeneratorConfig();
-        final ScbConfig scbConfig = getScbConfig();
-        final AnnotationBuilder ab = new AnnotationBuilder(imageMetadataServiceConfig, scbConfig);
+        ScbConfig scbConfig = getScbConfigWithAbsolutePath();
+        final AnnotationBuilder ab = new AnnotationBuilder(scbConfig);
         final List<TemplateTarget> targetList = getTargetList();
         final List<TemplatePaintingAnnotation> annoList = ab.getAnnotationsWithDimensionedBodies(targetList);
         final List<TemplatePaintingAnnotation> sublist = annoList.subList(startIndex, toIndex);
@@ -282,14 +282,13 @@ public class ResourceCreatorTest extends CommonTests {
         for (TemplatePaintingAnnotation webAnno : sublist) {
             final IRI identifier = rdf.createIRI(webAnno.getAnnoId());
             final URI uri = new URI(identifier.getIRIString());
-            System.out.println("Annotation " + webAnno.getAnnoId() + " for Image Resource " + webAnno.getBody()
-                                                                                                     .getResourceId()
-                    + " created");
+            System.out.println(
+                    "Annotation " + webAnno.getAnnoId() + " for Image Resource " + webAnno.getBody().getResourceId()
+                            + " created");
             final InputStream is = new ByteArrayInputStream(
                     Objects.requireNonNull(serializeToBytes(webAnno).orElse(null)));
             final String n3 = (String) jsonLdUtils.unmarshallToNQuads(is);
-            final InputStream n3Stream = new ByteArrayInputStream(Objects.requireNonNull(n3)
-                                                                         .getBytes());
+            final InputStream n3Stream = new ByteArrayInputStream(Objects.requireNonNull(n3).getBytes());
             batch.put(uri, n3Stream);
         }
         h2client.joiningCompletableFuturePut(batch, contentTypeNTriples);
@@ -297,9 +296,8 @@ public class ResourceCreatorTest extends CommonTests {
 
     @Test
     void testPutTaggingAnnotations() throws Exception {
-        final ImageMetadataServiceConfig imageMetadataServiceConfig = getImageMetadataGeneratorConfig();
-        final ScbConfig scbConfig = getScbConfig();
-        final TaggingAnnotationBuilder tab = new TaggingAnnotationBuilder(imageMetadataServiceConfig, scbConfig);
+        ScbConfig scbConfig = getScbConfigWithAbsolutePath();
+        final TaggingAnnotationBuilder tab = new TaggingAnnotationBuilder(scbConfig);
         final List<TemplateTarget> targetList = getTargetList();
         final List<TemplateTaggingAnnotation> annoList = tab.buildTaggingAnnotations(targetList);
         final List<TemplateTaggingAnnotation> sublist = annoList.subList(startIndex, toIndex);
@@ -307,23 +305,20 @@ public class ResourceCreatorTest extends CommonTests {
         for (TemplateTaggingAnnotation webAnno : sublist) {
             final IRI identifier = rdf.createIRI(webAnno.getAnnoId());
             final URI uri = new URI(identifier.getIRIString());
-            System.out.println("Annotation " + webAnno.getAnnoId() + " for Tag Body " + webAnno.getBody()
-                                                                                               .getTagId()
-                    + " created");
+            System.out.println(
+                    "Annotation " + webAnno.getAnnoId() + " for Tag Body " + webAnno.getBody().getTagId() + " created");
             final InputStream is = new ByteArrayInputStream(
                     Objects.requireNonNull(serializeToBytes(webAnno).orElse(null)));
             final String n3 = (String) jsonLdUtils.unmarshallToNQuads(is);
-            final InputStream n3Stream = new ByteArrayInputStream(Objects.requireNonNull(n3)
-                                                                         .getBytes());
+            final InputStream n3Stream = new ByteArrayInputStream(Objects.requireNonNull(n3).getBytes());
             batch.put(uri, n3Stream);
         }
         h2client.joiningCompletableFuturePut(batch, contentTypeNTriples);
     }
 
     private List<TemplateTarget> getTargetList() {
-        final ImageMetadataServiceConfig imageMetadataServiceConfig = getImageMetadataGeneratorConfig();
-        final ScbConfig scbConfig = getScbConfig();
-        final TargetBuilder tb = new TargetBuilder(imageMetadataServiceConfig, scbConfig);
+        ScbConfig scbConfig = getScbConfigWithAbsolutePath();
+        final TargetBuilder tb = new TargetBuilder(scbConfig);
         return tb.buildCanvases();
     }
 }

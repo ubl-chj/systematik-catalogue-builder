@@ -2,37 +2,42 @@ package de.ubleipzig.scb.creator;
 
 import de.ubleipzig.image.metadata.ImageMetadataServiceConfig;
 
+import io.dropwizard.configuration.ConfigurationException;
+import io.dropwizard.configuration.YamlConfigurationFactory;
+import io.dropwizard.jackson.Jackson;
+import io.dropwizard.jersey.validation.Validators;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+
 public abstract class CommonTests {
 
-    String baseUrl = "https://localhost:8445/";
-    String imageSourceDir = "/media/christopher/OVAUBIMG/UBiMG/images/ubleipzig_sk2";
-    String metadataFile = "/sk2-titles-semester.tsv";
-    String imageServiceBaseUrl = "http://workspaces.ub.uni-leipzig.de:8182/iiif/2/";
-    String imageServiceType = "http://iiif.io/api/image/2/context.json";
-    String annotationContainer = "collection/vp/anno/";
-    String targetContainer = "collection/vp/target/";
-    String bodyContainer = "collection/vp/res/";
-    String tagBodyContainer = "collection/vp/tag/";
-    String dimensionManifestFile = "/dimension-manifest-test-8efc742f-709e-47ea-a346-e7bdc3266b49.json";
-
-    private final ImageMetadataServiceConfig imageMetadataServiceConfig = new ImageMetadataServiceConfig();
-    private final ScbConfig scbConfig = new ScbConfig();
-
-    ScbConfig getScbConfig() {
-        scbConfig.setBaseUrl(baseUrl);
-        scbConfig.setMetadata(metadataFile);
-        scbConfig.setAnnotationContainer(annotationContainer);
-        scbConfig.setTargetContainer(targetContainer);
-        scbConfig.setBodyContainer(bodyContainer);
-        scbConfig.setImageServiceBaseUrl(imageServiceBaseUrl);
-        scbConfig.setImageServiceType(imageServiceType);
-        scbConfig.setTagBodyContainer(tagBodyContainer);
-        return this.scbConfig;
+    static ScbConfig getScbConfigWithAbsolutePath() {
+        final ScbConfig scbConfig;
+        try {
+            scbConfig = new YamlConfigurationFactory<>(
+                    ScbConfig.class, Validators.newValidator(), Jackson.newObjectMapper(), "").build(
+                    new File(CommonTests.class.getResource("/scbconfig-test.yml").toURI()));
+        } catch (IOException | ConfigurationException | URISyntaxException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+        final ImageMetadataServiceConfig imageMetadataServiceConfig = scbConfig.getImageMetadataServiceConfig();
+        imageMetadataServiceConfig.setDimensionManifestFilePath(
+                CommonTests.class.getResource(imageMetadataServiceConfig.getDimensionManifestFilePath()).getPath());
+        return scbConfig;
     }
 
-    ImageMetadataServiceConfig getImageMetadataGeneratorConfig() {
-        final String dimManifestPath = CommonTests.class.getResource(dimensionManifestFile).getPath();
-        imageMetadataServiceConfig.setDimensionManifestFilePath(dimManifestPath);
-        return this.imageMetadataServiceConfig;
+    static ScbConfig getScbConfig() {
+        final ScbConfig scbConfig;
+        try {
+            scbConfig = new YamlConfigurationFactory<>(
+                    ScbConfig.class, Validators.newValidator(), Jackson.newObjectMapper(), "").build(
+                    new File(CommonTests.class.getResource("/scbconfig-test.yml").toURI()));
+        } catch (IOException | ConfigurationException | URISyntaxException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+        return scbConfig;
     }
+
 }

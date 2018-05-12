@@ -36,21 +36,16 @@ public final class TaggingAnnotationCreator extends AbstractResourceCreator {
     /**
      * ResourceCreator Class.
      */
-    private TaggingAnnotationCreator(final ScbConfig scbConfig, final ImageMetadataServiceConfig
-            imageMetadataServiceConfig) {
+    private TaggingAnnotationCreator(final ScbConfig scbConfig) {
         super();
         startIndex = 2000;
         toIndex = 3000;
         this.scbConfig = scbConfig;
-        this.imageMetadataServiceConfig = imageMetadataServiceConfig;
+        this.imageMetadataServiceConfig = scbConfig.getImageMetadataServiceConfig();;
     }
 
     private ScbConfig getScbConfig() {
         return this.scbConfig;
-    }
-
-    private ImageMetadataServiceConfig getImageMetadataGeneratorConfig() {
-        return this.imageMetadataServiceConfig;
     }
 
     /**
@@ -60,23 +55,21 @@ public final class TaggingAnnotationCreator extends AbstractResourceCreator {
      * @throws Exception Exception
      */
     public static void main(final String[] args) throws Exception {
-        final TaggingAnnotationCreator creator = new TaggingAnnotationCreator(
-                buildScbConfig(), buildImageMetadataGeneratorConfig());
+        final TaggingAnnotationCreator creator = new TaggingAnnotationCreator(buildScbConfig());
         final List<TemplateTarget> targetList = getTargetList(creator);
         putTaggingAnnotations(targetList);
         System.exit(1);
     }
 
     private static List<TemplateTarget> getTargetList(final TaggingAnnotationCreator creator) {
-        final TargetBuilder tb = new TargetBuilder(creator.getImageMetadataGeneratorConfig(), creator.getScbConfig());
+        final TargetBuilder tb = new TargetBuilder(creator.getScbConfig());
         return tb.buildCanvases();
     }
 
     private static void putTaggingAnnotations(final List<TemplateTarget> targetList) throws Exception {
         final TaggingAnnotationCreator creator = new TaggingAnnotationCreator(
-                buildScbConfig(), buildImageMetadataGeneratorConfig());
-        final TaggingAnnotationBuilder tab = new TaggingAnnotationBuilder(
-                creator.getImageMetadataGeneratorConfig(), creator.getScbConfig());
+                buildScbConfig());
+        final TaggingAnnotationBuilder tab = new TaggingAnnotationBuilder(creator.getScbConfig());
         final List<TemplateTaggingAnnotation> annoList = tab.buildTaggingAnnotations(targetList);
         final List<TemplateTaggingAnnotation> sublist = annoList.subList(startIndex, toIndex);
         final Map<URI, InputStream> batch = new HashMap<>();

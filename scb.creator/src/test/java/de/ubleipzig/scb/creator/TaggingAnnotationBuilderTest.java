@@ -16,7 +16,6 @@ package de.ubleipzig.scb.creator;
 
 import static de.ubleipzig.scb.creator.JsonSerializer.serialize;
 
-import de.ubleipzig.image.metadata.ImageMetadataServiceConfig;
 import de.ubleipzig.scb.templates.TemplateTaggingAnnotation;
 import de.ubleipzig.scb.templates.TemplateTarget;
 
@@ -35,9 +34,8 @@ public class TaggingAnnotationBuilderTest extends CommonTests {
 
     @Test
     void testGetTaggingAnnotations() {
-        final ImageMetadataServiceConfig imageMetadataServiceConfig = getImageMetadataGeneratorConfig();
-        final ScbConfig scbConfig = getScbConfig();
-        final TaggingAnnotationBuilder ab = new TaggingAnnotationBuilder(imageMetadataServiceConfig, scbConfig);
+        ScbConfig scbConfig = getScbConfigWithAbsolutePath();
+        final TaggingAnnotationBuilder ab = new TaggingAnnotationBuilder(scbConfig);
         final List<TemplateTarget> targetList = getTargetList();
         final List<TemplateTaggingAnnotation> annoList = ab.buildTaggingAnnotations(targetList);
         System.out.println(serialize(annoList.get(100156)).orElse(""));
@@ -45,9 +43,8 @@ public class TaggingAnnotationBuilderTest extends CommonTests {
     }
 
     private List<TemplateTarget> getTargetList() {
-        final ImageMetadataServiceConfig imageMetadataServiceConfig = getImageMetadataGeneratorConfig();
-        final ScbConfig scbConfig = getScbConfig();
-        final TaggingAnnotationBuilder tb = new TaggingAnnotationBuilder(imageMetadataServiceConfig, scbConfig);
+        ScbConfig scbConfig = getScbConfigWithAbsolutePath();
+        final TaggingAnnotationBuilder tb = new TaggingAnnotationBuilder(scbConfig);
         return tb.buildTaggingTargets();
     }
 }

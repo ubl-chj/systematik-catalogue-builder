@@ -45,12 +45,11 @@ public class AnnotationBuilder {
     /**
      * AnnotationBuilder.
      *
-     * @param imageMetadataServiceConfig imageMetadataServiceConfig
      * @param scbConfig scbConfig
      */
-    public AnnotationBuilder(final ImageMetadataServiceConfig imageMetadataServiceConfig, final ScbConfig
+    public AnnotationBuilder(final ScbConfig
             scbConfig) {
-        this.imageMetadataServiceConfig = imageMetadataServiceConfig;
+        this.imageMetadataServiceConfig = scbConfig.getImageMetadataServiceConfig();
         this.scbConfig = scbConfig;
     }
 
@@ -88,7 +87,7 @@ public class AnnotationBuilder {
      * @return a {@link List} of {@link TemplatePaintingAnnotation}
      */
     public List<TemplatePaintingAnnotation> getAnnotationsWithDimensionedBodies(final List<TemplateTarget> targetList) {
-        final BodyBuilder bb = new BodyBuilder(imageMetadataServiceConfig, scbConfig);
+        final BodyBuilder bb = new BodyBuilder(scbConfig);
         final List<TemplatePaintingAnnotation> annoList = buildAnnotations(targetList);
         final List<TemplateBody> bodyList = bb.getBodiesWithDimensions(targetList);
         final Iterator<TemplatePaintingAnnotation> i1 = annoList.iterator();

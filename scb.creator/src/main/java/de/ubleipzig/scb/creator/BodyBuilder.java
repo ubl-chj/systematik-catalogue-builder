@@ -49,11 +49,10 @@ public class BodyBuilder {
     /**
      * BodyBuilder.
      *
-     * @param imageMetadataServiceConfig imageMetadataServiceConfig
      * @param scbConfig scbConfig
      */
-    public BodyBuilder(final ImageMetadataServiceConfig imageMetadataServiceConfig, final ScbConfig scbConfig) {
-        this.imageMetadataServiceConfig = imageMetadataServiceConfig;
+    public BodyBuilder(final ScbConfig scbConfig) {
+        this.imageMetadataServiceConfig = scbConfig.getImageMetadataServiceConfig();
         this.scbConfig = scbConfig;
     }
 

@@ -16,7 +16,6 @@ package de.ubleipzig.scb.creator;
 
 import static de.ubleipzig.scb.creator.JsonSerializer.serialize;
 
-import de.ubleipzig.image.metadata.ImageMetadataServiceConfig;
 import de.ubleipzig.scb.templates.TemplateBody;
 import de.ubleipzig.scb.templates.TemplateTarget;
 
@@ -32,9 +31,8 @@ public class BodyBuilderTest extends CommonTests {
 
     @Test
     void getBodiesWithDimensions() {
-        final ImageMetadataServiceConfig imageMetadataServiceConfig = getImageMetadataGeneratorConfig();
-        final ScbConfig scbConfig = getScbConfig();
-        final BodyBuilder bb = new BodyBuilder(imageMetadataServiceConfig, scbConfig);
+        ScbConfig scbConfig = getScbConfigWithAbsolutePath();
+        final BodyBuilder bb = new BodyBuilder(scbConfig);
         final List<TemplateTarget> targetList = getTargetList();
         final List<TemplateBody> bodyList = bb.getBodiesWithDimensions(targetList);
         System.out.println(serialize(bodyList.get(1)).orElse(""));
@@ -42,9 +40,8 @@ public class BodyBuilderTest extends CommonTests {
     }
 
     private List<TemplateTarget> getTargetList() {
-        final ImageMetadataServiceConfig imageMetadataServiceConfig = getImageMetadataGeneratorConfig();
-        final ScbConfig scbConfig = getScbConfig();
-        final TargetBuilder tb = new TargetBuilder(imageMetadataServiceConfig, scbConfig);
+        ScbConfig scbConfig = getScbConfigWithAbsolutePath();
+        final TargetBuilder tb = new TargetBuilder(scbConfig);
         return tb.buildCanvases();
     }
 }

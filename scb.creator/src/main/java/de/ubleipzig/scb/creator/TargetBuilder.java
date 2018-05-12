@@ -52,11 +52,10 @@ public class TargetBuilder {
     /**
      * TargetBuilder.
      *
-     * @param imageMetadataServiceConfig imageMetadataServiceConfig
      * @param scbConfig scbConfig
      */
-    public TargetBuilder(final ImageMetadataServiceConfig imageMetadataServiceConfig, final ScbConfig scbConfig) {
-        this.imageMetadataServiceConfig = imageMetadataServiceConfig;
+    public TargetBuilder(final ScbConfig scbConfig) {
+        this.imageMetadataServiceConfig = scbConfig.getImageMetadataServiceConfig();
         this.scbConfig = scbConfig;
     }
 

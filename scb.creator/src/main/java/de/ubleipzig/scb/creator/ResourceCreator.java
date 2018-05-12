@@ -39,13 +39,12 @@ public final class ResourceCreator extends AbstractResourceCreator {
     /**
      * ResourceCreator Class.
      */
-    private ResourceCreator(final ScbConfig scbConfig, final ImageMetadataServiceConfig
-            imageMetadataServiceConfig) {
+    public ResourceCreator(final ScbConfig scbConfig) {
         super();
-        startIndex = 2210;
-        toIndex = 2230;
+        startIndex = 0;
+        toIndex = 100;
         this.scbConfig = scbConfig;
-        this.imageMetadataServiceConfig = imageMetadataServiceConfig;
+        this.imageMetadataServiceConfig = scbConfig.getImageMetadataServiceConfig();
     }
 
     private ScbConfig getScbConfig() {
@@ -63,7 +62,7 @@ public final class ResourceCreator extends AbstractResourceCreator {
      * @throws Exception Exception
      */
     public static void main(final String[] args) throws Exception {
-        final ResourceCreator creator = new ResourceCreator(buildScbConfig(), buildImageMetadataGeneratorConfig());
+        final ResourceCreator creator = new ResourceCreator(buildScbConfig());
         putImageResourceBatchFromSubList(creator);
         final List<TemplateTarget> targetList = getTargetList(creator);
         putCanvases(targetList);
@@ -71,7 +70,7 @@ public final class ResourceCreator extends AbstractResourceCreator {
         System.exit(1);
     }
 
-    private static void putImageResourceBatchFromSubList(final ResourceCreator creator) throws Exception {
+    public static void putImageResourceBatchFromSubList(final ResourceCreator creator) throws Exception {
         final VorlesungImpl vi = new VorlesungImpl(creator.getImageMetadataGeneratorConfig());
         final ScbConfig config = creator.getScbConfig();
         final List<File> files = vi.getFiles();
@@ -88,19 +87,18 @@ public final class ResourceCreator extends AbstractResourceCreator {
         remote.joiningCompletableFuturePut(batch, "image/tiff");
     }
 
-    private static List<TemplateTarget> getTargetList(final ResourceCreator creator) {
-        final TargetBuilder tb = new TargetBuilder(creator.getImageMetadataGeneratorConfig(), creator.getScbConfig());
+    public static List<TemplateTarget> getTargetList(final ResourceCreator creator) {
+        final TargetBuilder tb = new TargetBuilder(creator.getScbConfig());
         return tb.buildCanvases();
     }
 
-    private static List<TemplatePaintingAnnotation> getAnnotationList(final List<TemplateTarget> targetList) {
-        final ResourceCreator creator = new ResourceCreator(buildScbConfig(), buildImageMetadataGeneratorConfig());
-        final AnnotationBuilder ab = new AnnotationBuilder(
-                creator.getImageMetadataGeneratorConfig(), creator.getScbConfig());
+    public static List<TemplatePaintingAnnotation> getAnnotationList(final List<TemplateTarget> targetList) {
+        final ResourceCreator creator = new ResourceCreator(buildScbConfig());
+        final AnnotationBuilder ab = new AnnotationBuilder(creator.getScbConfig());
         return ab.getAnnotationsWithDimensionedBodies(targetList);
     }
 
-    private static void putCanvases(final List<TemplateTarget> targetList) throws Exception {
+    public static void putCanvases(final List<TemplateTarget> targetList) throws Exception {
         targetList.sort(Comparator.comparing(TemplateTarget::getCanvasLabel));
         final List<TemplateTarget> sublist = targetList.subList(startIndex, toIndex);
         final Map<URI, InputStream> batch = new HashMap<>();
@@ -117,7 +115,7 @@ public final class ResourceCreator extends AbstractResourceCreator {
         remote.joiningCompletableFuturePut(batch, contentTypeNTriples);
     }
 
-    private static void putAnnotations(final List<TemplateTarget> targetList) throws Exception {
+    public static void putAnnotations(final List<TemplateTarget> targetList) throws Exception {
         final List<TemplatePaintingAnnotation> annoList = getAnnotationList(targetList);
         final List<TemplatePaintingAnnotation> sublist = annoList.subList(startIndex, toIndex);
         final Map<URI, InputStream> batch = new HashMap<>();
