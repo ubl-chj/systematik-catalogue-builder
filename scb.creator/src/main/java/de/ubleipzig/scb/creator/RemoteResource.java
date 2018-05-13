@@ -14,9 +14,14 @@
 
 package de.ubleipzig.scb.creator;
 
+import de.ubleipzig.scb.creator.internal.SimpleSSLContext;
+
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Map;
+
+import javax.net.ssl.SSLContext;
 
 import org.apache.commons.rdf.api.IRI;
 import org.apache.commons.rdf.jena.JenaRDF;
@@ -39,7 +44,16 @@ public class RemoteResource {
     }
 
     private static LdpClient getClient() {
-        return h2client = new LdpClientImpl();
+
+        final SimpleSSLContext sslct;
+        try {
+            sslct = new SimpleSSLContext();
+            final SSLContext sslContext = sslct.get();
+            return h2client = new LdpClientImpl(sslContext);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**

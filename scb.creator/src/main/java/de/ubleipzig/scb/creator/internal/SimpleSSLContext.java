@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package de.ubleipzig.scb.creator;
+package de.ubleipzig.scb.creator.internal;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -43,7 +43,7 @@ public class SimpleSSLContext {
      * @throws IOException ioexception
      */
     public SimpleSSLContext() throws IOException {
-        init(SimpleSSLContext.class.getResourceAsStream("/keystore/proxy.jks"));
+        init(SimpleSSLContext.class.getResourceAsStream("/trellis.jks"));
     }
 
     /**

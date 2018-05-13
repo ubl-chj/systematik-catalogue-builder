@@ -13,8 +13,7 @@ An [Web Annotation](https://www.w3.org/TR/annotation-model/) data builder for us
 * a file system directory containing the images referenced in the data file
 
 Image Metadata Builder Process:
-* Generate an image dimension manifest with :
-
+* See [Image Metadata](https://github.com/ubleipzig/image)
    
 This file rather than the binaries will be used for all subsequent annotation builder processes.
 
@@ -22,11 +21,50 @@ This file rather than the binaries will be used for all subsequent annotation bu
 * [JDK 10](http://jdk.java.net/10/) or higher
 
 ### Building
-    $ gradle build
+    $ buildtools/src/install/install-jpms.sh
 
-### Test Requirements
-* Trellis Application version `0.7.0-SNAPSHOT` 
-* a JUnit runner must be used with the VM option `--add-modules jdk.incubator.httpclient`
+### Run at CLI
+1. Unpack distribution (located in `build/distributions`)
+2. customize configuration file (see `lib/scbconfig-test-remote.yml`)
+3. copy `lib/scb.creator.sh` to distribution bin folder (this replaces the default gradle exec script)
+4. execute `./scb.creator.sh $args`
 
-## API
+### Arguments
+| Name | Default | Long Name | Description
+| ---- | ------- | --------- | -----------
+| -b | resources | "builder" | The builder implementation |
+| -f | (none)    | "from"    | The start index (this corresponds to the beginning _body_ sequence identifier) for a collection set |
+| -t | (none)    | "to"      | The end index (this corresponds to the ending _body_ sequence identifier) for a collection set |
+| -c | (none)    | "config"  | The absolute path to the configuration file |
+
+### Configuration File
+
+```yaml
+baseUrl: "http://localhost:8000/"
+```
+| Name | Default | Description |
+| ---- | ------- | ----------- |
+| baseUrl | (none) | A defined baseUrl for the HTTP/2 proxy HTTP(s) interface for Trellis  |
+
+```yaml
+imageServiceBaseUrl: "http://workspaces.ub.uni-leipzig.de:8182/iiif/2/"
+```
+
+| Name | Default | Description |
+| ---- | ------- | ----------- |
+| imageServiceBaseUrl: | (none) | The baseUrl of the IIIF image service  |
+
+```yaml
+imageMetadataServiceConfig:
+  dimensionManifestFilePath: "https://workspaces.ub.uni-leipzig.de:8445/collection/vp/meta/dimension-manifest-test-8efc742f-709e-47ea-a346-e7bdc3266b49"
+  imageSourceDir: "/images"
+```
+| Name | Default | Description |
+| ---- | ------- | ----------- |
+| dimensionManifestFilePath: | (none) | A URI or filesystemm path to the image dimension manifest  |
+| imageSourceDir: | (none) | An absolute filesystemm path to the image source files  |
+
+See `lib/scbconfig-test-remote.yml` for additional values.
+
+### API
 See [WIP]

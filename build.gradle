@@ -111,27 +111,6 @@ allprojects { subproj ->
     configurations {
         all {
             resolutionStrategy {
-                force("org.trellisldp:trellis-agent-jpms:$trellisVersion")
-                force("org.trellisldp:trellis-api-jpms:$trellisVersion")
-                force("org.trellisldp:trellis-app-jpms:$trellisVersion")
-                force("org.trellisldp:trellis-app-triplestore-jpms:$trellisVersion")
-                force("org.trellisldp:trellis-audit-jpms:$trellisVersion")
-                force("org.trellisldp:trellis-constraint-rules-jpms:$trellisVersion")
-                force("org.trellisldp:trellis-event-serialization-jpms:$trellisVersion")
-                force("org.trellisldp:trellis-file-jpms:$trellisVersion")
-                force("org.trellisldp:trellis-id-jpms:$trellisVersion")
-                force("org.trellisldp:trellis-io-jena-jpms:$trellisVersion")
-                force("org.trellisldp:trellis-http-jpms:$trellisVersion")
-                force("org.trellisldp:trellis-namespaces-jpms:$trellisVersion")
-                force("org.trellisldp:trellis-rdfa-jpms:$trellisVersion")
-                force("org.trellisldp:trellis-triplestore-jpms:$trellisVersion")
-                force("org.trellisldp:trellis-vocabulary-jpms:$trellisVersion")
-                force("org.trellisldp:trellis-webac-jpms:$trellisVersion")
-                force "de.ubleipzig:jena.arq-jpms:$jenaVersion"
-                force "de.ubleipzig:jena.base-jpms:$jenaVersion"
-                force "de.ubleipzig:jena.core-jpms:$jenaVersion"
-                force "de.ubleipzig:jena.iri-jpms:$jenaVersion"
-                force "de.ubleipzig:jena.rdfconnection-jpms:$jenaVersion"
                 force "org.trellisldp:trellis-client:$trellisClientVersion"
                 cacheChangingModulesFor 0, 'seconds'
             }

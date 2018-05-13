@@ -95,7 +95,8 @@ public class TargetBuilder {
         contexts.add(ANNO.CONTEXT);
         contexts.add(SC.CONTEXT);
         final List<String> files;
-        if (imageMetadataServiceConfig.getDimensionManifest() != null) {
+        final String dimManifest = imageMetadataServiceConfig.getDimensionManifestFilePath();
+        if (dimManifest.contains("http")) {
             files = vi.getFileNamesFromRemote();
         } else {
             files = vi.getFileNames();

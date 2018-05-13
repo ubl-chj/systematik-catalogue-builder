@@ -1,6 +1,9 @@
 apply plugin: 'com.zyxist.chainsaw'
 apply plugin: 'osgi'
 apply plugin: 'jacoco'
+apply plugin: 'application'
+
+mainClassName = "de.ubleipzig.scb.creator.internal.ScbDriver"
 
 ext {
     javaModuleName = 'de.ubleipzig.scb.creator'

@@ -3,8 +3,8 @@ server:
     - type: http
       port: 0
     - type: h2
-      port: 8445
-      keyStorePath: trellis.jks
+      port: 8450
+      keyStorePath: keystore/trellis.jks
       keyStorePassword: "changeme"
       validateCerts: false
       validatePeers: false

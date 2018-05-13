@@ -12,29 +12,24 @@
  * limitations under the License.
  */
 
-package de.ubleipzig.scb.creator.internal;
+package de.ubleipzig.scb.creator;
 
-import de.ubleipzig.scb.creator.SystematikCatalogueBuilder;
+import de.ubleipzig.scb.creator.internal.ArgParser;
 
-/**
- * ScbDriver.
- */
-public class ScbDriver {
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-    /**
-     * main.
-     *
-     * @param args args
-     */
-    public static void main(final String[] args) {
-        final ScbDriver driver = new ScbDriver();
-        driver.run(args);
-        System.exit(1);
-    }
+public class ArgParserTest {
+    private ArgParser parser;
+    private String configFile = "/scbconfig-test-remote.yml";
 
-    private void run(final String[] args) {
-
-        final ArgParser parser = new ArgParser();
+    @Disabled
+    @Test
+    void testRequiredArgs1() {
+        parser = new ArgParser();
+        final String configFilePath = ArgParserTest.class.getResource(configFile).getPath();
+        final String[] args;
+        args = new String[]{"-b", "resources", "-f", "100", "-t", "120", "-c", configFilePath };
         final SystematikCatalogueBuilder builder = parser.init(args);
         builder.run();
     }

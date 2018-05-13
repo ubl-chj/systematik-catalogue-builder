@@ -14,6 +14,8 @@
 
 package de.ubleipzig.scb.creator;
 
+import static de.ubleipzig.scb.creator.AbstractResourceCreator.getDimensionManifestRemoteLocation;
+
 import de.ubleipzig.image.metadata.ImageMetadataService;
 import de.ubleipzig.image.metadata.ImageMetadataServiceConfig;
 import de.ubleipzig.image.metadata.ImageMetadataServiceImpl;
@@ -141,6 +143,9 @@ public class VorlesungImpl {
      */
     public List<String> getFileNamesFromRemote() {
         final List<String> names = new ArrayList<>();
+        final String remoteDimManifest = getDimensionManifestRemoteLocation(
+                imageMetadataServiceConfig.getDimensionManifestFilePath());
+        imageMetadataServiceConfig.setDimensionManifest(remoteDimManifest);
         final ImageMetadataService service = new ImageMetadataServiceImpl(imageMetadataServiceConfig);
         final List<ImageDimensions> dimensionManifest = service.unmarshallDimensionManifestFromRemote();
         dimensionManifest.forEach(p -> {

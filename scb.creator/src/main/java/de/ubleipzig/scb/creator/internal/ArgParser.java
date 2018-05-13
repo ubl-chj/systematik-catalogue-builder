@@ -65,7 +65,7 @@ public class ArgParser {
      * @param args Command-line arguments
      * @return A configured SystematikCatalogueBuilder instance.
      **/
-    SystematikCatalogueBuilder init(final String[] args) {
+    public SystematikCatalogueBuilder init(final String[] args) {
         final ScbConfig scbConfig = parseConfiguration(args);
         final String builderType = Objects.requireNonNull(scbConfig).getBuilderType();
         switch (builderType) {
