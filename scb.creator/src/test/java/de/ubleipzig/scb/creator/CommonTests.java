@@ -14,6 +14,9 @@
 
 package de.ubleipzig.scb.creator;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+
 import de.ubleipzig.image.metadata.ImageMetadataServiceConfig;
 
 import io.dropwizard.configuration.ConfigurationException;
@@ -45,15 +48,13 @@ public abstract class CommonTests {
     }
 
     static ScbConfig getScbConfig() {
-        final ScbConfig scbConfig;
         try {
-            scbConfig = new YamlConfigurationFactory<>(
-                    ScbConfig.class, Validators.newValidator(), Jackson.newObjectMapper(), "").build(
-                    new File(CommonTests.class.getResource("/scbconfig-test.yml").toURI()));
-        } catch (IOException | ConfigurationException | URISyntaxException e) {
+            final File configFile = new File(CommonTests.class.getResource("/scbconfig-test.yml").toURI());
+            final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+            return mapper.readValue(configFile, ScbConfig.class);
+        } catch (IOException | URISyntaxException e) {
             throw new RuntimeException(e.getMessage());
         }
-        return scbConfig;
     }
 
 }

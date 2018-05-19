@@ -18,11 +18,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import de.ubleipzig.image.metadata.ImageMetadataServiceConfig;
 
-import io.dropwizard.Configuration;
-
 import java.io.InputStream;
 
-public class ScbConfig extends Configuration {
+public class ScbConfig {
     private String metadataFile;
     private InputStream metadataInputStream;
     private String baseUrl;

@@ -11,7 +11,7 @@ ext {
 
 javaModule {
     name = javaModuleName
-    extraTestModules = ['org.trellisldp.jpms.app','com.fasterxml.jackson.annotation','org.apache.commons.rdf.jena', 'org.trellisldp.jpms.app.triplestore']
+    extraTestModules = ['java.activation','org.trellisldp.jpms.app','com.fasterxml.jackson.annotation','org.apache.commons.rdf.jena', 'org.trellisldp.jpms.app.triplestore']
     hacks {
         patches('javax.annotation:javax.annotation-api', 'org.apache.geronimo.specs:geronimo-annotation_1.2_spec')
         patches('org.apache.geronimo.specs:geronimo-jms_1.1_spec', 'javax.jms:javax.jms-api')
@@ -35,9 +35,8 @@ dependencies {
     patch 'org.apache.geronimo.specs:geronimo-jms_1.1_spec:1.1.1'
     patch "org.hamcrest:hamcrest-library:$hamcrestLibraryVersion"
 
-    api("io.dropwizard:dropwizard-core:$dropwizardVersion")
-
     implementation project(":scb.templates")
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:$jacksonVersion")
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation("com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion") {force = true}
     implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion") {force = true}
@@ -53,6 +52,7 @@ dependencies {
     implementation("de.ubleipzig:jena.base-jpms:$jenaVersion")
     implementation("de.ubleipzig:jena.core-jpms:$jenaVersion")
     implementation("de.ubleipzig:jena.iri-jpms:$jenaVersion")
+    //implementation("javax.activation:activation:$javaxActivationVersion")
     implementation("javax.ws.rs:javax.ws.rs-api:$jaxrsVersion")
     implementation("org.apache.commons:commons-lang3:$commonsLangVersion")
     implementation("org.apache.commons:commons-csv:$commonsCsvVersion")

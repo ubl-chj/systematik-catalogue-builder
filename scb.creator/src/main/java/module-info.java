@@ -32,11 +32,7 @@ module de.ubleipzig.scb.creator {
     requires de.ubleipzig.iiif.vocabulary;
     requires de.ubleipzig.scb.templates;
     requires org.apache.jena.arq;
-    requires dropwizard.core;
-    requires dropwizard.configuration;
-    requires dropwizard.jersey;
-    requires dropwizard.jackson;
     requires commons.cli;
-    requires validation.api;
+    requires com.fasterxml.jackson.dataformat.yaml;
     uses org.apache.commons.rdf.api.RDF;
 }

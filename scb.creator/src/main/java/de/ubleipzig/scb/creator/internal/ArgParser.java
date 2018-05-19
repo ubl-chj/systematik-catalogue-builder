@@ -18,15 +18,13 @@ import static java.lang.System.out;
 import static org.apache.commons.cli.Option.builder;
 import static org.slf4j.LoggerFactory.getLogger;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+
 import de.ubleipzig.scb.creator.ResourceCreator;
 import de.ubleipzig.scb.creator.ScbConfig;
 import de.ubleipzig.scb.creator.SystematikCatalogueBuilder;
 import de.ubleipzig.scb.creator.TaggingAnnotationCreator;
-
-import io.dropwizard.configuration.ConfigurationException;
-import io.dropwizard.configuration.YamlConfigurationFactory;
-import io.dropwizard.jackson.Jackson;
-import io.dropwizard.jersey.validation.Validators;
 
 import java.io.File;
 import java.io.IOException;
@@ -120,9 +118,9 @@ public class ArgParser {
         }
         logger.debug("Loading configuration file: {}", configFile);
         try {
-            return new YamlConfigurationFactory<>(
-                    ScbConfig.class, Validators.newValidator(), Jackson.newObjectMapper(), "").build(configFile);
-        } catch (IOException | ConfigurationException e) {
+            final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+            return mapper.readValue(configFile, ScbConfig.class);
+        } catch (IOException e) {
             throw new RuntimeException(e.getMessage());
         }
     }

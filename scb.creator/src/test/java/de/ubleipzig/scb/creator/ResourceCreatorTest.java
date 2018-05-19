@@ -18,23 +18,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.ubleipzig.scb.templates.TemplateTarget;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.UUID;
 
-import javax.net.ssl.SSLContext;
-
-import org.apache.commons.rdf.jena.JenaRDF;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.trellisldp.client.LdpClient;
-import org.trellisldp.client.LdpClientImpl;
 
 /**
  * ResourceCreatorTest.

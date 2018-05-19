@@ -14,12 +14,10 @@
 
 package de.ubleipzig.scb.creator;
 
-import de.ubleipzig.image.metadata.ImageMetadataServiceConfig;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
-import io.dropwizard.configuration.ConfigurationException;
-import io.dropwizard.configuration.YamlConfigurationFactory;
-import io.dropwizard.jackson.Jackson;
-import io.dropwizard.jersey.validation.Validators;
+import de.ubleipzig.image.metadata.ImageMetadataServiceConfig;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -79,10 +77,10 @@ public abstract class AbstractResourceCreator {
     public static ScbConfig buildScbConfig() {
         final ScbConfig scbConfig;
         try {
-            scbConfig = new YamlConfigurationFactory<>(
-                    ScbConfig.class, Validators.newValidator(), Jackson.newObjectMapper(), "").build(
-                    new File(AbstractResourceCreator.class.getResource("/scbconfig.yml").toURI()));
-        } catch (IOException | ConfigurationException | URISyntaxException e) {
+            final File configFile = new File(AbstractResourceCreator.class.getResource("/scbconfig.yml").toURI());
+            final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+            scbConfig = mapper.readValue(configFile, ScbConfig.class);
+        } catch (IOException | URISyntaxException e) {
             throw new RuntimeException(e.getMessage());
         }
         scbConfig.setMetadata(getMetadataRemoteLocation(scbConfig.getMetadataRemoteLocation()));
