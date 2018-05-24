@@ -58,6 +58,7 @@ public class VorlesungImpl {
         item.setGroupTag4(p[4]);
         item.setGroupTag5(p[5]);
         item.setGroupTag6(p[6]);
+        item.setGroupTag6(p[7]);
         item.setGroupImageSequenceBegin(Integer.parseInt(p[7]));
         item.setGroupSize(Integer.parseInt(p[8]));
         return item;
