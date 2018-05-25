@@ -26,6 +26,9 @@ public class TemplateMetadataMap {
     private Integer imageIndex;
 
     @JsonProperty
+    private String imageServiceIRI;
+
+    @JsonProperty
     private Integer groupId;
 
     @JsonProperty
@@ -63,6 +66,22 @@ public class TemplateMetadataMap {
      */
     public Integer getImageIndex() {
         return imageIndex;
+    }
+
+    /**
+     *
+     * @param imageServiceIRI String
+     */
+    public void setImageServiceIRI(final String imageServiceIRI) {
+        this.imageServiceIRI = imageServiceIRI;
+    }
+
+    /**
+     *
+     * @return Integer
+     */
+    public String getImageServiceIRI() {
+        return imageServiceIRI;
     }
 
     /**

@@ -69,8 +69,8 @@ public final class ResourceCreator extends AbstractResourceCreator implements Sy
     @Override
     public void run() {
         logger.info("Running ResourceCreator...");
-        //final Map<URI, InputStream> imageBatch = buildImageResourceBatchFromSubList();
-        //remote.joiningCompletableFuturePut(imageBatch, "image/tiff");
+        final Map<URI, InputStream> imageBatch = buildImageResourceBatchFromSubList();
+        remote.joiningCompletableFuturePut(imageBatch, "image/tiff");
         final List<TemplateTarget> targetList = getTargetList();
         final Map<URI, InputStream> canvasBatch = buildCanvasBatch(targetList);
         remote.joiningCompletableFuturePut(canvasBatch, contentTypeNTriples);

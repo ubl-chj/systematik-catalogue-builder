@@ -11,6 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package de.ubleipzig.scb.templates;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -18,23 +19,20 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
-public class TemplateMetadataMapList {
-    public class MapList {
+public class MapList {
 
-        @JsonProperty
-        private List<TemplateMetadataMap> mapList;
+    @JsonProperty
+    private List<TemplateMetadataMap> mapList;
 
-        /**
-         *
-         * @param mapList List
-         */
-        public void setMapList(final List<TemplateMetadataMap> mapList) {
-            this.mapList = mapList;
-        }
+    /**
+     * @param mapList List
+     */
+    public void setMapList(final List<TemplateMetadataMap> mapList) {
+        this.mapList = mapList;
+    }
 
-        @JsonIgnore
-        public List<TemplateMetadataMap> getMapList() {
-            return mapList;
-        }
+    @JsonIgnore
+    public List<TemplateMetadataMap> getMapList() {
+        return mapList;
     }
 }
