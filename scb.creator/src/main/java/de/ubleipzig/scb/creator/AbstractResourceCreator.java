@@ -14,16 +14,8 @@
 
 package de.ubleipzig.scb.creator;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-
-import de.ubleipzig.image.metadata.ImageMetadataServiceConfig;
-
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
 
 import org.apache.commons.rdf.jena.JenaRDF;
 import org.trellisldp.client.LdpClientException;
@@ -48,9 +40,8 @@ public abstract class AbstractResourceCreator {
         try {
             return new String(remote.getRemoteBinaryResource(dimensionManifestRemoteLocation));
         } catch (LdpClientException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
-        return null;
     }
 
     /**
@@ -64,29 +55,7 @@ public abstract class AbstractResourceCreator {
             return new ByteArrayInputStream(
                     new String(remote.getRemoteBinaryResource(metadataRemoteLocation)).getBytes());
         } catch (LdpClientException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    /**
-     * buildScbConfig.
-     *
-     * @return ScbConfig
-     */
-    public static ScbConfig buildScbConfig() {
-        final ScbConfig scbConfig;
-        try {
-            final File configFile = new File(AbstractResourceCreator.class.getResource("/scbconfig.yml").toURI());
-            final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-            scbConfig = mapper.readValue(configFile, ScbConfig.class);
-        } catch (IOException | URISyntaxException e) {
             throw new RuntimeException(e.getMessage());
         }
-        scbConfig.setMetadata(getMetadataRemoteLocation(scbConfig.getMetadataRemoteLocation()));
-        final ImageMetadataServiceConfig imageMetadataServiceConfig = scbConfig.getImageMetadataServiceConfig();
-        imageMetadataServiceConfig.setDimensionManifest(getDimensionManifestRemoteLocation(
-                scbConfig.getImageMetadataServiceConfig().getDimensionManifestFilePath()));
-        return scbConfig;
     }
 }

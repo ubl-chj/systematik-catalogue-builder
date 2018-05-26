@@ -88,9 +88,8 @@ public class ImageMetadataImpl {
             });
             return files;
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
-        return null;
     }
 
     /**

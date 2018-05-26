@@ -11,9 +11,8 @@ server:
 logging:
   level: WARN
   loggers:
-    org.trellisldp: DEBUG
-    io.dropwizard: DEBUG
-    cool.pandora: DEBUG
+    org.trellisldp: INFO
+    io.dropwizard: INFO
 
 # Path to binaries
 binaries: binaries

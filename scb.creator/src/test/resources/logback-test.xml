@@ -5,11 +5,7 @@
             <pattern>%p %d{HH:mm:ss.SSS} \(%c{0}\) %m%n</pattern>
         </encoder>
     </appender>
-
-    <logger name="de.ubleipzig.scb" additivity="false" level="INFO">
-        <appender-ref ref="STDOUT"/>
-    </logger>
-    <root additivity="false" level="INFO">
+    <root additivity="false" level="OFF">
         <appender-ref ref="STDOUT"/>
     </root>
 </configuration>

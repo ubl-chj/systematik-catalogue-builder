@@ -14,5 +14,19 @@
 
 package de.ubleipzig.scb.creator;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.io.InputStream;
+
+import org.apache.commons.io.input.NullInputStream;
+import org.junit.jupiter.api.Test;
+
 public class VorlesungImplTest {
+
+    @Test
+    void testNumberFormatException() {
+        final VorlesungImpl vi = new VorlesungImpl();
+        final InputStream is = new NullInputStream(199);
+        assertThrows(NumberFormatException.class, () -> vi.processInputFile(is));
+    }
 }

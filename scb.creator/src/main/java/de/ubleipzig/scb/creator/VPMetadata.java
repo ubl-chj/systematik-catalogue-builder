@@ -16,10 +16,6 @@ package de.ubleipzig.scb.creator;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
-import de.ubleipzig.scb.templates.TemplateMetadata;
-
-import java.util.ArrayList;
-
 import org.slf4j.Logger;
 
 /**
@@ -46,17 +42,6 @@ public class VPMetadata {
      * VPMetadata.
      */
     public VPMetadata() {
-    }
-
-    /**
-     * getInfo.
-     *
-     * @return {@link ArrayList}
-     */
-    public ArrayList<TemplateMetadata> getInfo() {
-        final ArrayList<TemplateMetadata> meta = new ArrayList<>();
-        meta.add(new TemplateMetadata(null, null));
-        return meta;
     }
 
     /**

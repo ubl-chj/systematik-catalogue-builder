@@ -37,7 +37,6 @@ dependencies {
 
     implementation project(":scb.templates")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:$jacksonVersion")
-    implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation("com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion") {force = true}
     implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion") {force = true}
     implementation("com.github.andrewoma.dexx:collection:$dexxCollectionVersion")

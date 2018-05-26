@@ -14,11 +14,11 @@
 
 package de.ubleipzig.scb.creator;
 
-import static de.ubleipzig.scb.creator.internal.JsonSerializer.serialize;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import de.ubleipzig.image.metadata.ImageMetadataServiceConfig;
-import de.ubleipzig.scb.templates.TemplateTarget;
+import de.ubleipzig.image.metadata.templates.ImageDimensions;
 
 import java.io.InputStream;
 import java.util.List;
@@ -29,12 +29,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.trellisldp.client.LdpClientException;
 
-/**
- * TargetBuilderTest.
- *
- * @author christopher-johnson
- */
-public class TargetBuilderTest extends CommonTests {
+public class ImageMetadataImplTest extends CommonTests {
     @BeforeAll
     static void initAll() {
         APP.before();
@@ -43,31 +38,25 @@ public class TargetBuilderTest extends CommonTests {
     }
 
     @Test
-    void getTargets() {
-        final ScbConfig scbConfig = getScbConfigWithAbsolutePath();
-        final TargetBuilder tb = new TargetBuilder(scbConfig);
-        final List<TemplateTarget> targetList = tb.buildCanvases();
-        System.out.println(serialize(targetList.get(49000)).orElse(""));
-        assertEquals(52218, targetList.size());
-    }
-
-    @Test
-    void getTargetsFromRemoteManifest() throws LdpClientException {
-        final ScbConfig scbConfig = getScbConfigWithAbsolutePath();
-        final String pid = "TargetBuilderTest" + UUID.randomUUID().toString();
+    void testGetFromRemote() throws LdpClientException {
+        final String pid = "imTest" + UUID.randomUUID().toString();
         final ImageMetadataServiceConfig imConfig = new ImageMetadataServiceConfig();
         imConfig.setDimensionManifestFilePath(baseUrl + pid);
-        scbConfig.setImageMetadataServiceConfig(imConfig);
         final InputStream is = getDimensionManifest();
         final IRI identifier = rdf.createIRI(baseUrl + pid);
         h2client.put(identifier, is, "application/json");
-        scbConfig.setDimensionManifestRemoteLocation(baseUrl + pid);
-        final InputStream meta = ScbConfigTest.class.getResourceAsStream(
-                "/data/sk2-titles.csv");
-        scbConfig.setMetadata(meta);
-        final TargetBuilder tb = new TargetBuilder(scbConfig);
-        final List<TemplateTarget> targetList = tb.buildCanvases();
-        System.out.println(serialize(targetList.get(48000)).orElse(""));
-        assertEquals(52218, targetList.size());
+        final ImageMetadataImpl im = new ImageMetadataImpl(imConfig);
+        final List<String> names = im.getFileNamesFromRemote();
+        final List<ImageDimensions> dims = im.getDimensions();
+        assertEquals("40JOgwENmF5adEwvWeVKuDKVksY=", dims.get(2).getDigest());
+        assertEquals(52218, names.size());
+    }
+
+    @Test
+    void testIOException() {
+        final ImageMetadataServiceConfig imConfig = new ImageMetadataServiceConfig();
+        imConfig.setImageSourceDir("/a-non-existing-path");
+        final ImageMetadataImpl im = new ImageMetadataImpl(imConfig);
+        assertThrows(RuntimeException.class, () -> im.getFiles());
     }
 }

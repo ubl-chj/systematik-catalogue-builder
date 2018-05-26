@@ -51,9 +51,8 @@ public class RemoteResource {
             final SSLContext sslContext = sslct.get();
             return h2client = new LdpClientImpl(sslContext);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
-        return null;
     }
 
     /**

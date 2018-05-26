@@ -14,12 +14,8 @@
 
 package de.ubleipzig.scb.creator;
 
-import static io.dropwizard.testing.ConfigOverride.config;
-import static io.dropwizard.testing.ResourceHelpers.resourceFilePath;
 import static javax.ws.rs.core.HttpHeaders.LINK;
 import static org.apache.jena.arq.riot.WebContent.contentTypeNTriples;
-
-import io.dropwizard.testing.DropwizardTestSupport;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -35,34 +31,19 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-import javax.net.ssl.SSLContext;
-
 import org.apache.commons.rdf.api.IRI;
-import org.apache.commons.rdf.jena.JenaRDF;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.trellisldp.app.config.TrellisConfiguration;
-import org.trellisldp.app.triplestore.TrellisApplication;
 import org.trellisldp.client.ACLStatement;
-import org.trellisldp.client.LdpClient;
 import org.trellisldp.client.LdpClientException;
-import org.trellisldp.client.LdpClientImpl;
 import org.trellisldp.vocabulary.ACL;
 import org.trellisldp.vocabulary.LDP;
 
 public class ResourceTransportTest extends CommonTests {
-    static final DropwizardTestSupport<TrellisConfiguration> APP = new DropwizardTestSupport<>(TrellisApplication.class,
-            resourceFilePath("trellis-config.yml"), config("server.applicationConnectors[0].port", "0"),
-            config("binaries", resourceFilePath("data") + "/binaries"),
-            config("mementos", resourceFilePath("data") + "/mementos"),
-            config("namespaces", resourceFilePath("data/namespaces.json")),
-            config("server.applicationConnectors[1].keyStorePath", resourceFilePath("keystore/trellis.jks")));
-    private static final JenaRDF rdf = new JenaRDF();
-    private static String baseUrl;
-    private static String pid;
-    private static LdpClient h2client = null;
+
     private static Integer fromIndex;
     private static Integer toIndex;
 
@@ -73,13 +54,7 @@ public class ResourceTransportTest extends CommonTests {
         //baseUrl = "http://localhost:8000/";
         fromIndex = 0;
         toIndex = 10;
-        try {
-            final SimpleSSLContext sslct = new SimpleSSLContext();
-            final SSLContext sslContext = sslct.get();
-            h2client = new LdpClientImpl(sslContext);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        h2client = getClient();
     }
 
     @AfterAll
@@ -93,6 +68,11 @@ public class ResourceTransportTest extends CommonTests {
 
     private static InputStream getTestN3Resource() {
         return ResourceCreatorTest.class.getResourceAsStream("/data/webanno.complete.nt");
+    }
+
+    @BeforeEach()
+    void init() {
+        pid = "ldp-test-" + UUID.randomUUID().toString();
     }
 
     @Test
@@ -196,7 +176,7 @@ public class ResourceTransportTest extends CommonTests {
             final Map<URI, InputStream> map = new HashMap<>();
             final int loops = 100;
             for (int i = 0; i < loops; i++) {
-                pid = "ldp-test-" + UUID.randomUUID().toString();
+                final String pid = "ldp-test-" + UUID.randomUUID().toString();
                 final IRI identifier = rdf.createIRI(baseUrl + pid);
                 final URI uri = new URI(identifier.getIRIString());
                 final InputStream is = getTestN3Resource();

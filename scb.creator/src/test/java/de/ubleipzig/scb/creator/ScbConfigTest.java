@@ -15,13 +15,16 @@
 package de.ubleipzig.scb.creator;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.InputStream;
 
 import org.junit.jupiter.api.Test;
 
 public class ScbConfigTest extends CommonTests {
 
     @Test
-    public void testScbConfiguration() {
+    public void testGetScbConfiguration() {
         final ScbConfig config = getScbConfig();
         assertEquals("https://localhost:8445/", config.getBaseUrl());
         assertEquals("http://workspaces.ub.uni-leipzig.de:8182/iiif/2/", config.getImageServiceBaseUrl());
@@ -31,10 +34,20 @@ public class ScbConfigTest extends CommonTests {
         assertEquals("collection/vp/res/", config.getBodyContainer());
         assertEquals("collection/vp/tag/", config.getTagBodyContainer());
         assertEquals("/data/sk2-titles.csv", config.getMetadataFile());
-        assertEquals("https://workspaces.ub.uni-leipzig.de:8445/collection/vp/meta/sk2-titles-semester.tsv",
+        assertEquals(
+                "https://workspaces.ub.uni-leipzig.de:8445/collection/vp/meta/sk2-titles-semester.tsv",
                 config.getMetadataRemoteLocation());
         assertEquals("/images", config.getImageMetadataServiceConfig().getImageSourceDir());
-        assertEquals("/dimension-manifest-test-8efc742f-709e-47ea-a346-e7bdc3266b49.json",
+        assertEquals(
+                "/dimension-manifest-test-8efc742f-709e-47ea-a346-e7bdc3266b49.json",
                 config.getImageMetadataServiceConfig().getDimensionManifestFilePath());
+        config.setDimensionManifestRemoteLocation("http://some.remote.location");
+        assertEquals("http://some.remote.location", config.getDimensionManifestRemoteLocation());
+        final InputStream is = ScbConfigTest.class.getResourceAsStream(
+                "/data/sk2-titles.csv");
+        config.setMetadata(is);
+        assertTrue(config.getMetadataInputStream().isPresent());
+        config.setBuilderType("tagging");
+        assertEquals("tagging", config.getBuilderType());
     }
 }

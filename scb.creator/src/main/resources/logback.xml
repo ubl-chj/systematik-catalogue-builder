@@ -10,10 +10,7 @@
   <logger name="org.apache.http" additivity="false" level="INFO">
     <appender-ref ref="STDOUT"/>
   </logger>
-    <logger name="de.ubleipzig.scb" additivity="false" level="DEBUG">
-        <appender-ref ref="STDOUT"/>
-    </logger>
-    <logger name="com.github.jsonldjava" additivity="false" level="DEBUG">
+    <logger name="de.ubleipzig.scb" additivity="false" level="INFO">
         <appender-ref ref="STDOUT"/>
     </logger>
   <root additivity="false" level="INFO">
