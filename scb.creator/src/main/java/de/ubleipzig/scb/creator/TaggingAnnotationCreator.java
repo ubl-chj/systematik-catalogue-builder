@@ -43,9 +43,9 @@ import org.slf4j.Logger;
 public final class TaggingAnnotationCreator extends AbstractResourceCreator implements SystematikCatalogueBuilder {
 
     private static Logger logger = getLogger(ResourceCreator.class);
+    private static JsonLdUtils jsonLdUtils = new JsonLdUtils();
     private Integer fromIndex;
     private Integer toIndex;
-    private static JsonLdUtils jsonLdUtils = new JsonLdUtils();
     private ScbConfig scbConfig;
 
     /**

@@ -36,8 +36,8 @@ import org.trellisldp.client.LdpClientImpl;
  */
 public class RemoteResource {
 
-    private static LdpClient h2client;
     private static final JenaRDF rdf = new JenaRDF();
+    private static LdpClient h2client;
 
     public RemoteResource() {
         h2client = getClient();

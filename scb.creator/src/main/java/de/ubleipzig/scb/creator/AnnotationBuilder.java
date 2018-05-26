@@ -46,8 +46,7 @@ public class AnnotationBuilder {
      *
      * @param scbConfig scbConfig
      */
-    public AnnotationBuilder(final ScbConfig
-            scbConfig) {
+    public AnnotationBuilder(final ScbConfig scbConfig) {
         this.scbConfig = scbConfig;
     }
 
@@ -59,15 +58,15 @@ public class AnnotationBuilder {
      */
     public List<TemplatePaintingAnnotation> buildAnnotations(final List<TemplateTarget> targetList) {
         final String annoContext = scbConfig.getAnnotationContainer();
+        final String baseUrl = scbConfig.getBaseUrl();
         final List<String> contexts = new ArrayList<>();
         contexts.add(ANNO.CONTEXT);
         contexts.add(SC.CONTEXT);
         final List<TemplatePaintingAnnotation> annoList = new ArrayList<>();
         for (TemplateTarget target : targetList) {
             final String annoId = annoContext + target.getTargetId();
-            final UUID annoUUID = UUIDType5.nameUUIDFromNamespaceAndString(
-                    NAMESPACE_URL, annoId);
-            final String identifier = scbConfig.getBaseUrl() + annoContext + annoUUID;
+            final UUID annoUUID = UUIDType5.nameUUIDFromNamespaceAndString(NAMESPACE_URL, annoId);
+            final String identifier = baseUrl + annoContext + annoUUID;
             final TemplatePaintingAnnotation ta = new TemplatePaintingAnnotation();
             ta.setId(identifier);
             ta.setContext(contexts);

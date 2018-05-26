@@ -31,7 +31,6 @@ import org.junit.jupiter.api.Test;
  */
 public class TaggingAnnotationBuilderTest extends CommonTests {
 
-
     @Test
     void testGetTaggingAnnotations() {
         final ScbConfig scbConfig = getScbConfigWithAbsolutePath();
@@ -39,12 +38,12 @@ public class TaggingAnnotationBuilderTest extends CommonTests {
         final List<TemplateTarget> targetList = getTargetList();
         final List<TemplateTaggingAnnotation> annoList = ab.buildTaggingAnnotations(targetList);
         System.out.println(serialize(annoList.get(100156)).orElse(""));
-        Assert.assertEquals(260512, annoList.size());
+        Assert.assertEquals(305688, annoList.size());
     }
 
     private List<TemplateTarget> getTargetList() {
         final ScbConfig scbConfig = getScbConfigWithAbsolutePath();
-        final TaggingAnnotationBuilder tb = new TaggingAnnotationBuilder(scbConfig);
-        return tb.buildTaggingTargets();
+        final TargetBuilder tb = new TargetBuilder(scbConfig);
+        return tb.buildCanvases();
     }
 }

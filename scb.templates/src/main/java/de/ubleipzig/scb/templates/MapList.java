@@ -24,15 +24,17 @@ public class MapList {
     @JsonProperty
     private List<TemplateMetadataMap> mapList;
 
+    @JsonIgnore
+    public List<TemplateMetadataMap> getMapList() {
+        return mapList;
+    }
+
     /**
+     * setMapList.
+     *
      * @param mapList List
      */
     public void setMapList(final List<TemplateMetadataMap> mapList) {
         this.mapList = mapList;
-    }
-
-    @JsonIgnore
-    public List<TemplateMetadataMap> getMapList() {
-        return mapList;
     }
 }

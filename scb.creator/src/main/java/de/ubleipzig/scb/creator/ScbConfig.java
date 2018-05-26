@@ -14,11 +14,14 @@
 
 package de.ubleipzig.scb.creator;
 
+import static java.util.Optional.ofNullable;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import de.ubleipzig.image.metadata.ImageMetadataServiceConfig;
 
 import java.io.InputStream;
+import java.util.Optional;
 
 public class ScbConfig {
     private String metadataFile;
@@ -113,8 +116,8 @@ public class ScbConfig {
      *
      * @return {@link String}
      */
-    public InputStream getMetadataInputStream() {
-        return metadataInputStream;
+    public Optional<InputStream> getMetadataInputStream() {
+        return ofNullable(metadataInputStream);
     }
 
     /**

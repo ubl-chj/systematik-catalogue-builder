@@ -56,7 +56,6 @@ public class TemplateTarget {
 
     /**
      * TemplateTarget.
-     *
      */
     public TemplateTarget() {
     }

@@ -79,15 +79,6 @@ public class TemplatePaintingAnnotation {
     }
 
     /**
-     * setBody.
-     *
-     * @param body body
-     */
-    public void setBody(final TemplateBody body) {
-        this.body = body;
-    }
-
-    /**
      * getBody.
      *
      * @return TemplateBody
@@ -95,6 +86,15 @@ public class TemplatePaintingAnnotation {
     @JsonIgnore
     public TemplateBody getBody() {
         return this.body;
+    }
+
+    /**
+     * setBody.
+     *
+     * @param body body
+     */
+    public void setBody(final TemplateBody body) {
+        this.body = body;
     }
 
     /**

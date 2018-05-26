@@ -14,22 +14,12 @@
 
 package de.ubleipzig.scb.creator;
 
-import static de.ubleipzig.scb.creator.AbstractResourceCreator.getDimensionManifestRemoteLocation;
-
-import de.ubleipzig.image.metadata.ImageMetadataService;
-import de.ubleipzig.image.metadata.ImageMetadataServiceConfig;
-import de.ubleipzig.image.metadata.ImageMetadataServiceImpl;
-import de.ubleipzig.image.metadata.templates.ImageDimensions;
 import de.ubleipzig.scb.templates.TemplateMetadata;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,7 +27,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * VorlesungImpl.
@@ -45,8 +34,6 @@ import java.util.stream.Stream;
  * @author christopher-johnson
  */
 public class VorlesungImpl {
-
-    private final ImageMetadataServiceConfig imageMetadataServiceConfig;
 
     private Function<String, VPMetadata> mapToItem = (line) -> {
         final String[] p = line.split("\t", -1);
@@ -58,19 +45,17 @@ public class VorlesungImpl {
         item.setGroupTag4(p[4]);
         item.setGroupTag5(p[5]);
         item.setGroupTag6(p[6]);
-        item.setGroupTag6(p[7]);
-        item.setGroupImageSequenceBegin(Integer.parseInt(p[7]));
-        item.setGroupSize(Integer.parseInt(p[8]));
+        item.setGroupTag7(p[7]);
+        item.setGroupTag8(p[8]);
+        item.setGroupImageSequenceBegin(Integer.parseInt(p[9]));
+        item.setGroupSize(Integer.parseInt(p[10]));
         return item;
     };
 
     /**
      * VorlesungImpl.
-     *
-     * @param imageMetadataServiceConfig imageMetadataServiceConfig
      */
-    public VorlesungImpl(final ImageMetadataServiceConfig imageMetadataServiceConfig) {
-        this.imageMetadataServiceConfig = imageMetadataServiceConfig;
+    public VorlesungImpl() {
     }
 
     /**
@@ -90,7 +75,6 @@ public class VorlesungImpl {
         }
         return inputList;
     }
-
 
     /**
      * buildVPMap.
@@ -113,82 +97,9 @@ public class VorlesungImpl {
      * @param tag   an {@link Optional} {@link String}
      * @param mlist a list of {@link TemplateMetadata}
      */
-    public void setMetadata(@SuppressWarnings("OptionalUsedAsFieldOrParameterType") final Optional<String> tag, final
-    List<TemplateMetadata> mlist) {
-        if (tag.isPresent()) {
-            final TemplateMetadata meta = new TemplateMetadata("tag", tag.get());
-            mlist.add(meta);
-        }
+    public void setMetadata(final String tag, final List<TemplateMetadata> mlist) {
+        final TemplateMetadata meta = new TemplateMetadata("tag", tag);
+        mlist.add(meta);
     }
 
-    /**
-     * getFileNames.
-     *
-     * @return a list of {@link String}
-     */
-    public List<String> getFileNames() {
-        final List<String> names = new ArrayList<>();
-        final ImageMetadataService service = new ImageMetadataServiceImpl(imageMetadataServiceConfig);
-        final List<ImageDimensions> dimensionManifest = service.unmarshallDimensionManifestFromFile();
-        dimensionManifest.forEach(p -> {
-            final String name = p.getFilename();
-            names.add(name);
-        });
-        return names;
-    }
-
-    /**
-     * getFileNames.
-     *
-     * @return a list of {@link String}
-     */
-    public List<String> getFileNamesFromRemote() {
-        final List<String> names = new ArrayList<>();
-        final String remoteDimManifest = getDimensionManifestRemoteLocation(
-                imageMetadataServiceConfig.getDimensionManifestFilePath());
-        imageMetadataServiceConfig.setDimensionManifest(remoteDimManifest);
-        final ImageMetadataService service = new ImageMetadataServiceImpl(imageMetadataServiceConfig);
-        final List<ImageDimensions> dimensionManifest = service.unmarshallDimensionManifestFromRemote();
-        dimensionManifest.forEach(p -> {
-            final String name = p.getFilename();
-            names.add(name);
-        });
-        return names;
-    }
-
-    /**
-     * getFiles.
-     *
-     * @return a list of {@link Path}
-     */
-    public List<File> getFiles() {
-        final List<File> files = new ArrayList<>();
-        try (Stream<Path> paths = Files.walk(Paths.get(imageMetadataServiceConfig.getImageSourceDir())).filter(
-                Files::isRegularFile)) {
-            paths.forEach(p -> {
-                final File file = new File(String.valueOf(p.toAbsolutePath()));
-                files.add(file);
-            });
-            return files;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    /**
-     * getDimensions.
-     *
-     * @return a list of {@link ImageDimensions}
-     */
-    public List<ImageDimensions> getDimensions() {
-        final ImageMetadataService service = new ImageMetadataServiceImpl(imageMetadataServiceConfig);
-        final List<ImageDimensions> dims;
-        if (imageMetadataServiceConfig.getDimensionManifest() != null) {
-            dims = service.unmarshallDimensionManifestFromRemote();
-        } else {
-            dims = service.unmarshallDimensionManifestFromFile();
-        }
-        return dims;
-    }
 }

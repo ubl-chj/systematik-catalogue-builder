@@ -24,17 +24,13 @@ import static jdk.incubator.http.HttpResponse.BodyHandler.asString;
 import de.ubleipzig.scb.templates.MapList;
 import de.ubleipzig.scb.templates.TemplateMetadataMap;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.lang.reflect.Array;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -43,49 +39,46 @@ import java.util.TreeMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import jdk.incubator.http.HttpClient;
 import jdk.incubator.http.HttpRequest;
 import jdk.incubator.http.HttpResponse;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.rdf.jena.JenaRDF;
 import org.apache.jena.arq.atlas.json.JSON;
 import org.apache.jena.arq.atlas.json.JsonArray;
 import org.apache.jena.arq.atlas.json.JsonObject;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 public class MetadataMapBuilderTest {
 
     private static final JenaRDF rdf = new JenaRDF();
-    static HttpClient client = null;
-    static ExecutorService exec;
+    private static HttpClient client = null;
 
-    public static HttpClient getClient() {
+    private static HttpClient getClient() {
         if (client == null) {
-            exec = Executors.newCachedThreadPool();
+            final ExecutorService exec = Executors.newCachedThreadPool();
             client = HttpClient.newBuilder().executor(exec).build();
         }
         return client;
     }
 
-    private String getImageServiceIRI(String image) {
+    private String getImageServiceIRI(final String image) {
         client = getClient();
         final String fusekiURI = "http://workspaces.ub.uni-leipzig.de:3030/fuseki/trellis/query?query=";
-        final String query = encode("SELECT ?o WHERE {<trellis:data/collection/vp/res/" + image
-                + ".tif> <http://rdfs.org/sioc/services%23has_service> ?o}", UTF_8);
+        final String query = encode(
+                "SELECT ?o WHERE {<trellis:data/collection/vp/res/" + image + ".tif> <http://rdfs"
+                        + ".org/sioc/services%23has_service> ?o}", UTF_8);
         final String uri = fusekiURI + query;
         try {
-            HttpRequest req = HttpRequest.newBuilder(new URI(uri)).headers(
+            final HttpRequest req = HttpRequest.newBuilder(new URI(uri)).headers(
                     "Content-Type", "application/sparql-query", "Accept", "application/json").GET().build();
-            HttpResponse<String> response = client.send(req, asString());
-            JsonObject json = JSON.parse(response.body());
+            final HttpResponse<String> response = client.send(req, asString());
+            final JsonObject json = JSON.parse(response.body());
             System.out.println(json.toString());
-            JsonArray bindings = json.get("results").getAsObject().get("bindings").getAsArray();
-            if (bindings.size() > 0 ) {
+            final JsonArray bindings = json.get("results").getAsObject().get("bindings").getAsArray();
+            if (bindings.size() > 0) {
                 return bindings.get(0).getAsObject().get("o").getAsObject().get("value").toString();
             } else {
                 return null;
@@ -95,26 +88,19 @@ public class MetadataMapBuilderTest {
         }
     }
 
-    @Disabled
     @Test
     void testBuildMetadataMap() {
-        List<VPMetadata> inputList = new ArrayList<>();
-        InputStream is = MetadataMapBuilderTest.class.getResourceAsStream("/data/sk2-titles.csv");
-        try {
-            final BufferedReader br = new BufferedReader(new InputStreamReader(is));
-            inputList = br.lines().map(mapToItem).collect(Collectors.toList());
-            br.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        final int LOOPS = 52218;
+        final InputStream is = MetadataMapBuilderTest.class.getResourceAsStream("/data/sk2-titles.csv");
+        final VorlesungImpl vi = new VorlesungImpl();
+        final List<VPMetadata> inputList = vi.processInputFile(is);
+        final int loops = 52218;
         final AtomicInteger ai = new AtomicInteger(0);
         final List<TemplateMetadataMap> mlist = new ArrayList<>();
-        for (int i = 0; i < LOOPS; i++) {
+        for (int i = 0; i < loops; i++) {
             final TemplateMetadataMap tp = new TemplateMetadataMap();
-            String imageID = String.format("%08d", ai.get());
-            Optional<String> imageServiceIRI = ofNullable(getImageServiceIRI(imageID));
-            imageServiceIRI.ifPresent(s -> tp.setImageServiceIRI(s.replace("\"", "")));
+            final String imageID = String.format("%08d", ai.get());
+            //final Optional<String> imageServiceIRI = ofNullable(getImageServiceIRI(imageID));
+            //imageServiceIRI.ifPresent(s -> tp.setImageServiceIRI(s.replace("\"", "")));
             tp.setImageIndex(ai.get());
             ai.getAndIncrement();
             mlist.add(tp);
@@ -133,7 +119,7 @@ public class MetadataMapBuilderTest {
         }
         final Iterator<TemplateMetadataMap> i1 = mlist.iterator();
         final Iterator<TemplateMetadataMap> i2 = groupedMaps.iterator();
-        final Map<Integer, VPMetadata> vpmap = buildVPMap(inputList);
+        final Map<Integer, VPMetadata> vpmap = vi.buildVPMap(inputList);
 
         while (i1.hasNext() && i2.hasNext()) {
             final TemplateMetadataMap meta = i1.next();
@@ -155,43 +141,14 @@ public class MetadataMapBuilderTest {
             t6.ifPresent(s -> tags.put("tag6", s));
             final Optional<String> t7 = ofNullable(vp.getGroupTag7()).filter(s -> !s.isEmpty());
             t7.ifPresent(s -> tags.put("tag7", s));
+            final Optional<String> t8 = ofNullable(vp.getGroupTag8()).filter(s -> !s.isEmpty());
+            t8.ifPresent(s -> tags.put("tag8", s));
             meta.setMetadataMap(tags);
             //System.out.println("setting metadata for sequence beginning " + vp.getGroupImageSequenceBegin());
         }
         final MapList out = new MapList();
         out.setMapList(mlist);
-        String json = serialize(out).orElse("");
+        final String json = serialize(out).orElse("");
         writeToFile(json, new File("/tmp/vp-metadata.json"));
-    }
-
-    private Function<String, VPMetadata> mapToItem = (line) -> {
-        final String[] p = line.split("\t", -1);
-        final VPMetadata item = new VPMetadata();
-        item.setGroupNumber(Integer.parseInt(p[0]));
-        item.setGroupTag1(p[1]);
-        item.setGroupTag2(p[2]);
-        item.setGroupTag3(p[3]);
-        item.setGroupTag4(p[4]);
-        item.setGroupTag5(p[5]);
-        item.setGroupTag6(p[6]);
-        item.setGroupTag7(p[7]);
-        item.setGroupImageSequenceBegin(Integer.parseInt(p[8]));
-        item.setGroupSize(Integer.parseInt(p[9]));
-        return item;
-    };
-
-    /**
-     * buildVPMap.
-     *
-     * @param inputList a list of {@link VPMetadata}
-     * @return {@link Map}
-     */
-    public Map<Integer, VPMetadata> buildVPMap(final List<VPMetadata> inputList) {
-        final Map<Integer, VPMetadata> vpmap = new HashMap<>();
-        inputList.forEach(vp -> {
-            final int gid = vp.getGroupNumber();
-            vpmap.put(gid, vp);
-        });
-        return vpmap;
     }
 }

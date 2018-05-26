@@ -45,15 +45,6 @@ public class TemplateTagBody {
     }
 
     /**
-     * setTagId.
-     *
-     * @param id id
-     */
-    public void setTagId(final String id) {
-        this.id = id;
-    }
-
-    /**
      * getResourceId.
      *
      * @return String
@@ -61,6 +52,15 @@ public class TemplateTagBody {
     @JsonIgnore
     public String getTagId() {
         return this.id;
+    }
+
+    /**
+     * setTagId.
+     *
+     * @param id id
+     */
+    public void setTagId(final String id) {
+        this.id = id;
     }
 
     /**

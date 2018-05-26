@@ -14,6 +14,7 @@
 
 package de.ubleipzig.scb.templates;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
@@ -42,6 +43,7 @@ public class TemplateMetadata {
         this.value = value;
     }
 
+    @JsonIgnore
     public String getMetadataValue() {
         return this.value;
     }

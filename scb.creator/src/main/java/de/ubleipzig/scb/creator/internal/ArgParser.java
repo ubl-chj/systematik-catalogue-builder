@@ -41,8 +41,8 @@ import org.slf4j.Logger;
 
 public class ArgParser {
 
-    private static Logger logger = getLogger(ArgParser.class);
     private static final Options configOptions = new Options();
+    private static Logger logger = getLogger(ArgParser.class);
 
     static {
         configOptions.addOption(
@@ -55,6 +55,17 @@ public class ArgParser {
         configOptions.addOption(
                 Option.builder("c").longOpt("config").hasArg(true).numberOfArgs(1).argName("config").desc(
                         "Path to config file").required(true).build());
+    }
+
+    /**
+     * Parse command line options based on the provide Options.
+     *
+     * @param args command line arguments
+     * @return the list of option and values
+     * @throws ParseException if invalid/missing option is found
+     */
+    private static CommandLine parseConfigArgs(final Options configOptions, final String[] args) throws ParseException {
+        return new DefaultParser().parse(configOptions, args);
     }
 
     /**
@@ -89,18 +100,6 @@ public class ArgParser {
         }
         return null;
     }
-
-    /**
-     * Parse command line options based on the provide Options.
-     *
-     * @param args command line arguments
-     * @return the list of option and values
-     * @throws ParseException if invalid/missing option is found
-     */
-    private static CommandLine parseConfigArgs(final Options configOptions, final String[] args) throws ParseException {
-        return new DefaultParser().parse(configOptions, args);
-    }
-
 
     private ScbConfig parseConfigFileOptions(final CommandLine cmd) {
         return retrieveConfig(new File(cmd.getOptionValue('c')));

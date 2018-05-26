@@ -51,15 +51,6 @@ public class TemplateBody {
     }
 
     /**
-     * setResourceId.
-     *
-     * @param id id
-     */
-    public void setResourceId(final String id) {
-        this.id = id;
-    }
-
-    /**
      * getResourceId.
      *
      * @return String
@@ -67,6 +58,15 @@ public class TemplateBody {
     @JsonIgnore
     public String getResourceId() {
         return this.id;
+    }
+
+    /**
+     * setResourceId.
+     *
+     * @param id id
+     */
+    public void setResourceId(final String id) {
+        this.id = id;
     }
 
     /**

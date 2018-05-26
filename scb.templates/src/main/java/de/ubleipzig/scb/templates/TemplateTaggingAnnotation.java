@@ -62,15 +62,6 @@ public class TemplateTaggingAnnotation {
     }
 
     /**
-     * setId.
-     *
-     * @param id id
-     */
-    public void setAnnoId(final String id) {
-        this.id = id;
-    }
-
-    /**
      * getAnnoId.
      *
      * @return id
@@ -81,12 +72,12 @@ public class TemplateTaggingAnnotation {
     }
 
     /**
-     * setBody.
+     * setId.
      *
-     * @param body body
+     * @param id id
      */
-    public void setBody(final TemplateTagBody body) {
-        this.body = body;
+    public void setAnnoId(final String id) {
+        this.id = id;
     }
 
     /**
@@ -97,6 +88,15 @@ public class TemplateTaggingAnnotation {
     @JsonIgnore
     public TemplateTagBody getBody() {
         return this.body;
+    }
+
+    /**
+     * setBody.
+     *
+     * @param body body
+     */
+    public void setBody(final TemplateTagBody body) {
+        this.body = body;
     }
 
     /**

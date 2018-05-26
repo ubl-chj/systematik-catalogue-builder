@@ -35,15 +35,6 @@ public class TemplateMetadataMap {
     private Map<String, String> metadataMap;
 
     /**
-     * setMetadataMap.
-     *
-     * @param metadataMap Map
-     */
-    public void setMetadataMap(final Map<String, String> metadataMap) {
-        this.metadataMap = metadataMap;
-    }
-
-    /**
      * getMetadataMap.
      *
      * @return Map
@@ -53,14 +44,16 @@ public class TemplateMetadataMap {
     }
 
     /**
+     * setMetadataMap.
      *
-     * @param imageIndex Integer
+     * @param metadataMap Map
      */
-    public void setImageIndex(final Integer imageIndex) {
-        this.imageIndex = imageIndex;
+    public void setMetadataMap(final Map<String, String> metadataMap) {
+        this.metadataMap = metadataMap;
     }
 
     /**
+     * getImageIndex.
      *
      * @return Integer
      */
@@ -69,14 +62,16 @@ public class TemplateMetadataMap {
     }
 
     /**
+     * setImageIndex.
      *
-     * @param imageServiceIRI String
+     * @param imageIndex Integer
      */
-    public void setImageServiceIRI(final String imageServiceIRI) {
-        this.imageServiceIRI = imageServiceIRI;
+    public void setImageIndex(final Integer imageIndex) {
+        this.imageIndex = imageIndex;
     }
 
     /**
+     * getImageServiceIRI.
      *
      * @return Integer
      */
@@ -85,18 +80,29 @@ public class TemplateMetadataMap {
     }
 
     /**
+     * setImageServiceIRI.
      *
-     * @param groupId Integer
+     * @param imageServiceIRI String
      */
-    public void setGroupId(final Integer groupId) {
-        this.groupId = groupId;
+    public void setImageServiceIRI(final String imageServiceIRI) {
+        this.imageServiceIRI = imageServiceIRI;
     }
 
     /**
+     * getGroupId.
      *
      * @return Integer
      */
     public Integer getGroupId() {
         return groupId;
+    }
+
+    /**
+     * setGroupId.
+     *
+     * @param groupId Integer
+     */
+    public void setGroupId(final Integer groupId) {
+        this.groupId = groupId;
     }
 }

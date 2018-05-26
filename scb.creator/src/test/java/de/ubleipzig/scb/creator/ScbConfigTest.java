@@ -30,15 +30,11 @@ public class ScbConfigTest extends CommonTests {
         assertEquals("collection/vp/target/", config.getTargetContainer());
         assertEquals("collection/vp/res/", config.getBodyContainer());
         assertEquals("collection/vp/tag/", config.getTagBodyContainer());
-        assertEquals("/sk2-titles-semester.tsv", config.getMetadataFile());
-        assertEquals(
-                "https://workspaces.ub.uni-leipzig.de:8445/collection/vp/meta/sk2-titles-semester.tsv",
+        assertEquals("/data/sk2-titles.csv", config.getMetadataFile());
+        assertEquals("https://workspaces.ub.uni-leipzig.de:8445/collection/vp/meta/sk2-titles-semester.tsv",
                 config.getMetadataRemoteLocation());
-        assertEquals(
-                "/images",
-                config.getImageMetadataServiceConfig().getImageSourceDir());
-        assertEquals(
-                "/dimension-manifest-test-8efc742f-709e-47ea-a346-e7bdc3266b49.json",
+        assertEquals("/images", config.getImageMetadataServiceConfig().getImageSourceDir());
+        assertEquals("/dimension-manifest-test-8efc742f-709e-47ea-a346-e7bdc3266b49.json",
                 config.getImageMetadataServiceConfig().getDimensionManifestFilePath());
     }
 }

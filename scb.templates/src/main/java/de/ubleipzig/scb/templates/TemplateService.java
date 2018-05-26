@@ -36,7 +36,6 @@ public class TemplateService {
 
     /**
      * TemplateService.
-     *
      */
     public TemplateService() {
     }

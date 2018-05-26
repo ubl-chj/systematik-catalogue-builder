@@ -61,101 +61,136 @@ public class TargetBuilder {
     }
 
     /**
+     * buildTargetList.
+     *
+     * @param inputList List
+     * @return List
+     */
+    public List<TemplateTarget> buildTargetList(final List<VPMetadata> inputList) {
+        final AtomicInteger atomicInteger = new AtomicInteger(0);
+        final List<TemplateTarget> targetList = new ArrayList<>();
+        final List<int[]> result = inputList.stream().map(v -> new int[v.getGroupSize()]).collect(Collectors.toList());
+        for (int[] r : result) {
+            final Iterable<Integer> iterable = () -> Arrays.stream(r).iterator();
+            atomicInteger.getAndIncrement();
+            iterable.forEach(x -> {
+                final TemplateTarget target = new TemplateTarget();
+                target.setTargetGroup(atomicInteger.get());
+                targetList.add(target);
+            });
+        }
+        return targetList;
+    }
+
+    private List<String> getContexts() {
+        final List<String> contexts = new ArrayList<>();
+        contexts.add(ANNO.CONTEXT);
+        contexts.add(SC.CONTEXT);
+        return contexts;
+    }
+
+    private List<String> getFileNames(final ImageMetadataImpl im) {
+        final List<String> fileNames;
+        final String dimManifest = imageMetadataServiceConfig.getDimensionManifestFilePath();
+        if (dimManifest.contains("http")) {
+            fileNames = im.getFileNamesFromRemote();
+        } else {
+            fileNames = im.getFileNames();
+        }
+        return fileNames;
+    }
+
+    private List<VPMetadata> getMetadata(final VorlesungImpl vi) {
+        final List<VPMetadata> metadata;
+        if (scbConfig.getMetadataInputStream().isPresent()) {
+            metadata = vi.processInputFile(scbConfig.getMetadataInputStream().get());
+        } else {
+            metadata = vi.processInputFile(TargetBuilder.class.getResourceAsStream(scbConfig.getMetadataFile()));
+        }
+        return metadata;
+    }
+
+    private List<TemplateTarget> createTargetIdentifiers(final List<String> fileNames, final List<String> contexts,
+                                                         final List<TemplateTarget> targetList) {
+        final String targetContainer = scbConfig.getTargetContainer();
+        final Iterator<String> i1 = Objects.requireNonNull(fileNames).iterator();
+        final Iterator<TemplateTarget> i2 = targetList.iterator();
+        while (i1.hasNext() && i2.hasNext()) {
+            final String label = i1.next();
+            final UUID canvasUUID = UUIDType5.nameUUIDFromNamespaceAndString(NAMESPACE_URL, label);
+            final String id = scbConfig.getBaseUrl() + targetContainer + canvasUUID.toString();
+            final TemplateTarget target = i2.next();
+            target.setTargetId(id);
+            target.setContext(contexts);
+            target.setCanvasLabel(removeExtension(label));
+            log.debug("Creating Target for {}", label);
+        }
+        return targetList;
+    }
+
+    private List<TemplateTarget> setTargetMetadata(final List<TemplateTarget> identifierTargets, final VorlesungImpl
+            vi, final List<VPMetadata> metadata) {
+        final Iterator<TemplateTarget> it = identifierTargets.iterator();
+        final Map<Integer, VPMetadata> vpmap = vi.buildVPMap(metadata);
+        while (it.hasNext()) {
+            final TemplateTarget target = it.next();
+            final int groupId = target.getTargetGroup();
+            final List<TemplateMetadata> mlist = new ArrayList<>();
+            final VPMetadata vp = vpmap.get(groupId);
+            final Optional<String> gt1 = Optional.ofNullable(vp.getGroupTag1()).filter(s -> !s.isEmpty());
+            gt1.ifPresent(t -> vi.setMetadata(t, mlist));
+            final Optional<String> gt2 = Optional.ofNullable(vp.getGroupTag2()).filter(s -> !s.isEmpty());
+            gt2.ifPresent(t -> vi.setMetadata(t, mlist));
+            final Optional<String> gt3 = Optional.ofNullable(vp.getGroupTag3()).filter(s -> !s.isEmpty());
+            gt3.ifPresent(t -> vi.setMetadata(t, mlist));
+            final Optional<String> gt4 = Optional.ofNullable(vp.getGroupTag4()).filter(s -> !s.isEmpty());
+            gt4.ifPresent(t -> vi.setMetadata(t, mlist));
+            final Optional<String> gt5 = Optional.ofNullable(vp.getGroupTag5()).filter(s -> !s.isEmpty());
+            gt5.ifPresent(t -> vi.setMetadata(t, mlist));
+            final Optional<String> gt6 = Optional.ofNullable(vp.getGroupTag6()).filter(s -> !s.isEmpty());
+            gt6.ifPresent(t -> vi.setMetadata(t, mlist));
+            final Optional<String> gt7 = Optional.ofNullable(vp.getGroupTag7()).filter(s -> !s.isEmpty());
+            gt7.ifPresent(t -> vi.setMetadata(t, mlist));
+            final Optional<String> gt8 = Optional.ofNullable(vp.getGroupTag8()).filter(s -> !s.isEmpty());
+            gt8.ifPresent(t -> vi.setMetadata(t, mlist));
+            target.setMetadata(mlist);
+            target.setTargetGroup(groupId);
+            log.debug("Setting Metadata for {}", target.getCanvasLabel());
+        }
+        return identifierTargets;
+    }
+
+    private List<TemplateTarget> setImageDimensions(final List<TemplateTarget> metadataTargets, final
+    ImageMetadataImpl im) {
+        final List<ImageDimensions> dims = im.getDimensions();
+        final Iterator<ImageDimensions> i3 = Objects.requireNonNull(dims).iterator();
+        final Iterator<TemplateTarget> i4 = metadataTargets.iterator();
+        while (i3.hasNext() && i4.hasNext()) {
+            final ImageDimensions dim = i3.next();
+            final TemplateTarget target = i4.next();
+            if (dim != null) {
+                target.setCanvasWidth(dim.getWidth());
+                target.setCanvasHeight(dim.getHeight());
+            }
+            log.debug("Setting Dimensions for {}", target.getCanvasLabel());
+        }
+        return metadataTargets;
+    }
+
+    /**
      * buildCanvases.
      *
      * @return {@link List} of {@link TemplateTarget}
      */
     public List<TemplateTarget> buildCanvases() {
-        final VorlesungImpl vi = new VorlesungImpl(imageMetadataServiceConfig);
-        final List<VPMetadata> inputList;
-        if (scbConfig.getMetadataInputStream() != null) {
-            inputList = vi.processInputFile(scbConfig.getMetadataInputStream());
-        } else {
-            inputList = vi.processInputFile(
-                    TargetBuilder.class.getResourceAsStream(scbConfig.getMetadataFile()));
-        }
-        final AtomicInteger atomicInteger = new AtomicInteger(0);
-        final List<TemplateTarget> groupedCanvases = new ArrayList<>();
-        final List<int[]> result = inputList.stream()
-                                            .map(v -> new int[v.getGroupSize()])
-                                            .collect(Collectors.toList());
-        for (int[] r : result) {
-            final Iterable<Integer> iterable = () -> Arrays.stream(r)
-                                                           .iterator();
-            atomicInteger.getAndIncrement();
-            iterable.forEach(x -> {
-                final TemplateTarget canvas = new TemplateTarget();
-                canvas.setTargetGroup(atomicInteger.get());
-                groupedCanvases.add(canvas);
-            });
-        }
-
-        final List<String> contexts = new ArrayList<>();
-        final String targetContainer = scbConfig.getTargetContainer();
-        contexts.add(ANNO.CONTEXT);
-        contexts.add(SC.CONTEXT);
-        final List<String> files;
-        final String dimManifest = imageMetadataServiceConfig.getDimensionManifestFilePath();
-        if (dimManifest.contains("http")) {
-            files = vi.getFileNamesFromRemote();
-        } else {
-            files = vi.getFileNames();
-        }
-        final Iterator<String> i1 = Objects.requireNonNull(files)
-                                           .iterator();
-        final Iterator<TemplateTarget> i2 = groupedCanvases.iterator();
-        while (i1.hasNext() && i2.hasNext()) {
-            final String label = i1.next();
-            final UUID canvasUUID = UUIDType5.nameUUIDFromNamespaceAndString(NAMESPACE_URL, label);
-            final String id = scbConfig.getBaseUrl() + targetContainer + canvasUUID.toString();
-            final TemplateTarget canvas = i2.next();
-            canvas.setTargetId(id);
-            canvas.setContext(contexts);
-            canvas.setCanvasLabel(removeExtension(label));
-            log.debug("Creating Canvas for {}", label);
-        }
-
-        //TODO remove this
-        final Iterator<TemplateTarget> i6 = groupedCanvases.iterator();
-        final Map<Integer, VPMetadata> vpmap = vi.buildVPMap(inputList);
-        while (i6.hasNext()) {
-            final TemplateTarget c = i6.next();
-            final int groupId = c.getTargetGroup();
-            final List<TemplateMetadata> mlist = new ArrayList<>();
-            final VPMetadata vp = vpmap.get(groupId);
-            final Optional<String> gt1 = Optional.ofNullable(vp.getGroupTag1())
-                                                 .filter(s -> !s.isEmpty());
-            vi.setMetadata(gt1, mlist);
-            final Optional<String> gt2 = Optional.ofNullable(vp.getGroupTag2())
-                                                 .filter(s -> !s.isEmpty());
-            vi.setMetadata(gt2, mlist);
-            final Optional<String> gt3 = Optional.ofNullable(vp.getGroupTag3())
-                                                 .filter(s -> !s.isEmpty());
-            vi.setMetadata(gt3, mlist);
-            final Optional<String> gt4 = Optional.ofNullable(vp.getGroupTag4())
-                                                 .filter(s -> !s.isEmpty());
-            vi.setMetadata(gt4, mlist);
-            final Optional<String> gt5 = Optional.ofNullable(vp.getGroupTag5())
-                                                 .filter(s -> !s.isEmpty());
-            vi.setMetadata(gt5, mlist);
-            c.setMetadata(mlist);
-            c.setTargetGroup(groupId);
-            log.debug("Setting Metadata for {}", c.getCanvasLabel());
-        }
-
-        final List<ImageDimensions> dims = vi.getDimensions();
-        final Iterator<ImageDimensions> i3 = Objects.requireNonNull(dims)
-                                                    .iterator();
-        final Iterator<TemplateTarget> i4 = groupedCanvases.iterator();
-        while (i3.hasNext() && i4.hasNext()) {
-            final ImageDimensions dim = i3.next();
-            final TemplateTarget canvas = i4.next();
-            if (dim != null) {
-                canvas.setCanvasWidth(dim.getWidth());
-                canvas.setCanvasHeight(dim.getHeight());
-            }
-            log.debug("Setting Dimensions for {}", canvas.getCanvasLabel());
-        }
-        return groupedCanvases;
+        final VorlesungImpl vi = new VorlesungImpl();
+        final ImageMetadataImpl im = new ImageMetadataImpl(imageMetadataServiceConfig);
+        final List<VPMetadata> metadata = getMetadata(vi);
+        final List<TemplateTarget> targetList = buildTargetList(metadata);
+        final List<String> contexts = getContexts();
+        final List<String> fileNames = getFileNames(im);
+        final List<TemplateTarget> identifierTargets = createTargetIdentifiers(fileNames, contexts, targetList);
+        final List<TemplateTarget> metadataTargets = setTargetMetadata(identifierTargets, vi, metadata);
+        return setImageDimensions(metadataTargets, im);
     }
 }

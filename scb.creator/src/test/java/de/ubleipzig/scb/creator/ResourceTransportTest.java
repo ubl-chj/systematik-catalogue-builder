@@ -53,9 +53,8 @@ import org.trellisldp.vocabulary.ACL;
 import org.trellisldp.vocabulary.LDP;
 
 public class ResourceTransportTest extends CommonTests {
-    static final DropwizardTestSupport<TrellisConfiguration> APP = new DropwizardTestSupport<>(
-            TrellisApplication.class, resourceFilePath("trellis-config.yml"),
-            config("server.applicationConnectors[0].port", "0"),
+    static final DropwizardTestSupport<TrellisConfiguration> APP = new DropwizardTestSupport<>(TrellisApplication.class,
+            resourceFilePath("trellis-config.yml"), config("server.applicationConnectors[0].port", "0"),
             config("binaries", resourceFilePath("data") + "/binaries"),
             config("mementos", resourceFilePath("data") + "/mementos"),
             config("namespaces", resourceFilePath("data/namespaces.json")),
@@ -90,6 +89,10 @@ public class ResourceTransportTest extends CommonTests {
 
     private static InputStream getTestResource() {
         return ResourceCreatorTest.class.getResourceAsStream("/data/empty.ttl");
+    }
+
+    private static InputStream getTestN3Resource() {
+        return ResourceCreatorTest.class.getResourceAsStream("/data/webanno.complete.nt");
     }
 
     @Test
@@ -203,9 +206,5 @@ public class ResourceTransportTest extends CommonTests {
         } catch (Exception ex) {
             throw new LdpClientException(ex.toString(), ex.getCause());
         }
-    }
-
-    private static InputStream getTestN3Resource() {
-        return ResourceCreatorTest.class.getResourceAsStream("/data/webanno.complete.nt");
     }
 }

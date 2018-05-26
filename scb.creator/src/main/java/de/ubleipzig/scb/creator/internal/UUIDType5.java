@@ -37,7 +37,7 @@ public final class UUIDType5 {
      * nameUUIDFromNamespaceAndString.
      *
      * @param namespace namespace
-     * @param name name
+     * @param name      name
      * @return {@link UUID}
      */
     public static UUID nameUUIDFromNamespaceAndString(final UUID namespace, final String name) {
@@ -48,7 +48,7 @@ public final class UUIDType5 {
      * nameUUIDFromNamespaceAndBytes.
      *
      * @param namespace namespace
-     * @param name name
+     * @param name      name
      * @return {@link UUID}
      */
     public static UUID nameUUIDFromNamespaceAndBytes(final UUID namespace, final byte[] name) {

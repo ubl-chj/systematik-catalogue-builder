@@ -38,6 +38,7 @@ public class VPMetadata {
     private String groupTag5;
     private String groupTag6;
     private String groupTag7;
+    private String groupTag8;
     private int size;
     private int sequenceBegin;
 
@@ -200,6 +201,24 @@ public class VPMetadata {
      */
     public void setGroupTag7(final String groupTag7) {
         this.groupTag7 = groupTag7;
+    }
+
+    /**
+     * getGroupTag6.
+     *
+     * @return {@link String}
+     */
+    public String getGroupTag8() {
+        return this.groupTag8;
+    }
+
+    /**
+     * setGroupTag6.
+     *
+     * @param groupTag8 {@link String}
+     */
+    public void setGroupTag8(final String groupTag8) {
+        this.groupTag8 = groupTag8;
     }
 
     /**

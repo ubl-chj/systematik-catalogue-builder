@@ -85,8 +85,8 @@ public final class ResourceCreator extends AbstractResourceCreator implements Sy
      * @return Map
      */
     public Map<URI, InputStream> buildImageResourceBatchFromSubList() {
-        final VorlesungImpl vi = new VorlesungImpl(imageMetadataServiceConfig);
-        final List<File> files = vi.getFiles();
+        final ImageMetadataImpl im = new ImageMetadataImpl(imageMetadataServiceConfig);
+        final List<File> files = im.getFiles();
         files.sort(Comparator.naturalOrder());
         final List<File> sublist = files.subList(fromIndex, toIndex);
         final Map<URI, InputStream> batch = new HashMap<>();

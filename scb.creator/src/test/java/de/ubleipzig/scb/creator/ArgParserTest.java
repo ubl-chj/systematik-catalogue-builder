@@ -29,7 +29,7 @@ public class ArgParserTest {
         parser = new ArgParser();
         final String configFilePath = ArgParserTest.class.getResource(configFile).getPath();
         final String[] args;
-        args = new String[]{"-b", "resources", "-f", "100", "-t", "120", "-c", configFilePath };
+        args = new String[]{"-b", "resources", "-f", "100", "-t", "120", "-c", configFilePath};
         final SystematikCatalogueBuilder builder = parser.init(args);
         builder.run();
     }
