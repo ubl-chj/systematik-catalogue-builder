@@ -41,11 +41,11 @@ import org.trellisldp.client.LdpClientImpl;
 
 public abstract class CommonTests {
     static final DropwizardTestSupport<TrellisConfiguration> APP = new DropwizardTestSupport<>(TrellisApplication.class,
-            resourceFilePath("trellis-config.yml"), config("server.applicationConnectors[0].port", "0"),
+            resourceFilePath("trellis-config.yml"), config("server.applicationConnectors[1].port", "8445"),
             config("binaries", resourceFilePath("data") + "/binaries"),
             config("mementos", resourceFilePath("data") + "/mementos"),
             config("namespaces", resourceFilePath("data/namespaces.json")),
-            config("server.applicationConnectors[1].keyStorePath", resourceFilePath("keystore/trellis.jks")));
+            config("server.applicationConnectors[2].keyStorePath", resourceFilePath("keystore/trellis.jks")));
     static final JenaRDF rdf = new JenaRDF();
     static String baseUrl;
     static String pid;

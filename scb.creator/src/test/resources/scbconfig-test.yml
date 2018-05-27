@@ -1,4 +1,4 @@
-baseUrl: "https://localhost:8445/"
+baseUrl: "http://localhost:8445/"
 imageServiceBaseUrl: "http://workspaces.ub.uni-leipzig.de:8182/iiif/2/"
 imageServiceType: "http://iiif.io/api/image/2/context.json"
 annotationContainer: "collection/vp/anno/"

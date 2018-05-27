@@ -32,7 +32,7 @@ public class AbstractResourceCreatorTest extends CommonTests {
     @BeforeAll
     static void initAll() {
         APP.before();
-        baseUrl = "http://localhost:" + APP.getLocalPort() + "/";
+        baseUrl = "http://localhost:8445/";
         h2client = getClient();
     }
 
@@ -43,6 +43,8 @@ public class AbstractResourceCreatorTest extends CommonTests {
 
     @Test
     void testGetDimensionManifestRemoteLocation() throws LdpClientException {
+        final IRI base = rdf.createIRI(baseUrl);
+        h2client.initUpgrade(base);
         final InputStream is = getDimensionManifest();
         final IRI identifier = rdf.createIRI(baseUrl + pid);
         h2client.put(identifier, is, "application/json");
@@ -52,6 +54,8 @@ public class AbstractResourceCreatorTest extends CommonTests {
 
     @Test
     void testGetMetadataRemoteLocation() throws LdpClientException {
+        final IRI base = rdf.createIRI(baseUrl);
+        h2client.initUpgrade(base);
         final InputStream is = getDimensionManifest();
         final IRI identifier = rdf.createIRI(baseUrl + pid);
         h2client.put(identifier, is, "application/json");

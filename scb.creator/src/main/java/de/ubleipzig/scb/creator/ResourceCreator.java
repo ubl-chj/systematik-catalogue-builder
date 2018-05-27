@@ -38,6 +38,7 @@ import java.util.Objects;
 
 import org.apache.commons.rdf.api.IRI;
 import org.slf4j.Logger;
+import org.trellisldp.client.LdpClientException;
 
 /**
  * ResourceCreator.
@@ -69,13 +70,26 @@ public final class ResourceCreator extends AbstractResourceCreator implements Sy
     @Override
     public void run() {
         logger.info("Running ResourceCreator...");
+        final String baseUrl = scbConfig.getBaseUrl();
         final Map<URI, InputStream> imageBatch = buildImageResourceBatchFromSubList();
-        remote.joiningCompletableFuturePut(imageBatch, "image/tiff");
+        try {
+            remote.joiningCompletableFuturePut(imageBatch, "image/tiff", baseUrl);
+        } catch (LdpClientException e) {
+            throw new RuntimeException(e.getMessage());
+        }
         final List<TemplateTarget> targetList = getTargetList();
         final Map<URI, InputStream> canvasBatch = buildCanvasBatch(targetList);
-        remote.joiningCompletableFuturePut(canvasBatch, contentTypeNTriples);
+        try {
+            remote.joiningCompletableFuturePut(canvasBatch, contentTypeNTriples, baseUrl);
+        } catch (LdpClientException e) {
+            throw new RuntimeException(e.getMessage());
+        }
         final Map<URI, InputStream> annotationBatch = buildAnnotationBatch(targetList);
-        remote.joiningCompletableFuturePut(annotationBatch, contentTypeNTriples);
+        try {
+            remote.joiningCompletableFuturePut(annotationBatch, contentTypeNTriples, baseUrl);
+        } catch (LdpClientException e) {
+            throw new RuntimeException(e.getMessage());
+        }
         logger.info("Process Complete: Exiting");
     }
 

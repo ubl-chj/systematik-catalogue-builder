@@ -50,7 +50,7 @@ public class ResourceTransportTest extends CommonTests {
     @BeforeAll
     static void initAll() {
         APP.before();
-        baseUrl = "http://localhost:" + APP.getLocalPort() + "/";
+        baseUrl = "http://localhost:8445/";
         //baseUrl = "http://localhost:8000/";
         fromIndex = 0;
         toIndex = 10;
@@ -101,6 +101,8 @@ public class ResourceTransportTest extends CommonTests {
                 .getDimensionManifestFilePath();
         final IRI identifier = rdf.createIRI(baseUrl + "collection/vp/meta" + dimensionManifestFilePath);
         final InputStream is = ResourceCreatorTest.class.getResourceAsStream(dimensionManifestFilePath);
+        final IRI base = rdf.createIRI(baseUrl);
+        h2client.initUpgrade(base);
         h2client.put(identifier, is, "application/json");
     }
 
@@ -110,6 +112,8 @@ public class ResourceTransportTest extends CommonTests {
         final String metadataFile = scbConfig.getMetadataFile();
         final IRI identifier = rdf.createIRI(baseUrl + "collection/vp/meta" + metadataFile);
         final InputStream is = ResourceCreatorTest.class.getResourceAsStream(metadataFile);
+        final IRI base = rdf.createIRI(baseUrl);
+        h2client.initUpgrade(base);
         h2client.put(identifier, is, "text/tab-separated-values");
     }
 
@@ -135,6 +139,8 @@ public class ResourceTransportTest extends CommonTests {
     void testCreateDirectContainer() {
         try {
             final IRI identifier = rdf.createIRI(baseUrl + "collection/vp");
+            final IRI base = rdf.createIRI(baseUrl);
+            h2client.initUpgrade(base);
             h2client.createDirectContainer(identifier, "resources", identifier);
         } catch (LdpClientException e) {
             e.printStackTrace();
@@ -147,6 +153,8 @@ public class ResourceTransportTest extends CommonTests {
             final IRI identifier = rdf.createIRI(baseUrl + pid);
             final Map<String, String> metadata = new HashMap<>();
             metadata.put(LINK, LDP.BasicContainer + "; rel=\"type\"");
+            final IRI base = rdf.createIRI(baseUrl);
+            h2client.initUpgrade(base);
             h2client.putWithMetadata(identifier, getTestResource(), metadata);
         } catch (LdpClientException e) {
             e.printStackTrace();
@@ -164,6 +172,8 @@ public class ResourceTransportTest extends CommonTests {
         try {
             final IRI identifier = rdf.createIRI(baseUrl + pid + "?ext=acl");
             final ACLStatement acl = new ACLStatement(modes, agent, accessTo);
+            final IRI base = rdf.createIRI(baseUrl);
+            h2client.initUpgrade(base);
             h2client.put(identifier, new ByteArrayInputStream(acl.getACL().toByteArray()), contentTypeNTriples);
         } catch (LdpClientException e) {
             e.printStackTrace();
@@ -182,6 +192,8 @@ public class ResourceTransportTest extends CommonTests {
                 final InputStream is = getTestN3Resource();
                 map.put(uri, is);
             }
+            final IRI base = rdf.createIRI(baseUrl);
+            h2client.initUpgrade(base);
             h2client.joiningCompletableFuturePut(map, contentTypeNTriples);
         } catch (Exception ex) {
             throw new LdpClientException(ex.toString(), ex.getCause());

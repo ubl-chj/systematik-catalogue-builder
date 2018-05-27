@@ -34,6 +34,7 @@ import java.util.Objects;
 
 import org.apache.commons.rdf.api.IRI;
 import org.slf4j.Logger;
+import org.trellisldp.client.LdpClientException;
 
 /**
  * ResourceCreator.
@@ -65,7 +66,11 @@ public final class TaggingAnnotationCreator extends AbstractResourceCreator impl
         logger.info("Running TaggingAnnotationCreator...");
         final List<TemplateTarget> targetList = getTargetList();
         final Map<URI, InputStream> annotationBatch = buildAnnotationBatch(targetList);
-        remote.joiningCompletableFuturePut(annotationBatch, contentTypeNTriples);
+        try {
+            remote.joiningCompletableFuturePut(annotationBatch, contentTypeNTriples, scbConfig.getBaseUrl());
+        } catch (LdpClientException e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     @Override

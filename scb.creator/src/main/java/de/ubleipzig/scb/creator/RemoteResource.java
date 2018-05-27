@@ -77,7 +77,14 @@ public class RemoteResource {
      * @param batch       batch
      * @param contentType contentType
      */
-    public void joiningCompletableFuturePut(final Map<URI, InputStream> batch, final String contentType) {
+    public void joiningCompletableFuturePut(final Map<URI, InputStream> batch, final String contentType, final String
+            baseUrl) throws LdpClientException {
+        final IRI base = rdf.createIRI(baseUrl);
+        try {
+            h2client.initUpgrade(base);
+        } catch (Exception ex) {
+            throw new LdpClientException(ex.toString(), ex.getCause());
+        }
         h2client.joiningCompletableFuturePut(batch, contentType);
     }
 }

@@ -36,6 +36,8 @@ This file rather than the binaries will be used for all subsequent annotation bu
 | -f | (none)    | "from"    | The start index (this corresponds to the beginning _body_ sequence identifier) for a collection set |
 | -t | (none)    | "to"      | The end index (this corresponds to the ending _body_ sequence identifier) for a collection set |
 | -c | (none)    | "config"  | The absolute path to the configuration file |
+| -i | (none)    | "imageSourceDir"  | The absolute path to the imageSource Directory |
+| -d | (none)    | "dimManifest"  | The absolute path to the dimension Manifest |
 
 ### Configuration File
 

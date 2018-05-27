@@ -15,12 +15,14 @@
 package de.ubleipzig.scb.creator.internal;
 
 import static java.lang.System.out;
+import static java.util.Optional.ofNullable;
 import static org.apache.commons.cli.Option.builder;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
+import de.ubleipzig.image.metadata.ImageMetadataServiceConfig;
 import de.ubleipzig.scb.creator.ResourceCreator;
 import de.ubleipzig.scb.creator.ScbConfig;
 import de.ubleipzig.scb.creator.SystematikCatalogueBuilder;
@@ -30,6 +32,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
@@ -55,6 +58,14 @@ public class ArgParser {
         configOptions.addOption(
                 Option.builder("c").longOpt("config").hasArg(true).numberOfArgs(1).argName("config").desc(
                         "Path to config file").required(true).build());
+
+        configOptions.addOption(
+                builder("i").longOpt("imageSourceDir").hasArg(true).desc("Image Source Directory").required(
+                        false).build());
+
+        configOptions.addOption(
+                builder("d").longOpt("dimManifest").hasArg(true).desc("Dimension Manifest").required(
+                        false).build());
     }
 
     /**
@@ -90,6 +101,7 @@ public class ArgParser {
     private ScbConfig parseConfiguration(final String[] args) {
         final CommandLine c;
         ScbConfig config;
+
         try {
             c = parseConfigArgs(configOptions, args);
             config = parseConfigFileOptions(c);
@@ -132,12 +144,19 @@ public class ArgParser {
      * @return Config the config which may be updated
      */
     private ScbConfig addSharedOptions(final CommandLine cmd, final ScbConfig config) {
+        ImageMetadataServiceConfig imConfig = config.getImageMetadataServiceConfig();
         final String builderType = cmd.getOptionValue("b");
         final String fromIndex = cmd.getOptionValue("f");
         final String toIndex = cmd.getOptionValue("t");
+        final Optional<String> imageSourceDir = ofNullable(cmd.getOptionValue("i"));
+        final Optional<String> dimManifestPath = ofNullable(cmd.getOptionValue("d"));
         config.setBuilderType(builderType);
+        config.setImageMetadataServiceConfig(imConfig);
         config.setFromIndex(Integer.valueOf(fromIndex));
         config.setToIndex(Integer.valueOf(toIndex));
+        //override config file with cmd options
+        imageSourceDir.ifPresent(imConfig::setImageSourceDir);
+        dimManifestPath.ifPresent(imConfig::setDimensionManifestFilePath);
         return config;
     }
 

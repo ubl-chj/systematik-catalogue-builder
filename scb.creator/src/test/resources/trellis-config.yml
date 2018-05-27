@@ -2,6 +2,8 @@ server:
   applicationConnectors:
     - type: http
       port: 0
+    - type: h2c
+      port: 8445
     - type: h2
       port: 8450
       keyStorePath: keystore/trellis.jks

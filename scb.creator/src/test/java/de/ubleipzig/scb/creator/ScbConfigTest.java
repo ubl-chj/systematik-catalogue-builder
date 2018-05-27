@@ -26,7 +26,7 @@ public class ScbConfigTest extends CommonTests {
     @Test
     public void testGetScbConfiguration() {
         final ScbConfig config = getScbConfig();
-        assertEquals("https://localhost:8445/", config.getBaseUrl());
+        assertEquals("http://localhost:8445/", config.getBaseUrl());
         assertEquals("http://workspaces.ub.uni-leipzig.de:8182/iiif/2/", config.getImageServiceBaseUrl());
         assertEquals("http://iiif.io/api/image/2/context.json", config.getImageServiceType());
         assertEquals("collection/vp/anno/", config.getAnnotationContainer());

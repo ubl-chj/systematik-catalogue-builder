@@ -33,7 +33,7 @@ public class ImageMetadataImplTest extends CommonTests {
     @BeforeAll
     static void initAll() {
         APP.before();
-        baseUrl = "http://localhost:" + APP.getLocalPort() + "/";
+        baseUrl = "http://localhost:8445/";
         h2client = getClient();
     }
 
@@ -43,6 +43,8 @@ public class ImageMetadataImplTest extends CommonTests {
         final ImageMetadataServiceConfig imConfig = new ImageMetadataServiceConfig();
         imConfig.setDimensionManifestFilePath(baseUrl + pid);
         final InputStream is = getDimensionManifest();
+        final IRI base = rdf.createIRI(baseUrl);
+        h2client.initUpgrade(base);
         final IRI identifier = rdf.createIRI(baseUrl + pid);
         h2client.put(identifier, is, "application/json");
         final ImageMetadataImpl im = new ImageMetadataImpl(imConfig);

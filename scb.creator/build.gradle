@@ -21,6 +21,10 @@ javaModule {
 
 configurations {
     all {
+        resolutionStrategy {
+            force "org.trellisldp:client:$trellisClientVersion"
+            cacheChangingModulesFor 0, 'seconds'
+        }
         exclude group: 'com.google.code.findbugs', module: 'jsr305'
         exclude group: 'javax.annotation' , module: 'jsr250-api'
         exclude group: 'commons-logging', module: 'commons-logging'

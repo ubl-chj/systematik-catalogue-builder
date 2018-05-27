@@ -38,7 +38,7 @@ public class TargetBuilderTest extends CommonTests {
     @BeforeAll
     static void initAll() {
         APP.before();
-        baseUrl = "http://localhost:" + APP.getLocalPort() + "/";
+        baseUrl = "http://localhost:8445/";
         h2client = getClient();
     }
 
@@ -60,6 +60,8 @@ public class TargetBuilderTest extends CommonTests {
         scbConfig.setImageMetadataServiceConfig(imConfig);
         final InputStream is = getDimensionManifest();
         final IRI identifier = rdf.createIRI(baseUrl + pid);
+        final IRI base = rdf.createIRI(baseUrl);
+        h2client.initUpgrade(base);
         h2client.put(identifier, is, "application/json");
         scbConfig.setDimensionManifestRemoteLocation(baseUrl + pid);
         final InputStream meta = ScbConfigTest.class.getResourceAsStream(

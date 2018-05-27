@@ -41,7 +41,7 @@ public class ResourceCreatorTest extends CommonTests {
         final ResourceCreator creator = new ResourceCreator(scbConfig);
         final Map<URI, InputStream> imageBatch = creator.buildImageResourceBatchFromSubList();
         assertEquals(3, imageBatch.size());
-        assertEquals("https://localhost:8445/collection/vp/res/00000003.jpg", Objects.requireNonNull(
+        assertEquals("http://localhost:8445/collection/vp/res/00000001.jpg", Objects.requireNonNull(
                 imageBatch.entrySet().stream().map(Map.Entry::getKey).findFirst().orElse(null)).toString());
     }
 
