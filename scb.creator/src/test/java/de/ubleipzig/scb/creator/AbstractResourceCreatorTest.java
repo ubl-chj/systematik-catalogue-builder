@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.util.UUID;
 
 import org.apache.commons.rdf.api.IRI;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,6 +35,11 @@ public class AbstractResourceCreatorTest extends CommonTests {
         APP.before();
         baseUrl = "http://localhost:8445/";
         h2client = getClient();
+    }
+
+    @AfterAll
+    static void stop() {
+        APP.after();
     }
 
     @BeforeEach()

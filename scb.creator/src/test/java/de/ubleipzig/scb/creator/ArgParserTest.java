@@ -14,8 +14,11 @@
 
 package de.ubleipzig.scb.creator;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import de.ubleipzig.scb.creator.internal.ArgParser;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -27,7 +30,11 @@ public class ArgParserTest extends CommonTests {
     static void initAll() {
         APP.before();
         baseUrl = "http://localhost:8445/";
-        h2client = getClient();
+    }
+
+    @AfterAll
+    static void stop() {
+        APP.after();
     }
 
     @Test
@@ -35,10 +42,43 @@ public class ArgParserTest extends CommonTests {
         parser = new ArgParser();
         final String configFilePath = ArgParserTest.class.getResource(configFile).getPath();
         final String[] args;
-        args = new String[]{"-b", "resources", "-f", "0", "-t", "3", "-c", configFilePath,"-i", ArgParserTest.class.getResource(
+        args = new String[]{"-b", "resources", "-f", "0", "-t", "3", "-c", configFilePath, "-i", ArgParserTest.class
+                .getResource(
                 "/images").getPath(), "-d", ArgParserTest.class.getResource(
-                "/dimension-manifest-test-8efc742f-709e-47ea-a346-e7bdc3266b49.json").getPath(),};
+                "/dimension-manifest-test-8efc742f-709e-47ea-a346-e7bdc3266b49.json").getPath()};
         final SystematikCatalogueBuilder builder = parser.init(args);
         builder.run();
+    }
+
+    @Test
+    void testTaggingBuilderArgs() {
+        parser = new ArgParser();
+        final String configFilePath = ArgParserTest.class.getResource(configFile).getPath();
+        final String[] args;
+        args = new String[]{"-b", "tagging", "-f", "0", "-t", "3", "-c", configFilePath, "-i", ArgParserTest.class
+                .getResource(
+                "/images").getPath(), "-d", ArgParserTest.class.getResource(
+                "/dimension-manifest-test-8efc742f-709e-47ea-a346-e7bdc3266b49.json").getPath()};
+        final SystematikCatalogueBuilder builder = parser.init(args);
+        builder.run();
+    }
+
+    @Test
+    void testInvalidConfig() {
+        parser = new ArgParser();
+        final String[] args;
+        args = new String[]{"-b", "tagging", "-f", "0", "-t", "3", "-c", "no-config.yml", "-i", ArgParserTest.class
+                .getResource(
+                "/images").getPath(), "-d", ArgParserTest.class.getResource(
+                "/dimension-manifest-test-8efc742f-709e-47ea-a346-e7bdc3266b49.json").getPath()};
+        assertThrows(RuntimeException.class, () -> parser.init(args));
+    }
+
+    @Test
+    void testInvalidArgs() {
+        parser = new ArgParser();
+        final String[] args;
+        args = new String[]{"-y", "tagging"};
+        assertThrows(RuntimeException.class, () -> parser.init(args));
     }
 }

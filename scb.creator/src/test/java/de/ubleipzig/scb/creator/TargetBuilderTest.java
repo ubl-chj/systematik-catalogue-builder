@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.rdf.api.IRI;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.trellisldp.client.LdpClientException;
@@ -40,6 +41,11 @@ public class TargetBuilderTest extends CommonTests {
         APP.before();
         baseUrl = "http://localhost:8445/";
         h2client = getClient();
+    }
+
+    @AfterAll
+    static void stop() {
+        APP.after();
     }
 
     @Test

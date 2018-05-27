@@ -15,11 +15,14 @@
 package de.ubleipzig.scb.creator;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import de.ubleipzig.scb.templates.TemplateTarget;
 
 import java.io.InputStream;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -80,5 +83,37 @@ public class ResourceCreatorTest extends CommonTests {
         final List<TemplateTarget> targetList = creator.getTargetList();
         final Map<URI, InputStream> annotationBatch = creator.buildAnnotationBatch(targetList);
         assertEquals(50, annotationBatch.size());
+    }
+
+    @Test
+    void testRuntimeExceptions() {
+        final ScbConfig scbConfig = getScbConfigWithAbsolutePath();
+        scbConfig.setFromIndex(0);
+        scbConfig.setToIndex(2);
+        final ResourceCreator creator = new ResourceCreator(scbConfig);
+        final List<TemplateTarget> targetList = new ArrayList<>();
+        final TemplateTarget target = new TemplateTarget();
+        target.setTargetId("http://an.illegal.uri? blah");
+        target.setCanvasLabel("whatever");
+        for (int i = 0; i < 3; i++) {
+            targetList.add(target);
+        }
+        assertThrows(RuntimeException.class, () -> creator.buildCanvasBatch(targetList));
+        scbConfig.setBaseUrl("http://an.illegal.uri? blah");
+        assertThrows(RuntimeException.class, () -> creator.buildAnnotationBatch(targetList));
+        assertThrows(RuntimeException.class, () -> creator.buildImageResourceBatchFromSubList());
+    }
+
+    @Test
+    void testException() {
+        final ScbConfig scbConfig = getScbConfigWithAbsolutePath();
+        scbConfig.setFromIndex(0);
+        scbConfig.setToIndex(2);
+        scbConfig.setBaseUrl("http://an.illegal.uri? blah");
+        final ResourceCreator creator = new ResourceCreator(scbConfig);
+        final Map<URI, InputStream> imageBatch = new HashMap<>();
+        final Map<URI, InputStream> canvasBatch = new HashMap<>();
+        final Map<URI, InputStream> annotationBatch = new HashMap<>();
+        assertThrows(RuntimeException.class, () -> creator.putToRemote(imageBatch, canvasBatch, annotationBatch));
     }
 }

@@ -19,7 +19,6 @@ import static org.apache.jena.arq.riot.WebContent.contentTypeNTriples;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import de.ubleipzig.scb.creator.internal.JsonLdUtils;
-import de.ubleipzig.scb.templates.TemplatePaintingAnnotation;
 import de.ubleipzig.scb.templates.TemplateTaggingAnnotation;
 import de.ubleipzig.scb.templates.TemplateTarget;
 
@@ -66,6 +65,14 @@ public final class TaggingAnnotationCreator extends AbstractResourceCreator impl
         logger.info("Running TaggingAnnotationCreator...");
         final List<TemplateTarget> targetList = getTargetList();
         final Map<URI, InputStream> annotationBatch = buildAnnotationBatch(targetList);
+        putToRemote(annotationBatch);
+    }
+
+    /**
+     *
+     * @param annotationBatch Map
+     */
+    public void putToRemote(final Map<URI, InputStream> annotationBatch) {
         try {
             remote.joiningCompletableFuturePut(annotationBatch, contentTypeNTriples, scbConfig.getBaseUrl());
         } catch (LdpClientException e) {
@@ -73,15 +80,15 @@ public final class TaggingAnnotationCreator extends AbstractResourceCreator impl
         }
     }
 
-    @Override
     public List<TemplateTarget> getTargetList() {
         final TargetBuilder tb = new TargetBuilder(scbConfig);
         return tb.buildCanvases();
     }
 
     @Override
-    public List<TemplatePaintingAnnotation> getAnnotationList(final List<TemplateTarget> targetList) {
-        return null;
+    public List<TemplateTaggingAnnotation> getAnnotationList(final List<TemplateTarget> targetList) {
+        final TaggingAnnotationBuilder tab = new TaggingAnnotationBuilder(scbConfig);
+        return tab.buildTaggingAnnotations(targetList);
     }
 
     @Override
@@ -102,7 +109,7 @@ public final class TaggingAnnotationCreator extends AbstractResourceCreator impl
                 batch.put(uri, n3Stream);
             }
             return batch;
-        } catch (URISyntaxException e) {
+        } catch (URISyntaxException | IllegalArgumentException e) {
             throw new RuntimeException(e.getMessage());
         }
     }

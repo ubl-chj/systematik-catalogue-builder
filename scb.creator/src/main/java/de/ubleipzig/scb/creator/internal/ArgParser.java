@@ -107,10 +107,10 @@ public class ArgParser {
             config = parseConfigFileOptions(c);
             config = addSharedOptions(c, config);
             return config;
-        } catch (final ParseException ignore) {
+        } catch (ParseException e) {
             logger.debug("Command line argments weren't valid for specifying a config file.");
+            throw new RuntimeException(e.getMessage());
         }
-        return null;
     }
 
     private ScbConfig parseConfigFileOptions(final CommandLine cmd) {
@@ -144,7 +144,7 @@ public class ArgParser {
      * @return Config the config which may be updated
      */
     private ScbConfig addSharedOptions(final CommandLine cmd, final ScbConfig config) {
-        ImageMetadataServiceConfig imConfig = config.getImageMetadataServiceConfig();
+        final ImageMetadataServiceConfig imConfig = config.getImageMetadataServiceConfig();
         final String builderType = cmd.getOptionValue("b");
         final String fromIndex = cmd.getOptionValue("f");
         final String toIndex = cmd.getOptionValue("t");

@@ -14,7 +14,6 @@
 
 package de.ubleipzig.scb.creator;
 
-import de.ubleipzig.scb.templates.TemplatePaintingAnnotation;
 import de.ubleipzig.scb.templates.TemplateTarget;
 
 import java.io.InputStream;
@@ -42,7 +41,7 @@ public interface SystematikCatalogueBuilder {
      * @param targetList List
      * @return List
      */
-    List<TemplatePaintingAnnotation> getAnnotationList(final List<TemplateTarget> targetList);
+    List<?> getAnnotationList(final List<TemplateTarget> targetList);
 
     /**
      * putAnnotations.

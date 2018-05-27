@@ -70,27 +70,30 @@ public final class ResourceCreator extends AbstractResourceCreator implements Sy
     @Override
     public void run() {
         logger.info("Running ResourceCreator...");
-        final String baseUrl = scbConfig.getBaseUrl();
         final Map<URI, InputStream> imageBatch = buildImageResourceBatchFromSubList();
-        try {
-            remote.joiningCompletableFuturePut(imageBatch, "image/tiff", baseUrl);
-        } catch (LdpClientException e) {
-            throw new RuntimeException(e.getMessage());
-        }
         final List<TemplateTarget> targetList = getTargetList();
         final Map<URI, InputStream> canvasBatch = buildCanvasBatch(targetList);
-        try {
-            remote.joiningCompletableFuturePut(canvasBatch, contentTypeNTriples, baseUrl);
-        } catch (LdpClientException e) {
-            throw new RuntimeException(e.getMessage());
-        }
         final Map<URI, InputStream> annotationBatch = buildAnnotationBatch(targetList);
+        putToRemote(imageBatch, canvasBatch, annotationBatch);
+        logger.info("Process Complete: Exiting");
+    }
+
+    /**
+     *
+     * @param imageBatch Map
+     * @param canvasBatch Map
+     * @param annotationBatch Map
+     */
+    public void putToRemote(final Map<URI, InputStream> imageBatch, final Map<URI, InputStream> canvasBatch, final
+    Map<URI, InputStream> annotationBatch) {
+        final String baseUrl = scbConfig.getBaseUrl();
         try {
+            remote.joiningCompletableFuturePut(imageBatch, "image/tiff", baseUrl);
+            remote.joiningCompletableFuturePut(canvasBatch, contentTypeNTriples, baseUrl);
             remote.joiningCompletableFuturePut(annotationBatch, contentTypeNTriples, baseUrl);
         } catch (LdpClientException e) {
             throw new RuntimeException(e.getMessage());
         }
-        logger.info("Process Complete: Exiting");
     }
 
     /**
@@ -113,12 +116,11 @@ public final class ResourceCreator extends AbstractResourceCreator implements Sy
                 batch.put(uri, is);
             }
             return batch;
-        } catch (URISyntaxException | FileNotFoundException e) {
+        } catch (URISyntaxException | FileNotFoundException | IllegalArgumentException e) {
             throw new RuntimeException(e.getMessage());
         }
     }
 
-    @Override
     public List<TemplateTarget> getTargetList() {
         final TargetBuilder tb = new TargetBuilder(scbConfig);
         return tb.buildCanvases();
@@ -151,7 +153,7 @@ public final class ResourceCreator extends AbstractResourceCreator implements Sy
                 batch.put(uri, n3Stream);
             }
             return batch;
-        } catch (URISyntaxException e) {
+        } catch (URISyntaxException | IllegalArgumentException e) {
             throw new RuntimeException(e.getMessage());
         }
     }
@@ -174,7 +176,7 @@ public final class ResourceCreator extends AbstractResourceCreator implements Sy
                 batch.put(uri, n3Stream);
             }
             return batch;
-        } catch (URISyntaxException e) {
+        } catch (URISyntaxException | IllegalArgumentException e) {
             throw new RuntimeException(e.getMessage());
         }
     }

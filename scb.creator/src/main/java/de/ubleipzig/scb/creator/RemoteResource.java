@@ -63,8 +63,8 @@ public class RemoteResource {
      * @throws LdpClientException LdpClientException
      */
     public byte[] getRemoteBinaryResource(final String resource) throws LdpClientException {
-        final IRI identifier = rdf.createIRI(resource);
         try {
+            final IRI identifier = rdf.createIRI(resource);
             return h2client.getBinary(identifier);
         } catch (Exception ex) {
             throw new LdpClientException(ex.toString(), ex.getCause());
@@ -79,8 +79,8 @@ public class RemoteResource {
      */
     public void joiningCompletableFuturePut(final Map<URI, InputStream> batch, final String contentType, final String
             baseUrl) throws LdpClientException {
-        final IRI base = rdf.createIRI(baseUrl);
         try {
+            final IRI base = rdf.createIRI(baseUrl);
             h2client.initUpgrade(base);
         } catch (Exception ex) {
             throw new LdpClientException(ex.toString(), ex.getCause());
