@@ -1,14 +1,13 @@
-baseUrl: "http://localhost:8000/"
+baseUrl: "http://workspaces.ub.uni-leipzig.de:8000/"
 imageServiceBaseUrl: "http://workspaces.ub.uni-leipzig.de:8182/iiif/2/"
 imageServiceType: "http://iiif.io/api/image/2/context.json"
 annotationContainer: "collection/vp/anno/"
 targetContainer: "collection/vp/target/"
 bodyContainer: "collection/vp/res/"
 tagBodyContainer: "collection/vp/tag/"
-
-metadataFile: "/sk2-titles-semester.tsv"
-metadataRemoteLocation: "https://workspaces.ub.uni-leipzig.de:8445/collection/vp/meta/sk2-titles-semester.tsv"
+metadataLocation: "/home/christopher/IdeaProjects/systematik-catalogue-builder/scb.creator/build/distributions/scb.creator-0.2.0-SNAPSHOT/bin/sk2-titles.csv"
+useH2c: false
 
 imageMetadataServiceConfig:
-  dimensionManifestFilePath: "https://workspaces.ub.uni-leipzig.de:8445/collection/vp/meta/dimension-manifest-test-8efc742f-709e-47ea-a346-e7bdc3266b49"
-  imageSourceDir: "/images"
+  dimensionManifestFilePath: "http://workspaces.ub.uni-leipzig.de:8445/collection/vp/meta/dimension-manifest-test-8efc742f-709e-47ea-a346-e7bdc3266b49"
+  imageSourceDir: "/media/christopher/OVAUBIMG/UBiMG/images/ubleipzig_sk2"

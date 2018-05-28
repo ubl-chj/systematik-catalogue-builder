@@ -31,7 +31,7 @@ public class BodyBuilderTest extends CommonTests {
 
     @Test
     void getBodiesWithDimensions() {
-        final ScbConfig scbConfig = getScbConfigWithAbsolutePath();
+        final ScbConfig scbConfig = getScbConfigWithAbsolutePath("/scbconfig-test.yml");
         final BodyBuilder bb = new BodyBuilder(scbConfig);
         final List<TemplateTarget> targetList = getTargetList();
         final List<TemplateBody> bodyList = bb.getBodiesWithDimensions(targetList);
@@ -40,7 +40,7 @@ public class BodyBuilderTest extends CommonTests {
     }
 
     private List<TemplateTarget> getTargetList() {
-        final ScbConfig scbConfig = getScbConfigWithAbsolutePath();
+        final ScbConfig scbConfig = getScbConfigWithAbsolutePath("/scbconfig-test.yml");
         final TargetBuilder tb = new TargetBuilder(scbConfig);
         return tb.buildCanvases();
     }

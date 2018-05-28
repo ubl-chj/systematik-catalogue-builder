@@ -38,8 +38,10 @@ public class RemoteResource {
 
     private static final JenaRDF rdf = new JenaRDF();
     private static LdpClient h2client;
+    private ScbConfig scbConfig;
 
-    public RemoteResource() {
+    public RemoteResource(ScbConfig config) {
+        scbConfig = config;
         h2client = getClient();
     }
 
@@ -74,14 +76,18 @@ public class RemoteResource {
     /**
      * joiningCompletableFuturePut.
      *
-     * @param batch       batch
+     * @param batch batch
      * @param contentType contentType
+     * @param baseUrl baseUrl
+     * @throws LdpClientException LdpClientException
      */
     public void joiningCompletableFuturePut(final Map<URI, InputStream> batch, final String contentType, final String
             baseUrl) throws LdpClientException {
         try {
             final IRI base = rdf.createIRI(baseUrl);
-            h2client.initUpgrade(base);
+            if (scbConfig.getUseH2c()) {
+                h2client.initUpgrade(base);
+            }
         } catch (Exception ex) {
             throw new LdpClientException(ex.toString(), ex.getCause());
         }

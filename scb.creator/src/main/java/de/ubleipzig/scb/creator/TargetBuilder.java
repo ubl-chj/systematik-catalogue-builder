@@ -14,6 +14,7 @@
 
 package de.ubleipzig.scb.creator;
 
+import static de.ubleipzig.scb.creator.AbstractResourceCreator.getMetadataRemoteLocation;
 import static de.ubleipzig.scb.creator.internal.UUIDType5.NAMESPACE_URL;
 import static org.apache.commons.io.FilenameUtils.removeExtension;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -26,6 +27,9 @@ import de.ubleipzig.scb.creator.internal.UUIDType5;
 import de.ubleipzig.scb.templates.TemplateMetadata;
 import de.ubleipzig.scb.templates.TemplateTarget;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -101,11 +105,17 @@ public class TargetBuilder {
     }
 
     private List<VPMetadata> getMetadata(final VorlesungImpl vi) {
-        final List<VPMetadata> metadata;
-        if (scbConfig.getMetadataInputStream().isPresent()) {
-            metadata = vi.processInputFile(scbConfig.getMetadataInputStream().get());
+        List<VPMetadata> metadata = null;
+        final String metadataFile = scbConfig.getMetadataLocation();
+        if (metadataFile.contains("http")) {
+            final InputStream is = getMetadataRemoteLocation(metadataFile);
+            metadata = vi.processInputFile(is);
         } else {
-            metadata = vi.processInputFile(TargetBuilder.class.getResourceAsStream(scbConfig.getMetadataFile()));
+            try {
+                metadata = vi.processInputFile(new FileInputStream(scbConfig.getMetadataLocation()));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
         }
         return metadata;
     }

@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
@@ -38,7 +39,7 @@ public class ResourceCreatorTest extends CommonTests {
 
     @Test
     void testBuildImageResourceBatchFromSubList() {
-        final ScbConfig scbConfig = getScbConfigWithAbsolutePath();
+        final ScbConfig scbConfig = getScbConfigWithAbsolutePath("/scbconfig-test.yml");
         scbConfig.setFromIndex(0);
         scbConfig.setToIndex(3);
         final ResourceCreator creator = new ResourceCreator(scbConfig);
@@ -51,31 +52,38 @@ public class ResourceCreatorTest extends CommonTests {
 
     @Test
     void testBuildCanvasBatch() {
-        final ScbConfig scbConfig = getScbConfigWithAbsolutePath();
+        final ScbConfig scbConfig = getScbConfigWithAbsolutePath("/scbconfig-test.yml");
         scbConfig.setFromIndex(0);
         scbConfig.setToIndex(50);
         final ResourceCreator creator = new ResourceCreator(scbConfig);
         final List<TemplateTarget> targetList = creator.getTargetList();
         final Map<URI, InputStream> canvasBatch = creator.buildCanvasBatch(targetList);
         assertEquals(50, canvasBatch.size());
+        final Optional<Map.Entry<URI, InputStream>> anno = canvasBatch.entrySet().stream().findAny();
+        anno.ifPresent(a -> {
+            System.out.println(read(a.getValue()));
+        });
     }
 
 
     @Test
     void testBuildAnnotationBatch() {
-        final ScbConfig scbConfig = getScbConfigWithAbsolutePath();
+        final ScbConfig scbConfig = getScbConfigWithAbsolutePath("/scbconfig-test.yml");
         scbConfig.setFromIndex(0);
         scbConfig.setToIndex(50);
         final ResourceCreator creator = new ResourceCreator(scbConfig);
         final List<TemplateTarget> targetList = creator.getTargetList();
         final Map<URI, InputStream> annotationBatch = creator.buildAnnotationBatch(targetList);
         assertEquals(50, annotationBatch.size());
-
+        final Optional<Map.Entry<URI, InputStream>> anno = annotationBatch.entrySet().stream().findAny();
+        anno.ifPresent(a -> {
+            System.out.println(read(a.getValue()));
+        });
     }
 
     @Test
     void testBuildTaggingAnnotationBatch() {
-        final ScbConfig scbConfig = getScbConfigWithAbsolutePath();
+        final ScbConfig scbConfig = getScbConfigWithAbsolutePath("/scbconfig-test.yml");
         scbConfig.setFromIndex(0);
         scbConfig.setToIndex(50);
         scbConfig.setBuilderType("tagging");
@@ -83,11 +91,15 @@ public class ResourceCreatorTest extends CommonTests {
         final List<TemplateTarget> targetList = creator.getTargetList();
         final Map<URI, InputStream> annotationBatch = creator.buildAnnotationBatch(targetList);
         assertEquals(50, annotationBatch.size());
+        final Optional<Map.Entry<URI, InputStream>> anno = annotationBatch.entrySet().stream().findAny();
+        anno.ifPresent(a -> {
+            System.out.println(read(a.getValue()));
+        });
     }
 
     @Test
     void testRuntimeExceptions() {
-        final ScbConfig scbConfig = getScbConfigWithAbsolutePath();
+        final ScbConfig scbConfig = getScbConfigWithAbsolutePath("/scbconfig-test.yml");
         scbConfig.setFromIndex(0);
         scbConfig.setToIndex(2);
         final ResourceCreator creator = new ResourceCreator(scbConfig);
@@ -106,14 +118,12 @@ public class ResourceCreatorTest extends CommonTests {
 
     @Test
     void testException() {
-        final ScbConfig scbConfig = getScbConfigWithAbsolutePath();
+        final ScbConfig scbConfig = getScbConfigWithAbsolutePath("/scbconfig-test.yml");
         scbConfig.setFromIndex(0);
         scbConfig.setToIndex(2);
         scbConfig.setBaseUrl("http://an.illegal.uri? blah");
         final ResourceCreator creator = new ResourceCreator(scbConfig);
         final Map<URI, InputStream> imageBatch = new HashMap<>();
-        final Map<URI, InputStream> canvasBatch = new HashMap<>();
-        final Map<URI, InputStream> annotationBatch = new HashMap<>();
-        assertThrows(RuntimeException.class, () -> creator.putToRemote(imageBatch, canvasBatch, annotationBatch));
+        assertThrows(RuntimeException.class, () -> creator.putBatchToRemote(imageBatch, "image/tiff"));
     }
 }

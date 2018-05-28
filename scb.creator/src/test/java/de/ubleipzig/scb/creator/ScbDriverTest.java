@@ -18,6 +18,7 @@ import de.ubleipzig.scb.creator.internal.ScbDriver;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 public class ScbDriverTest extends CommonTests {
@@ -33,6 +34,7 @@ public class ScbDriverTest extends CommonTests {
         baseUrl = "http://localhost:8445/";
     }
 
+    @Disabled
     @Test
     void testRunDriver() {
         baseUrl = "http://localhost:8445/";
@@ -40,8 +42,9 @@ public class ScbDriverTest extends CommonTests {
         final String[] args;
         args = new String[]{"-b", "resources", "-f", "0", "-t", "3", "-c", configFilePath, "-i", ArgParserTest.class
                 .getResource(
-                "/images").getPath(), "-d", ArgParserTest.class.getResource(
-                "/dimension-manifest-test-8efc742f-709e-47ea-a346-e7bdc3266b49.json").getPath()};
+                "/images").getPath(), "-d", ScbDriverTest.class.getResource(
+                "/dimension-manifest-test-8efc742f-709e-47ea-a346-e7bdc3266b49.json").getPath(),
+                "-m", ScbDriverTest.class.getResource("/data/sk2-titles.csv").getPath()};
         ScbDriver.main(args);
     }
 }

@@ -43,9 +43,9 @@ public class ArgParserTest extends CommonTests {
         final String configFilePath = ArgParserTest.class.getResource(configFile).getPath();
         final String[] args;
         args = new String[]{"-b", "resources", "-f", "0", "-t", "3", "-c", configFilePath, "-i", ArgParserTest.class
-                .getResource(
-                "/images").getPath(), "-d", ArgParserTest.class.getResource(
-                "/dimension-manifest-test-8efc742f-709e-47ea-a346-e7bdc3266b49.json").getPath()};
+                .getResource("/images").getPath(), "-d", ArgParserTest.class.getResource(
+                "/dimension-manifest-test-8efc742f-709e-47ea-a346-e7bdc3266b49.json").getPath(),
+        "-m", ArgParserTest.class.getResource("/data/sk2-titles.csv").getPath()};
         final SystematikCatalogueBuilder builder = parser.init(args);
         builder.run();
     }
@@ -58,7 +58,8 @@ public class ArgParserTest extends CommonTests {
         args = new String[]{"-b", "tagging", "-f", "0", "-t", "3", "-c", configFilePath, "-i", ArgParserTest.class
                 .getResource(
                 "/images").getPath(), "-d", ArgParserTest.class.getResource(
-                "/dimension-manifest-test-8efc742f-709e-47ea-a346-e7bdc3266b49.json").getPath()};
+                "/dimension-manifest-test-8efc742f-709e-47ea-a346-e7bdc3266b49.json").getPath(),
+                "-m", ArgParserTest.class.getResource("/data/sk2-titles.csv").getPath()};
         final SystematikCatalogueBuilder builder = parser.init(args);
         builder.run();
     }

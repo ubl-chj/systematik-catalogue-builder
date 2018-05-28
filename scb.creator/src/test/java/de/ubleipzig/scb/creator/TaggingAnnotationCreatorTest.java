@@ -33,7 +33,7 @@ public class TaggingAnnotationCreatorTest extends CommonTests {
 
     @Test
     void testRuntimeException() {
-        final ScbConfig scbConfig = getScbConfigWithAbsolutePath();
+        final ScbConfig scbConfig = getScbConfigWithAbsolutePath("/scbconfig-test.yml");
         scbConfig.setFromIndex(0);
         scbConfig.setToIndex(2);
         final TaggingAnnotationCreator creator = new TaggingAnnotationCreator(scbConfig);
@@ -50,7 +50,7 @@ public class TaggingAnnotationCreatorTest extends CommonTests {
 
     @Test
     void testException() {
-        final ScbConfig scbConfig = getScbConfigWithAbsolutePath();
+        final ScbConfig scbConfig = getScbConfigWithAbsolutePath("/scbconfig-test.yml");
         scbConfig.setFromIndex(0);
         scbConfig.setToIndex(2);
         scbConfig.setBaseUrl("http://an.illegal.uri? blah");
@@ -61,7 +61,7 @@ public class TaggingAnnotationCreatorTest extends CommonTests {
 
     @Test
     void testGetAnnotations() {
-        final ScbConfig scbConfig = getScbConfigWithAbsolutePath();
+        final ScbConfig scbConfig = getScbConfigWithAbsolutePath("/scbconfig-test.yml");
         scbConfig.setFromIndex(0);
         scbConfig.setToIndex(2);
         final TaggingAnnotationCreator creator = new TaggingAnnotationCreator(scbConfig);

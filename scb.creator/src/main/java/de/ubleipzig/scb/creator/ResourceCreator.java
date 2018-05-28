@@ -65,32 +65,36 @@ public final class ResourceCreator extends AbstractResourceCreator implements Sy
         this.imageMetadataServiceConfig = scbConfig.getImageMetadataServiceConfig();
         this.fromIndex = scbConfig.getFromIndex();
         this.toIndex = scbConfig.getToIndex();
+        setRemoteResource(new RemoteResource(scbConfig));
     }
 
     @Override
     public void run() {
         logger.info("Running ResourceCreator...");
         final Map<URI, InputStream> imageBatch = buildImageResourceBatchFromSubList();
+        logger.info("Putting Image Batch to Remote");
+        putBatchToRemote(imageBatch, "image/tiff");
+        logger.info("Building Target List");
         final List<TemplateTarget> targetList = getTargetList();
+        logger.info("Putting Target Batch to Remote");
         final Map<URI, InputStream> canvasBatch = buildCanvasBatch(targetList);
+        putBatchToRemote(canvasBatch, contentTypeNTriples);
+        logger.info("Putting Annotation Batch to Remote");
         final Map<URI, InputStream> annotationBatch = buildAnnotationBatch(targetList);
-        putToRemote(imageBatch, canvasBatch, annotationBatch);
+        putBatchToRemote(annotationBatch, contentTypeNTriples);
         logger.info("Process Complete: Exiting");
     }
 
     /**
+     * putToRemote.
      *
-     * @param imageBatch Map
-     * @param canvasBatch Map
-     * @param annotationBatch Map
+     * @param batch Map
+     * @param contentType contentType
      */
-    public void putToRemote(final Map<URI, InputStream> imageBatch, final Map<URI, InputStream> canvasBatch, final
-    Map<URI, InputStream> annotationBatch) {
+    public void putBatchToRemote(final Map<URI, InputStream> batch, final String contentType) {
         final String baseUrl = scbConfig.getBaseUrl();
         try {
-            remote.joiningCompletableFuturePut(imageBatch, "image/tiff", baseUrl);
-            remote.joiningCompletableFuturePut(canvasBatch, contentTypeNTriples, baseUrl);
-            remote.joiningCompletableFuturePut(annotationBatch, contentTypeNTriples, baseUrl);
+            remote.joiningCompletableFuturePut(batch, contentType, baseUrl);
         } catch (LdpClientException e) {
             throw new RuntimeException(e.getMessage());
         }

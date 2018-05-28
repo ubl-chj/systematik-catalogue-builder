@@ -33,7 +33,7 @@ public class AnnotationBuilderTest extends CommonTests {
 
     @Test
     void getAnnotationsWithDimensionedBodies() {
-        final ScbConfig scbConfig = getScbConfigWithAbsolutePath();
+        final ScbConfig scbConfig = getScbConfigWithAbsolutePath("/scbconfig-test.yml");
         final AnnotationBuilder ab = new AnnotationBuilder(scbConfig);
         final List<TemplateTarget> targetList = getTargetList();
         final List<TemplatePaintingAnnotation> annoList = ab.getAnnotationsWithDimensionedBodies(targetList);
@@ -42,7 +42,7 @@ public class AnnotationBuilderTest extends CommonTests {
     }
 
     private List<TemplateTarget> getTargetList() {
-        final ScbConfig scbConfig = getScbConfigWithAbsolutePath();
+        final ScbConfig scbConfig = getScbConfigWithAbsolutePath("/scbconfig-test.yml");
         final TargetBuilder tb = new TargetBuilder(scbConfig);
         return tb.buildCanvases();
     }

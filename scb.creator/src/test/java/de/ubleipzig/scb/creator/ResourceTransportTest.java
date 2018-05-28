@@ -109,7 +109,7 @@ public class ResourceTransportTest extends CommonTests {
     @Test
     void testPutMetadataResource() throws Exception {
         final ScbConfig scbConfig = getScbConfig();
-        final String metadataFile = scbConfig.getMetadataFile();
+        final String metadataFile = scbConfig.getMetadataLocation();
         final IRI identifier = rdf.createIRI(baseUrl + "collection/vp/meta" + metadataFile);
         final InputStream is = ResourceCreatorTest.class.getResourceAsStream(metadataFile);
         final IRI base = rdf.createIRI(baseUrl);
@@ -198,5 +198,15 @@ public class ResourceTransportTest extends CommonTests {
         } catch (Exception ex) {
             throw new LdpClientException(ex.toString(), ex.getCause());
         }
+    }
+
+    @Test
+    void testPutBatchToRemote() {
+        final ScbConfig scbConfig = getScbConfigWithAbsolutePath("/scbconfig-test.yml");
+        scbConfig.setFromIndex(0);
+        scbConfig.setToIndex(3);
+        final ResourceCreator creator = new ResourceCreator(scbConfig);
+        final Map<URI, InputStream> imageBatch = creator.buildImageResourceBatchFromSubList();
+        creator.putBatchToRemote(imageBatch, "image/tiff");
     }
 }

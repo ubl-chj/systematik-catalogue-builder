@@ -38,6 +38,7 @@ This file rather than the binaries will be used for all subsequent annotation bu
 | -c | (none)    | "config"  | The absolute path to the configuration file |
 | -i | (none)    | "imageSourceDir"  | The absolute path to the imageSource Directory (optional)|
 | -d | (none)    | "dimManifest"  | The absolute path to the dimension Manifest (optional)|
+| -m | (none)    | "metadata"  | The absolute path to the metadata File (optional)|
 
 ### Configuration File
 

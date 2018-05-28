@@ -30,7 +30,7 @@ public class DeserializeDimensionManifestTest extends CommonTests {
 
     @Test
     void testDeserializeDimensionManifest() {
-        final ScbConfig scbConfig = getScbConfigWithAbsolutePath();
+        final ScbConfig scbConfig = getScbConfigWithAbsolutePath("/scbconfig-test.yml");
         final ImageMetadataServiceConfig imageMetadataServiceConfig = scbConfig.getImageMetadataServiceConfig();
         final ImageMetadataService generator = new ImageMetadataServiceImpl(imageMetadataServiceConfig);
         final List<ImageDimensions> dimList = generator.unmarshallDimensionManifestFromFile();

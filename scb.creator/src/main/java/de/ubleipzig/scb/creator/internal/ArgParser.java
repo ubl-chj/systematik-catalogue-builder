@@ -64,8 +64,10 @@ public class ArgParser {
                         false).build());
 
         configOptions.addOption(
-                builder("d").longOpt("dimManifest").hasArg(true).desc("Dimension Manifest").required(
-                        false).build());
+                builder("m").longOpt("metadata").hasArg(true).desc("Metadata File").required(false).build());
+
+        configOptions.addOption(
+                builder("d").longOpt("dimManifest").hasArg(true).desc("Dimension Manifest").required(false).build());
     }
 
     /**
@@ -150,6 +152,7 @@ public class ArgParser {
         final String toIndex = cmd.getOptionValue("t");
         final Optional<String> imageSourceDir = ofNullable(cmd.getOptionValue("i"));
         final Optional<String> dimManifestPath = ofNullable(cmd.getOptionValue("d"));
+        final Optional<String> metadataPath = ofNullable(cmd.getOptionValue("m"));
         config.setBuilderType(builderType);
         config.setImageMetadataServiceConfig(imConfig);
         config.setFromIndex(Integer.valueOf(fromIndex));
@@ -157,6 +160,7 @@ public class ArgParser {
         //override config file with cmd options
         imageSourceDir.ifPresent(imConfig::setImageSourceDir);
         dimManifestPath.ifPresent(imConfig::setDimensionManifestFilePath);
+        metadataPath.ifPresent(config::setMetadataLocation);
         return config;
     }
 

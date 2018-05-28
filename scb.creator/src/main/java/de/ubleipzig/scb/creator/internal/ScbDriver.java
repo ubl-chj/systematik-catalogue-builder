@@ -29,7 +29,7 @@ public class ScbDriver {
     public static void main(final String[] args) {
         final ScbDriver driver = new ScbDriver();
         driver.run(args);
-        //System.exit(1);
+        System.exit(1);
     }
 
     private void run(final String[] args) {

@@ -5,8 +5,8 @@ annotationContainer: "collection/vp/anno/"
 targetContainer: "collection/vp/target/"
 bodyContainer: "collection/vp/res/"
 tagBodyContainer: "collection/vp/tag/"
-metadataFile: "/data/sk2-titles.csv"
-metadataRemoteLocation: "https://workspaces.ub.uni-leipzig.de:8445/collection/vp/meta/sk2-titles-semester.tsv"
+metadataLocation: "/data/sk2-titles.csv"
+useH2c: true
 
 imageMetadataServiceConfig:
   dimensionManifestFilePath: "/dimension-manifest-test-8efc742f-709e-47ea-a346-e7bdc3266b49.json"

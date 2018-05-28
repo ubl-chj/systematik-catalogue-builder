@@ -40,6 +40,7 @@ import org.trellisldp.client.LdpClient;
 import org.trellisldp.client.LdpClientImpl;
 
 public abstract class CommonTests {
+
     static final DropwizardTestSupport<TrellisConfiguration> APP = new DropwizardTestSupport<>(TrellisApplication.class,
             resourceFilePath("trellis-config.yml"), config("server.applicationConnectors[1].port", "8445"),
             config("binaries", resourceFilePath("data") + "/binaries"),
@@ -66,18 +67,31 @@ public abstract class CommonTests {
                 "/dimension-manifest-test-8efc742f-709e-47ea-a346-e7bdc3266b49.json");
     }
 
-    static ScbConfig getScbConfigWithAbsolutePath() {
+    static InputStream getMetadata() {
+        return CommonTests.class.getResourceAsStream(
+                "/data/sk2-titles.csv");
+    }
+
+    static ScbConfig getScbConfigWithAbsolutePath(final String config) {
         final ScbConfig scbConfig;
         try {
-            final File configFile = new File(CommonTests.class.getResource("/scbconfig-test.yml").toURI());
+            final File configFile = new File(CommonTests.class.getResource(config).toURI());
             final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
             scbConfig = mapper.readValue(configFile, ScbConfig.class);
         } catch (IOException | URISyntaxException e) {
             throw new RuntimeException(e.getMessage());
         }
+
+        if (!scbConfig.getMetadataLocation().contains("http")) {
+            final String metadataFilePath = CommonTests.class.getResource(scbConfig.getMetadataLocation()).getPath();
+            scbConfig.setMetadataLocation(metadataFilePath);
+        }
+
         final ImageMetadataServiceConfig imageMetadataServiceConfig = scbConfig.getImageMetadataServiceConfig();
-        imageMetadataServiceConfig.setDimensionManifestFilePath(
-                CommonTests.class.getResource(imageMetadataServiceConfig.getDimensionManifestFilePath()).getPath());
+        if (!imageMetadataServiceConfig.getDimensionManifestFilePath().contains("http")) {
+            imageMetadataServiceConfig.setDimensionManifestFilePath(
+                    CommonTests.class.getResource(imageMetadataServiceConfig.getDimensionManifestFilePath()).getPath());
+        }
         imageMetadataServiceConfig.setImageSourceDir(
                 CommonTests.class.getResource(imageMetadataServiceConfig.getImageSourceDir()).getPath());
         return scbConfig;

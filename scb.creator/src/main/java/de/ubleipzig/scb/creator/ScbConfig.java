@@ -14,18 +14,13 @@
 
 package de.ubleipzig.scb.creator;
 
-import static java.util.Optional.ofNullable;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import de.ubleipzig.image.metadata.ImageMetadataServiceConfig;
 
-import java.io.InputStream;
-import java.util.Optional;
-
 public class ScbConfig {
-    private String metadataFile;
-    private InputStream metadataInputStream;
+
+    private String metadataLocation;
     private String baseUrl;
     private String imageServiceBaseUrl;
     private String imageServiceType;
@@ -34,12 +29,31 @@ public class ScbConfig {
     private String tagBodyContainer;
     private String targetContainer;
     private ImageMetadataServiceConfig imageMetadataServiceConfig = new ImageMetadataServiceConfig();
-    private String metadataRemoteLocation;
     private String dimensionManifestRemoteLocation;
 
     private Integer fromIndex;
     private Integer toIndex;
     private String builderType;
+    private Boolean useH2c;
+
+
+    /**
+     *
+     * @return Boolean
+     */
+    @JsonProperty
+    public Boolean getUseH2c() {
+        return useH2c;
+    }
+
+    /**
+     *
+     * @param useH2c Boolean
+     */
+    @JsonProperty
+    public void setUseH2c(Boolean useH2c) {
+        this.useH2c = useH2c;
+    }
 
     /**
      * getImageMetadataServiceConfig.
@@ -59,26 +73,6 @@ public class ScbConfig {
     @JsonProperty
     public void setImageMetadataServiceConfig(final ImageMetadataServiceConfig imageMetadataServiceConfig) {
         this.imageMetadataServiceConfig = imageMetadataServiceConfig;
-    }
-
-    /**
-     * getMetadataRemoteLocation.
-     *
-     * @return {@link String}
-     */
-    @JsonProperty
-    public String getMetadataRemoteLocation() {
-        return metadataRemoteLocation;
-    }
-
-    /**
-     * setMetadataFile.
-     *
-     * @param metadataRemoteLocation metadataRemoteLocation
-     */
-    @JsonProperty
-    public final void setMetadataRemoteLocation(final String metadataRemoteLocation) {
-        this.metadataRemoteLocation = metadataRemoteLocation;
     }
 
     /**
@@ -107,36 +101,18 @@ public class ScbConfig {
      * @return {@link String}
      */
     @JsonProperty
-    public String getMetadataFile() {
-        return metadataFile;
-    }
-
-    /**
-     * getMetadataFile.
-     *
-     * @return {@link String}
-     */
-    public Optional<InputStream> getMetadataInputStream() {
-        return ofNullable(metadataInputStream);
+    public String getMetadataLocation() {
+        return metadataLocation;
     }
 
     /**
      * setMetadataFile.
      *
-     * @param metadataFile metadataFile
+     * @param metadataLocation metadataLocation
      */
     @JsonProperty
-    public final void setMetadata(final String metadataFile) {
-        this.metadataFile = metadataFile;
-    }
-
-    /**
-     * setMetadataFile.
-     *
-     * @param metadataInputStream metadataInputStream
-     */
-    public final void setMetadata(final InputStream metadataInputStream) {
-        this.metadataInputStream = metadataInputStream;
+    public final void setMetadataLocation(final String metadataLocation) {
+        this.metadataLocation = metadataLocation;
     }
 
     /**

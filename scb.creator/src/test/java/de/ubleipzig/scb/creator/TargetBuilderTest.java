@@ -50,7 +50,7 @@ public class TargetBuilderTest extends CommonTests {
 
     @Test
     void getTargets() {
-        final ScbConfig scbConfig = getScbConfigWithAbsolutePath();
+        final ScbConfig scbConfig = getScbConfigWithAbsolutePath("/scbconfig-test.yml");
         final TargetBuilder tb = new TargetBuilder(scbConfig);
         final List<TemplateTarget> targetList = tb.buildCanvases();
         System.out.println(serialize(targetList.get(49000)).orElse(""));
@@ -59,20 +59,22 @@ public class TargetBuilderTest extends CommonTests {
 
     @Test
     void getTargetsFromRemoteManifest() throws LdpClientException {
-        final ScbConfig scbConfig = getScbConfigWithAbsolutePath();
+        final ScbConfig scbConfig = getScbConfigWithAbsolutePath("/scbconfig-test-remote.yml");
         final String pid = "TargetBuilderTest" + UUID.randomUUID().toString();
         final ImageMetadataServiceConfig imConfig = new ImageMetadataServiceConfig();
         imConfig.setDimensionManifestFilePath(baseUrl + pid);
         scbConfig.setImageMetadataServiceConfig(imConfig);
         final InputStream is = getDimensionManifest();
+        final InputStream ms = getMetadata();
         final IRI identifier = rdf.createIRI(baseUrl + pid);
         final IRI base = rdf.createIRI(baseUrl);
         h2client.initUpgrade(base);
         h2client.put(identifier, is, "application/json");
+        final IRI mid = rdf.createIRI(baseUrl + "metadata" + pid);
+        h2client.initUpgrade(base);
+        h2client.put(mid, ms, "application/json");
+        scbConfig.setMetadataLocation(baseUrl + "metadata" + pid);
         scbConfig.setDimensionManifestRemoteLocation(baseUrl + pid);
-        final InputStream meta = ScbConfigTest.class.getResourceAsStream(
-                "/data/sk2-titles.csv");
-        scbConfig.setMetadata(meta);
         final TargetBuilder tb = new TargetBuilder(scbConfig);
         final List<TemplateTarget> targetList = tb.buildCanvases();
         System.out.println(serialize(targetList.get(48000)).orElse(""));

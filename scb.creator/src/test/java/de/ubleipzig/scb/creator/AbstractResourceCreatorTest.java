@@ -30,6 +30,8 @@ import org.junit.jupiter.api.Test;
 import org.trellisldp.client.LdpClientException;
 
 public class AbstractResourceCreatorTest extends CommonTests {
+    private final ScbConfig scbConfig = getScbConfigWithAbsolutePath("/scbconfig-test.yml");
+
     @BeforeAll
     static void initAll() {
         APP.before();
@@ -49,6 +51,9 @@ public class AbstractResourceCreatorTest extends CommonTests {
 
     @Test
     void testGetDimensionManifestRemoteLocation() throws LdpClientException {
+        ResourceCreator creator = new ResourceCreator(scbConfig);
+        RemoteResource remote = new RemoteResource(scbConfig);
+        creator.setRemoteResource(remote);
         final IRI base = rdf.createIRI(baseUrl);
         h2client.initUpgrade(base);
         final InputStream is = getDimensionManifest();
@@ -60,6 +65,9 @@ public class AbstractResourceCreatorTest extends CommonTests {
 
     @Test
     void testGetMetadataRemoteLocation() throws LdpClientException {
+        ResourceCreator creator = new ResourceCreator(scbConfig);
+        RemoteResource remote = new RemoteResource(scbConfig);
+        creator.setRemoteResource(remote);
         final IRI base = rdf.createIRI(baseUrl);
         h2client.initUpgrade(base);
         final InputStream is = getDimensionManifest();
@@ -74,7 +82,7 @@ public class AbstractResourceCreatorTest extends CommonTests {
     void testGetRemoteException() {
         assertThrows(RuntimeException.class, () -> getDimensionManifestRemoteLocation("httq://invalid.org"));
         assertThrows(RuntimeException.class, () -> getMetadataRemoteLocation("httq://invalid.org"));
-        final RemoteResource remote = new RemoteResource();
+        final RemoteResource remote = new RemoteResource(scbConfig);
         assertThrows(LdpClientException.class, () -> remote.getRemoteBinaryResource("httq://invalid.org"));
     }
 }

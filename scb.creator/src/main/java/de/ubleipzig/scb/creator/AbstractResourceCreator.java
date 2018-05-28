@@ -28,7 +28,11 @@ import org.trellisldp.client.LdpClientException;
 public abstract class AbstractResourceCreator {
 
     public static final JenaRDF rdf = new JenaRDF();
-    public static final RemoteResource remote = new RemoteResource();
+    public static RemoteResource remote;
+
+    public void setRemoteResource(RemoteResource remote) {
+        AbstractResourceCreator.remote = remote;
+    }
 
     /**
      * getDimensionManifestRemoteLocation.

@@ -33,7 +33,7 @@ public class TaggingAnnotationBuilderTest extends CommonTests {
 
     @Test
     void testGetTaggingAnnotations() {
-        final ScbConfig scbConfig = getScbConfigWithAbsolutePath();
+        final ScbConfig scbConfig = getScbConfigWithAbsolutePath("/scbconfig-test.yml");
         final TaggingAnnotationBuilder ab = new TaggingAnnotationBuilder(scbConfig);
         final List<TemplateTarget> targetList = getTargetList();
         final List<TemplateTaggingAnnotation> annoList = ab.buildTaggingAnnotations(targetList);
@@ -42,7 +42,7 @@ public class TaggingAnnotationBuilderTest extends CommonTests {
     }
 
     private List<TemplateTarget> getTargetList() {
-        final ScbConfig scbConfig = getScbConfigWithAbsolutePath();
+        final ScbConfig scbConfig = getScbConfigWithAbsolutePath("/scbconfig-test.yml");
         final TargetBuilder tb = new TargetBuilder(scbConfig);
         return tb.buildCanvases();
     }
