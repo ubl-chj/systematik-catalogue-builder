@@ -51,8 +51,8 @@ public class AbstractResourceCreatorTest extends CommonTests {
 
     @Test
     void testGetDimensionManifestRemoteLocation() throws LdpClientException {
-        ResourceCreator creator = new ResourceCreator(scbConfig);
-        RemoteResource remote = new RemoteResource(scbConfig);
+        final ResourceCreator creator = new ResourceCreator(scbConfig);
+        final RemoteResource remote = new RemoteResource(scbConfig);
         creator.setRemoteResource(remote);
         final IRI base = rdf.createIRI(baseUrl);
         h2client.initUpgrade(base);
@@ -65,8 +65,8 @@ public class AbstractResourceCreatorTest extends CommonTests {
 
     @Test
     void testGetMetadataRemoteLocation() throws LdpClientException {
-        ResourceCreator creator = new ResourceCreator(scbConfig);
-        RemoteResource remote = new RemoteResource(scbConfig);
+        final ResourceCreator creator = new ResourceCreator(scbConfig);
+        final RemoteResource remote = new RemoteResource(scbConfig);
         creator.setRemoteResource(remote);
         final IRI base = rdf.createIRI(baseUrl);
         h2client.initUpgrade(base);

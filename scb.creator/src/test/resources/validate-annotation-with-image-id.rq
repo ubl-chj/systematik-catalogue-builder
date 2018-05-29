@@ -1,0 +1,16 @@
+PREFIX oa: <http://www.w3.org/ns/oa#>
+PREFIX sioc: <http://rdfs.org/sioc/ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+SELECT ?anno ?mvalue ?target ?service WHERE {
+values ?imageId {<trellis:data/collection/vp/res/00005950.tif>} .
+?anno oa:hasBody  ?imageId .
+?anno oa:hasTarget ?target .
+?target <http://iiif.io/api/presentation/2#metadataLabels> ?llist .
+?llist rdf:rest* ?lmid .
+?lmid rdf:first ?label .
+?label rdfs:label ?k .
+?label rdf:value ?mvalue .
+?lmid rdf:rest ?llast .
+?imageId <http://rdfs.org/sioc/services#has_service> ?service
+}
